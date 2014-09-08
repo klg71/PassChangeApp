@@ -1,5 +1,6 @@
 package account;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -11,12 +12,19 @@ public class Account {
 	private String actualPassword;
 	private Calendar lastChangedCalendar;
 	private Website website;
+	private SimpleDateFormat simpleDateFormat;
 	private int expire;
 
 	public String getUserName() {
 		return userName;
 	}
 
+	
+	public void changePassword(String newPass) throws Exception{
+		website.initialize(userName, actualPassword);
+		website.changePassword(newPass);
+	}
+	
 	public void setUserName(String userName) {
 		this.userName = userName;
 	}
@@ -45,11 +53,14 @@ public class Account {
 		this.website = website;
 	}
 
+
+
 	@Override
 	public String toString() {
 		return "Account [userName=" + userName + ", email=" + email
-				+ ", actualPassword=" + actualPassword + ", website=" + website
-				+ "]";
+				+ ", actualPassword=" + actualPassword
+				+ ", lastChangedCalendar=" + simpleDateFormat.format(lastChangedCalendar.getTime()) + ", website="
+				+ website + ", expire=" + expire + "]";
 	}
 
 	public boolean isExpired() {
@@ -71,6 +82,7 @@ public class Account {
 		this.lastChangedCalendar = lastChangedCalendar;
 		this.website = website;
 		this.expire = expire;
+		simpleDateFormat=new SimpleDateFormat("yyyy-MM-d k:m:s");
 	}
 
 	public Calendar getLastChangedCalendar() {
