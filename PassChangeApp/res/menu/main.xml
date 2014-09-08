@@ -1,0 +1,11 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.passchange.passchangeapp.MainActivity" >
+
+    <item
+        android:id="@+id/add_account"
+        android:orderInCategory="100"
+        android:showAsAction="ifRoom"
+        android:title="@string/add_account"/>
+
+</menu>
