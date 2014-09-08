@@ -3,6 +3,8 @@ package ui;
 import com.passchange.passchangeapp.R;
 
 import account.Account;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -30,11 +32,21 @@ public class ChangePasswordWindow implements OnClickListener {
 		EditText pass;
 		pass=(EditText)mainActivity.findViewById(R.id.editNewPass);
 		try {
-			account.getWebsite().initialize(account.getUserName(), account.getActualPassword());
-			account.getWebsite().changePassword(pass.getText().toString());
+			account.changePassword(pass.getText().toString());
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+			   new AlertDialog.Builder(mainActivity)
+			      .setMessage("Unable to change password maybe youre actual one is wrong?")
+			      .setTitle("error")
+			      .setCancelable(true)
+			      .setNeutralButton(android.R.string.cancel,
+			         new DialogInterface.OnClickListener() {
+			         public void onClick(DialogInterface dialog, int whichButton){}
+			         })
+			      .show();
 			e.printStackTrace();
 		}
+		mainActivity.setContentView(R.layout.activity_main);
+		mainActivity.refreshAccountList();
+
 	}
 }
