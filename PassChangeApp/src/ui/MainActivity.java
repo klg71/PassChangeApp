@@ -35,7 +35,26 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends Activity implements OnItemLongClickListener,
-		android.widget.PopupMenu.OnMenuItemClickListener {
+		android.widget.PopupMenu.OnMenuItemClickListener, android.content.DialogInterface.OnClickListener {
+
+	@Override
+	protected void onRestart() {
+		for(Account account:accountManager.getAccounts()){
+			selectedAccount=account;
+			if(account.isExpired()){
+				AlertDialog.Builder builder = new AlertDialog.Builder(this);
+				builder.setTitle("Password expired")
+						.setMessage("Your Password for: "+account.getUserName()+"@"+account.getWebsite().getName()+" is expired do you want to change it now?")
+						.setIcon(android.R.drawable.ic_dialog_alert)
+						.setPositiveButton("Yes",
+								this
+								).setNegativeButton("No", null) // Do nothing on no
+						.show();
+			}
+			}
+		
+		super.onRestart();
+	}
 
 	private AccountManager accountManager;
 	private HashMap<String, Website> websites;
@@ -132,10 +151,11 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 		switch (item.getItemId()) {
 		case R.id.action_change_password: {
 			setContentView(R.layout.changepassword);
+			ChangePasswordWindow window=new ChangePasswordWindow(selectedAccount, this);
 		}
 		case R.id.action_delete_account: {
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setTitle("Erase hard drive")
+			builder.setTitle("Delete Account")
 					.setMessage("Are you sure?")
 					.setIcon(android.R.drawable.ic_dialog_alert)
 					.setPositiveButton("Yes",
@@ -164,5 +184,12 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 		selectedAccount = accountManager.getAccount(position);
 		Log.e("PassChange", " " + position);
 		return false;
+	}
+
+	@Override
+	public void onClick(DialogInterface dialog, int which) {
+		setContentView(R.layout.changepassword);
+		ChangePasswordWindow window=new ChangePasswordWindow(selectedAccount, this);
+		
 	}
 }
