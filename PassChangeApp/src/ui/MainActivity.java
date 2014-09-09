@@ -14,6 +14,8 @@ import account.Account;
 import account.AccountManager;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -169,6 +171,16 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 								}
 							}).setNegativeButton("No", null) // Do nothing on no
 					.show();
+		}
+		case R.id.action_change_account: {
+			setContentView(R.layout.changeaccount);
+			ChangeAccountWindow window=new ChangeAccountWindow(selectedAccount,this);
+		}
+		case R.id.action_copy_password:{
+			ClipboardManager clipboard = (ClipboardManager)
+			        getSystemService(this.CLIPBOARD_SERVICE);
+			ClipData clip = ClipData.newPlainText("password",selectedAccount.getActualPassword());
+			clipboard.setPrimaryClip(clip);
 		}
 		}
 		return false;
