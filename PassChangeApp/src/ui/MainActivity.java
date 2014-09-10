@@ -96,8 +96,8 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 						return;
 					}
 				});
+		alert.show();
 		if (password.length() == 0) {
-			alert.show();
 
 			websites = new HashMap<String, Website>();
 			websites.put("Facebook", new Facebook());
@@ -121,20 +121,14 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 		if (id == R.id.add_account) {
-			// Intent intent=new Intent(this,AddAccountActivity.class);
-			// startActivityForResult(intent,0);
 			setContentView(R.layout.addaccount);
 			new AddAccountWindow(accountManager, this);
 			return true;
@@ -169,7 +163,7 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 													.getName(), selectedAccount
 													.getEmail());
 								}
-							}).setNegativeButton("No", null) // Do nothing on no
+							}).setNegativeButton("No", null) 
 					.show();
 		}
 		case R.id.action_change_account: {
