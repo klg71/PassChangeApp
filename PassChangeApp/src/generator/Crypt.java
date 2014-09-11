@@ -38,9 +38,10 @@ public class Crypt {
 		if(pass.length()>24){
 			throw new Exception("Password to long");
 		} else {
-			pass=pass+salt.substring(0, 24-pass.length());
+			pass=pass+salt.substring(0, 23-pass.length());
 		}
 		key=new String(Base64.encode(pass.getBytes(), Base64.DEFAULT));
+		key=key.substring(1);
 		return key;
 	}
 	

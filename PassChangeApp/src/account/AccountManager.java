@@ -82,6 +82,10 @@ public class AccountManager {
 		accounts.remove(i);
 	}
 	
+	public void removeAccount(Account account){
+		accounts.remove(account);
+	}
+	
 	public Account findAccount(String website,String accountName){
 		int i=-1;
 		for(Account account:accounts){

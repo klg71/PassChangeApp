@@ -103,7 +103,7 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 				setContentView(R.layout.activity_main);
 				accountListAdapter = new AccountListAdapter(accountManager);
 				accountTextViews = new ArrayList<TextView>();
-
+				refreshAccountList();
 				if (password.length() != 0) {
 
 				} else {
@@ -166,6 +166,7 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 		case R.id.action_change_password: {
 			setContentView(R.layout.changepassword);
 			ChangePasswordWindow window=new ChangePasswordWindow(selectedAccount, this);
+			break;
 		}
 		case R.id.action_delete_account: {
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -176,23 +177,24 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 							new DialogInterface.OnClickListener() {
 								public void onClick(DialogInterface dialog,
 										int which) {
-									accountManager.removeAccount(
-											selectedAccount.getWebsite()
-													.getName(), selectedAccount
-													.getEmail());
+									accountManager.removeAccount(selectedAccount);
+									refreshAccountList();
 								}
 							}).setNegativeButton("No", null) 
 					.show();
+			break;
 		}
 		case R.id.action_change_account: {
 			setContentView(R.layout.changeaccount);
 			ChangeAccountWindow window=new ChangeAccountWindow(selectedAccount,this);
+			break;
 		}
 		case R.id.action_copy_password:{
 			ClipboardManager clipboard = (ClipboardManager)
 			        getSystemService(this.CLIPBOARD_SERVICE);
 			ClipData clip = ClipData.newPlainText("password",selectedAccount.getActualPassword());
 			clipboard.setPrimaryClip(clip);
+			break;
 		}
 		}
 		return false;

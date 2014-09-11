@@ -40,11 +40,13 @@ import core.Website;
 public class XmlParser {
 	private HashMap<String, Website> websites;
 	private DateFormat simpleDateFormat;
-
+	private String salt;
+	
 	public XmlParser(HashMap<String, Website> websites) {
 		this.websites = websites;
 		simpleDateFormat = SimpleDateFormat.getDateTimeInstance(
 				SimpleDateFormat.MEDIUM, SimpleDateFormat.MEDIUM);
+		salt="1234567890ABCDEFGHIJKLMONPQRSTUVWXYZ";
 	}
 
 	public ArrayList<Account> loadAccountsFromFile(String filename,
@@ -55,7 +57,7 @@ public class XmlParser {
 		builder = factory.newDocumentBuilder();
 		String content = null;
 		content = new String(Crypt.decode(new FileInputStream(
-				new File(filename)), Crypt.generateMd5(password)));
+				new File(filename)), Crypt.generateKey(password,salt)));
 		Document document = null;
 		document = builder.parse(new ByteArrayInputStream(content.getBytes()));
 		System.out.println(document.getFirstChild().getNodeName());
@@ -147,7 +149,7 @@ public class XmlParser {
 		transformer.transform(source, result);
 		System.out.println(stringWriter.toString());
 		Crypt.encode(stringWriter.toString().getBytes(), new FileOutputStream(
-				new File(filename)), Crypt.generateMd5(password));
+				new File(filename)), Crypt.generateKey(password,salt));
 
 	}
 
