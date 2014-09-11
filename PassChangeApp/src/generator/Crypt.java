@@ -13,18 +13,14 @@ import javax.crypto.CipherInputStream;
 import javax.crypto.CipherOutputStream;
 import javax.crypto.spec.SecretKeySpec;
 
+import android.util.Base64;
 import android.util.Log;
 
 public class Crypt {
 	
 	static public String generateMd5(String key){
 		byte[] bytesOfMessage = null;
-		try {
-			bytesOfMessage = key.getBytes("UTF-8");
-		} catch (UnsupportedEncodingException e3) {
-			// TODO Auto-generated catch block
-			e3.printStackTrace();
-		}
+		bytesOfMessage = key.getBytes();
 
 		MessageDigest md = null;
 		try {
@@ -36,6 +32,17 @@ public class Crypt {
 		return new String(md.digest(bytesOfMessage));
 	}
 	
+	
+	static public String generateKey(String pass,String salt) throws Exception{
+		String key="";
+		if(pass.length()>24){
+			throw new Exception("Password to long");
+		} else {
+			pass=pass+salt.substring(0, 24-pass.length());
+		}
+		key=new String(Base64.encode(pass.getBytes(), Base64.DEFAULT));
+		return key;
+	}
 	
 	static public void encode( byte[] bytes, OutputStream out, String pass ) throws Exception
 	  {
