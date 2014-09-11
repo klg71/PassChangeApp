@@ -1,15 +1,20 @@
 package account;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
+
 import core.Website;
+import file.XmlParser;
 
 public class AccountManager {
 	private ArrayList<Account> accounts;
 	private String accountFile;
 	private String masterPass;
-	//private XmlParser xmlParser;
+	private XmlParser xmlParser;
 	private HashMap<String,Website> websites;
 	//private MysqlManager mysqlManager;
 	
@@ -19,7 +24,7 @@ public class AccountManager {
 		this.masterPass=masterPass;
 		this.websites=websites;
 //		mysqlManager=new MysqlManager("", "", websites);
-//		xmlParser=new XmlParser(websites);
+		xmlParser=new XmlParser(websites);
 		
 	}
 	public AccountManager(String masterPass,HashMap<String,Website> websites){
@@ -27,7 +32,7 @@ public class AccountManager {
 		this.masterPass=masterPass;
 		this.websites=websites;
 //		mysqlManager=new MysqlManager("", "", websites);
-//		xmlParser=new XmlParser(websites);
+		xmlParser=new XmlParser(websites);
 		
 	}
 	
@@ -35,15 +40,15 @@ public class AccountManager {
 		return websites;
 	}
 	public void loadFromFile() throws Exception{
-		//accounts=xmlParser.loadAccountsFromFile(accountFile,masterPass);
+		accounts=xmlParser.loadAccountsFromFile(accountFile,masterPass);
 	}
 	
-	public void writeToFile(){
-		//xmlParser.saveAccountsToFile(accountFile,masterPass,this);
+	public void writeToFile() throws FileNotFoundException, Exception{
+		xmlParser.saveAccountsToFile(accountFile,masterPass,this);
 	}
 	
-	public void writeToFile(String pass){
-		//xmlParser.saveAccountsToFile(accountFile,pass,this);
+	public void writeToFile(String pass) throws FileNotFoundException, Exception{
+		xmlParser.saveAccountsToFile(accountFile,pass,this);
 	}
 	
 	public void loadFromDatabase(){

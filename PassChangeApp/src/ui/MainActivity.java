@@ -1,7 +1,11 @@
 package ui;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 
 import plugins.Facebook;
 import plugins.Google;
@@ -19,6 +23,7 @@ import android.content.ClipboardManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -54,7 +59,7 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 						.show();
 			}
 			}
-		
+
 		super.onRestart();
 	}
 
@@ -76,17 +81,38 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 		alert.setTitle("Login");
 		alert.setMessage("Enter Pin :");
 		alert.setView(textEntryView);
-
 		alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int whichButton) {
-				// String value = input.getText().toString();
-				EditText mUserText;
-				mUserText = (EditText) textEntryView
+				 //String value = input.getText().toString();
+				EditText mUserText = (EditText) textEntryView
 						.findViewById(R.id.txt_password);
 				password = mUserText.getText().toString();
+
+				websites = new HashMap<String, Website>();
+				websites.put("Facebook", new Facebook());
+				websites.put("Twitter", new Twitter());
+				websites.put("Google", new Google());
+				accountManager = new AccountManager(getApplicationContext().getFileStreamPath("accounts.xml")
+						   .getPath(),password, websites);
+				try {
+					accountManager.loadFromFile();
+				} catch (Exception e) {
+					Log.e("Error",e.getMessage());
+					e.printStackTrace();
+				}
+				setContentView(R.layout.activity_main);
+				accountListAdapter = new AccountListAdapter(accountManager);
+				accountTextViews = new ArrayList<TextView>();
+
+				if (password.length() != 0) {
+
+				} else {
+					finish();
+				}
 				return;
 			}
 		});
+
 
 		alert.setNegativeButton("Cancel",
 				new DialogInterface.OnClickListener() {
@@ -96,26 +122,18 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 						return;
 					}
 				});
-		alert.show();
-		if (password.length() == 0) {
-
-			websites = new HashMap<String, Website>();
-			websites.put("Facebook", new Facebook());
-			websites.put("Twitter", new Twitter());
-			websites.put("Google", new Google());
-			accountManager = new AccountManager("accounts.xml",password, websites);
-			accountManager.loadFromDatabase();
-			setContentView(R.layout.activity_main);
-			accountListAdapter = new AccountListAdapter(accountManager);
-			accountTextViews = new ArrayList<TextView>();
-		} else {
-			finish();
-		}
+		alert.create().show();
 	}
 
 	@Override
 	protected void onStop() {
-		accountManager.writeToFile();
+		Log.e("Debug","onStop");
+		try {
+			accountManager.writeToFile();
+		} catch (Exception e) {
+			Log.e("Error",e.getMessage());
+			e.printStackTrace();
+		}
 		super.onStop();
 	}
 

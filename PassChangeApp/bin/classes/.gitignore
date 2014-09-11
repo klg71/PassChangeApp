@@ -2,4 +2,8 @@
 /.gitignore
 /account/
 /core/
+/file/
+/generator/
+/plugins/
+/sql/
 /ui/
