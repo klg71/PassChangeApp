@@ -75,6 +75,10 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		login();
+	}
+	
+	private void login(){
 		LayoutInflater factory = LayoutInflater.from(this);
 		final View textEntryView = factory.inflate(R.layout.dialog_login, null);
 		AlertDialog.Builder alert = new AlertDialog.Builder(this);
@@ -99,6 +103,18 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 				} catch (Exception e) {
 					Log.e("Error",e.getMessage());
 					e.printStackTrace();
+				    AlertDialog ad = new AlertDialog.Builder(getBaseContext()).create();  
+				    ad.setCancelable(false); // This blocks the 'BACK' button  
+				    ad.setMessage("An error occured, maybe you entered the wrong password try it again!");  
+				    ad.setButton("OK", new DialogInterface.OnClickListener() {  
+				        @Override  
+				        public void onClick(DialogInterface dialog, int which) {  
+				            dialog.dismiss();                      
+				        }  
+				    });  
+				    ad.show(); 
+				    login();
+					return;
 				}
 				setContentView(R.layout.activity_main);
 				accountListAdapter = new AccountListAdapter(accountManager);
