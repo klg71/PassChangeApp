@@ -3,7 +3,7 @@ package core;
 public abstract class Website {
 	protected String username;
 	protected String pass;
-
+	
 	
 	
 	public void initialize(String username, String pass) {

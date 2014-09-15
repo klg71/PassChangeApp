@@ -16,12 +16,17 @@ public class Facebook extends Website {
 	private String Login;
 
 	public Facebook(String username, String pass) {
+		super();
 		initialize(username, pass);
+	}
+	@Override
+	public void initialize(String username, String pass) {
+		super.initialize(username,pass);
 		webClient = new WebClient();
 		fb_dtsg = "";
 		charset_test = "";
 	}
-	
+
 	public Facebook(){
 		super();
 	}

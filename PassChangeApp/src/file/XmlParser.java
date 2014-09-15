@@ -79,6 +79,7 @@ public class XmlParser {
 						}
 						System.out.println(nodeList.item(i).getAttributes()
 								.getNamedItem("name").getNodeValue());
+						
 						accounts.add(new Account(accountList.item(k)
 								.getAttributes().getNamedItem("name")
 								.getNodeValue(), accountList.item(k)

@@ -19,12 +19,32 @@ public class Account {
 		return userName;
 	}
 
-	
-	public void changePassword(String newPass) throws Exception{
+	public void changePassword(final String newPass) throws Exception {
 		website.initialize(userName, actualPassword);
-		website.changePassword(newPass);
+		new Thread() {
+			@Override
+			public void run() {
+				try {
+					website.authenticate();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}.start();
+		new Thread() {
+			@Override
+			public void run() {
+				try {
+					website.changePassword(newPass);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}.start();
 	}
-	
+
 	public void setUserName(String userName) {
 		this.userName = userName;
 	}
@@ -53,14 +73,13 @@ public class Account {
 		this.website = website;
 	}
 
-
-
 	@Override
 	public String toString() {
 		return "Account [userName=" + userName + ", email=" + email
 				+ ", actualPassword=" + actualPassword
-				+ ", lastChangedCalendar=" + simpleDateFormat.format(lastChangedCalendar.getTime()) + ", website="
-				+ website + ", expire=" + expire + "]";
+				+ ", lastChangedCalendar="
+				+ simpleDateFormat.format(lastChangedCalendar.getTime())
+				+ ", website=" + website + ", expire=" + expire + "]";
 	}
 
 	public boolean isExpired() {
@@ -82,7 +101,7 @@ public class Account {
 		this.lastChangedCalendar = lastChangedCalendar;
 		this.website = website;
 		this.expire = expire;
-		simpleDateFormat=new SimpleDateFormat("yyyy-MM-d k:m:s");
+		simpleDateFormat = new SimpleDateFormat("yyyy-MM-d k:m:s");
 	}
 
 	public Calendar getLastChangedCalendar() {

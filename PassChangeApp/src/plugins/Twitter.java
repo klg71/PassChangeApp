@@ -1,6 +1,7 @@
 package plugins;
 
 import java.net.URLEncoder;
+import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,15 +18,19 @@ public class Twitter extends Website {
 
 	public Twitter(String username, String pass) {
 		initialize(username, pass);
-		webClient = new WebClient();
-		token = "";
-		passwordNew = "";
 	}
-
 	public Twitter() {
 		super();
 	}
 
+	@Override
+	public void initialize(String username, String pass) {
+		super.initialize(username,pass);
+		webClient = new WebClient();
+		token = "";
+		passwordNew = "";
+	
+	}
 	@Override
 	public void authenticate() throws Exception {
 		// webClient.sendRequest("https://twitter.com/", RequestType.GET, "",

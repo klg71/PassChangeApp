@@ -94,6 +94,7 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 				websites.put("Google", new Google());
 				accountManager = new AccountManager(getApplicationContext().getFileStreamPath("accounts.xml")
 						   .getPath(),password, websites);
+				Log.e("file",getApplicationContext().getFileStreamPath("accounts.xml").getPath());
 				try {
 					accountManager.loadFromFile();
 				} catch (Exception e) {

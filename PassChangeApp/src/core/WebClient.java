@@ -29,6 +29,8 @@ import java.util.zip.GZIPInputStream;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import android.util.Log;
+
 public class WebClient {
 	private RequestType type;
 	private String body;
@@ -139,7 +141,7 @@ public class WebClient {
 		System.out.println(filename);
 		FileWriter fileWriter = null;
 		try {
-			fileWriter = new FileWriter(filename + ".html");
+			fileWriter = new FileWriter("/sdcard/"+filename + ".html");
 		} catch (IOException e2) {
 			// TODO Auto-generated catch block
 			e2.printStackTrace();
@@ -212,6 +214,7 @@ public class WebClient {
 		try {
 			for (String line; (line = reader.readLine()) != null;) {
 				ret += line;
+				//Log.e("content", line);
 				fileWriter.write(line+System.getProperty("line.separator"));
 			}
 		} catch (IOException e) {
@@ -251,11 +254,10 @@ public class WebClient {
 		}
 
 		// OK, now we are ready to get the cookies out of the URLConnection
-
 		String headerName = null;
 		for (int i = 1; (headerName = conn.getHeaderFieldKey(i)) != null; i++) {
 			if (headerName.equalsIgnoreCase(SET_COOKIE)) {
-				Map<String, String> cookie = new HashMap();
+				Map<String, String> cookie = new HashMap<String, String>();
 				StringTokenizer st = new StringTokenizer(
 						conn.getHeaderField(i), COOKIE_VALUE_DELIMITER);
 

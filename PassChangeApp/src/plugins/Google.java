@@ -21,14 +21,19 @@ public class Google extends Website {
 	public Google(String username, String password) {
 		super();
 		initialize(username, password);
-		webClient = new WebClient();
-		token = "";
-		formData=new HashMap<String,String>();
-		passwordNew="";
 	}
 
 	public Google() {
 		super();
+	}
+
+	@Override
+	public void initialize(String username, String pass) {
+		super.initialize(username,pass);
+		webClient = new WebClient();
+		token = "";
+		formData=new HashMap<String,String>();
+		passwordNew="";;
 	}
 
 	@Override
