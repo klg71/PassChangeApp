@@ -15,16 +15,20 @@ public class Google extends Website {
 	private WebClient webClient;
 	private String body;
 	private String token; // GALX
-	private HashMap<String,String> formData;
+	private HashMap<String, String> formData;
 	String passwordNew;
 
 	public Google(String username, String password) {
 		super();
 		initialize(username, password);
+	}
+
+	public void initialize(String username, String password) {
+		super.initialize(username, password);
 		webClient = new WebClient();
 		token = "";
-		formData=new HashMap<String,String>();
-		passwordNew="";
+		formData = new HashMap<String, String>();
+		passwordNew = "";
 	}
 
 	public Google() {
@@ -38,9 +42,6 @@ public class Google extends Website {
 				"https://accounts.google.com/ServiceLogin", RequestType.GET,
 				"", "home1", false);
 		token = webClient.getCookie("google.com", "GALX");
-		// System.out.println();
-		// getToken();
-		// System.out.println(token);
 		String post = URLEncoder.encode("GALX", "UTF-8")
 				+ "="
 				+ URLEncoder.encode(token, "UTF-8")
@@ -59,51 +60,48 @@ public class Google extends Website {
 				RequestType.POST, post, "google1", false);
 		System.out.println();
 		// validateAuthentification();
-		
 
 	}
 
 	@Override
 	public void changePassword(String newPass) throws Exception {
 
-		passwordNew=newPass;
+		passwordNew = newPass;
 		body = webClient.sendRequest(
 				"https://accounts.google.com/b/0/EditPasswd?hl=de",
 				RequestType.GET, "", "pwChangeGoogle", false);
 		parseFormData();
-		formData.put("OldPasswd", URLEncoder.encode(pass,"UTF-8"));
-		formData.put("Passwd",URLEncoder.encode(newPass,"UTF-8"));
-		formData.put("PasswdAgain", URLEncoder.encode(newPass,"UTF-8"));
-		String post="";
-		for(Entry<String, String> entry:formData.entrySet()){
-			post=post+entry.getKey()+"="+entry.getValue()+"&";
+		formData.put("OldPasswd", URLEncoder.encode(pass, "UTF-8"));
+		formData.put("Passwd", URLEncoder.encode(newPass, "UTF-8"));
+		formData.put("PasswdAgain", URLEncoder.encode(newPass, "UTF-8"));
+		String post = "";
+		for (Entry<String, String> entry : formData.entrySet()) {
+			post = post + entry.getKey() + "=" + entry.getValue() + "&";
 		}
-		post=post.substring(0,post.length()-1);
+		post = post.substring(0, post.length() - 1);
 		System.out.println(post);
 		body = webClient.sendRequest(
-				"https://accounts.google.com/b/0/EditPasswd",
-				RequestType.POST, post, "googleChange1", false);
-	System.out.println(post);
+				"https://accounts.google.com/b/0/EditPasswd", RequestType.POST,
+				post, "googleChange1", false);
+		System.out.println(post);
 
 	}
 
 	@Override
 	protected void validateAuthentification() throws Exception {
-		if(body.contains("errormsg_0_Passwd"))
+		if (body.contains("errormsg_0_Passwd"))
 			throw new Exception("Login unsuccsessful please try again");
 	}
 
-	
-
 	@Override
 	protected void validatePasswordChange() throws Exception {
-		String tempPass=pass;
-		pass=passwordNew;
+		String tempPass = pass;
+		pass = passwordNew;
 		try {
 			authenticate();
 		} catch (Exception e) {
-			pass=tempPass;
-			throw new Exception ("Change Password unsuccessful please try again");
+			pass = tempPass;
+			throw new Exception("Change Password unsuccessful please try again");
 		}
 
 	}
@@ -134,7 +132,7 @@ public class Google extends Website {
 
 		while (m.find()) {
 			token = m.group(0).substring(50, m.group(0).length() - 2);
-			System.out.println(m.group(0));
+			// System.out.println(m.group(0));
 		}
 		return;
 	}
@@ -142,34 +140,45 @@ public class Google extends Website {
 	private void parseFormData() {
 		HashMap<String, String> tempFormMap = new HashMap<String, String>();
 		Pattern inputPattern = Pattern.compile(
-				"(<input[ A-Za-z0-9=\"\n\'\\._\\/]+>)", Pattern.MULTILINE
+				"(<input[ A-Za-z0-9='\\-\"\n\'\\._\\/]+>)", Pattern.MULTILINE
 						| Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
 		Pattern namePattern = Pattern.compile("(name=\"[A-Za-z]+\")",
 				Pattern.MULTILINE);
-		Pattern valuePattern = Pattern
-				.compile("(value=(\"|\')[A-Za-z0-9\\.=_ ]+(\"|\'))",
-						Pattern.MULTILINE);
+		Pattern valuePattern = Pattern.compile(
+				"(value=(\"|\')[A-Za-z0-9\\.=_\\- ]+(\"|\'))",
+				Pattern.MULTILINE);
 		Matcher m = inputPattern.matcher(body);
 		while (m.find()) {
 			Matcher MatcherName = namePattern.matcher(m.group(1));
 			Matcher MatcherValue = valuePattern.matcher(m.group(1));
 			System.out.println(m.group(1));
 			MatcherName.find();
-			if (MatcherValue.find()){
-				tempFormMap.put(MatcherName.group(0).substring(6,MatcherName.group(0).length()-1), MatcherValue.group(0).substring(7,MatcherValue.group(0).length()-1));
-				//System.out.println(MatcherValue.group(0));
+			if (!MatcherName.group(0)
+					.substring(6, MatcherName.group(0).length() - 1)
+					.equals("cancel")) {
+
+				if (MatcherValue.find()) {
+					tempFormMap.put(
+							MatcherName.group(0).substring(6,
+									MatcherName.group(0).length() - 1),
+							MatcherValue.group(0).substring(7,
+									MatcherValue.group(0).length() - 1));
+					// System.out.println(MatcherValue.group(0));
+				} else
+					tempFormMap.put(
+							MatcherName.group(0).substring(6,
+									MatcherName.group(0).length() - 1), "");
 			}
-			else
-				tempFormMap.put(MatcherName.group(0).substring(6,MatcherName.group(0).length()-1), "");
 
 		}
 		System.out.println(tempFormMap);
-		formData=tempFormMap;
+		formData = tempFormMap;
 	}
 
 	@Override
 	public Integer getId() {
-		return 2;
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
