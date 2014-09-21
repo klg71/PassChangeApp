@@ -93,7 +93,7 @@ public class WebClient {
 		connection
 				.setRequestProperty("Accept",
 						"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
-		connection.setRequestProperty("Accept-Encoding", "gzip, deflate");
+		connection.setRequestProperty("Accept-Encoding", "deflate");
 
 //		try {
 //			setCookies(connection);
@@ -119,7 +119,7 @@ public class WebClient {
 			}
 		}
 		connection.setDoInput(true);
-
+		connection.setFollowRedirects(false);
 		connection.setUseCaches(true);
 		connection.setRequestProperty("Host", url.getHost());
 		if (ref) {
@@ -190,13 +190,26 @@ public class WebClient {
 		// e.printStackTrace();
 		// }
 		// }
+//		 for(Entry<String,List<String>> k:connection.getHeaderFields().entrySet()){
+//			 System.out.println(k);
+//			 for(String temp:k.getValue()){
+//				 System.out.print(temp);
+//			 }
+//			 System.out.println(' ');
+//		 }
+		 try {
+			System.out.println(connection.getResponseMessage());
+		} catch (IOException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
 		System.out.println(store);
 		BufferedReader reader = null;
 		if(!ref){
 		if (connection.getHeaderField("Content-Encoding") != null) {
 			try {
 				reader = new BufferedReader(new InputStreamReader(
-						new GZIPInputStream(connection.getInputStream())));
+						new GZIPInputStream(connection.getInputStream()),"UTF-8"));
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();

@@ -21,7 +21,7 @@ public class Account {
 
 	public void changePassword(final String newPass) throws Exception {
 		website.initialize(userName, actualPassword);
-		new Thread() {
+		final Thread login=new Thread() {
 			@Override
 			public void run() {
 				try {
@@ -31,11 +31,13 @@ public class Account {
 					e.printStackTrace();
 				}
 			}
-		}.start();
+		};
+		login.start();
 		new Thread() {
 			@Override
 			public void run() {
 				try {
+					while(login.isAlive());
 					website.changePassword(newPass);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block

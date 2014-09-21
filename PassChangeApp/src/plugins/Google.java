@@ -45,7 +45,7 @@ public class Google extends Website {
 		token = webClient.getCookie("google.com", "GALX");
 		// System.out.println();
 		// getToken();
-		// System.out.println(token);
+		 System.out.println(token);
 		String post = URLEncoder.encode("GALX", "UTF-8")
 				+ "="
 				+ URLEncoder.encode(token, "UTF-8")
@@ -63,7 +63,7 @@ public class Google extends Website {
 				"https://accounts.google.com/ServiceLoginAuth",
 				RequestType.POST, post, "google1", false);
 		System.out.println();
-		// validateAuthentification();
+		validateAuthentification();
 		
 
 	}
@@ -81,6 +81,7 @@ public class Google extends Website {
 		formData.put("PasswdAgain", URLEncoder.encode(newPass,"UTF-8"));
 		String post="";
 		for(Entry<String, String> entry:formData.entrySet()){
+			if(!entry.getKey().equals("cancel"))
 			post=post+entry.getKey()+"="+entry.getValue()+"&";
 		}
 		post=post.substring(0,post.length()-1);
@@ -88,7 +89,6 @@ public class Google extends Website {
 		body = webClient.sendRequest(
 				"https://accounts.google.com/b/0/EditPasswd",
 				RequestType.POST, post, "googleChange1", false);
-	System.out.println(post);
 
 	}
 
@@ -147,12 +147,12 @@ public class Google extends Website {
 	private void parseFormData() {
 		HashMap<String, String> tempFormMap = new HashMap<String, String>();
 		Pattern inputPattern = Pattern.compile(
-				"(<input[ A-Za-z0-9=\"\n\'\\._\\/]+>)", Pattern.MULTILINE
+				"(<input[ A-Za-z0-9=\"\n\'\\._\\-\t\\/]+>)", Pattern.MULTILINE
 						| Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
 		Pattern namePattern = Pattern.compile("(name=\"[A-Za-z]+\")",
 				Pattern.MULTILINE);
 		Pattern valuePattern = Pattern
-				.compile("(value=(\"|\')[A-Za-z0-9\\.=_ ]+(\"|\'))",
+				.compile("(value=(\"|\')[A-Za-z0-9\\.=_\\-\t ]+(\"|\'))",
 						Pattern.MULTILINE);
 		Matcher m = inputPattern.matcher(body);
 		while (m.find()) {
@@ -162,7 +162,7 @@ public class Google extends Website {
 			MatcherName.find();
 			if (MatcherValue.find()){
 				tempFormMap.put(MatcherName.group(0).substring(6,MatcherName.group(0).length()-1), MatcherValue.group(0).substring(7,MatcherValue.group(0).length()-1));
-				//System.out.println(MatcherValue.group(0));
+				System.out.println(MatcherValue.group(0));
 			}
 			else
 				tempFormMap.put(MatcherName.group(0).substring(6,MatcherName.group(0).length()-1), "");
