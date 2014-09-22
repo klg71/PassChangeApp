@@ -206,12 +206,12 @@ public class WebClient {
 		System.out.println(store);
 		BufferedReader reader = null;
 		if(!ref){
+		Log.e("Encoding",connection.getHeaderField("Content-Encoding"));
 		if (connection.getHeaderField("Content-Encoding") != null) {
 			try {
 				reader = new BufferedReader(new InputStreamReader(
 						new GZIPInputStream(connection.getInputStream()),"UTF-8"));
 			} catch (IOException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 		} else {
@@ -219,7 +219,6 @@ public class WebClient {
 				reader = new BufferedReader(new InputStreamReader(
 						connection.getInputStream()));
 			} catch (IOException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 		}
