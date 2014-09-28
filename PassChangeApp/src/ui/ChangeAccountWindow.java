@@ -38,10 +38,12 @@ public class ChangeAccountWindow implements OnClickListener, OnLongClickListener
 	@Override
 	public void onClick(View v) {
 		selectedAccount.setUserName(user.getText().toString());
-		selectedAccount.setActualPassword(password.getText().toString());
+		selectedAccount.setActualPassword(password.getText().toString());	
 		selectedAccount.setEmail(email.getText().toString());
 		selectedAccount.setExpire(Integer.parseInt(expire.getText().toString()));
 		mainActivity.setContentView(R.layout.activity_main);
+		mainActivity.refreshAccountList();
+		mainActivity.setChildWindowActive(false);
 		
 	}
 

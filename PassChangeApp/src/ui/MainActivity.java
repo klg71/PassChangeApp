@@ -1,5 +1,6 @@
 package ui;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -9,6 +10,7 @@ import javax.xml.transform.TransformerException;
 
 import plugins.Facebook;
 import plugins.Google;
+import plugins.LeagueOfLegends;
 import plugins.Twitter;
 
 import com.passchange.passchangeapp.R;
@@ -24,6 +26,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -43,6 +46,14 @@ import android.widget.Toast;
 
 public class MainActivity extends Activity implements OnItemLongClickListener,
 		android.widget.PopupMenu.OnMenuItemClickListener, android.content.DialogInterface.OnClickListener {
+
+	@Override
+	public void onBackPressed() {
+		if(childWindowActive)
+			setContentView(R.layout.activity_main);
+		else
+		super.onBackPressed();
+	}
 
 	@Override
 	protected void onRestart() {
@@ -70,11 +81,12 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 	private PopupMenu popupMenu;
 	private Account selectedAccount;
 	private String password;
+	private boolean childWindowActive;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+		childWindowActive=false;
 		login();
 	}
 	
@@ -85,6 +97,7 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 		alert.setTitle("Login");
 		alert.setMessage("Enter Pin :");
 		alert.setView(textEntryView);
+		final Activity activity=this;
 		alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int whichButton) {
 				 //String value = input.getText().toString();
@@ -93,29 +106,32 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 				password = mUserText.getText().toString();
 
 				websites = new HashMap<String, Website>();
-				websites.put("Facebook", new Facebook());
-				websites.put("Twitter", new Twitter());
-				websites.put("Google", new Google());
-				accountManager = new AccountManager(getApplicationContext().getFileStreamPath("accounts.xml")
-						   .getPath(),password, websites);
-				Log.e("file",getApplicationContext().getFileStreamPath("accounts.xml").getPath());
-				try {
+				websites.put("Facebook", new Facebook(activity));
+				websites.put("Twitter", new Twitter(activity));
+				websites.put("Google", new Google(activity));
+				websites.put("League of Legends", new LeagueOfLegends(activity));
+				accountManager = new AccountManager("/sdcard/accounts.xml",password, websites);
+				Log.e("file","/sdcard/accounts.xml");
+				File file = new File("/sdcard/accounts.xml");
+				if (file.exists()) {
+				try {	
 					accountManager.loadFromFile();
 				} catch (Exception e) {
 					Log.e("Error",e.getMessage());
 					e.printStackTrace();
-				    AlertDialog ad = new AlertDialog.Builder(getBaseContext()).create();  
+				    AlertDialog.Builder ad = new AlertDialog.Builder(activity);  
 				    ad.setCancelable(false); // This blocks the 'BACK' button  
 				    ad.setMessage("An error occured, maybe you entered the wrong password try it again!");  
-				    ad.setButton("OK", new DialogInterface.OnClickListener() {  
+				    ad.setPositiveButton("OK", new DialogInterface.OnClickListener() {  
 				        @Override  
 				        public void onClick(DialogInterface dialog, int which) {  
-				            dialog.dismiss();                      
+				            dialog.dismiss();    
+						    login();
 				        }  
 				    });  
-				    ad.show(); 
-				    login();
+				    ad.create().show(); 
 					return;
+				}
 				}
 				setContentView(R.layout.activity_main);
 				accountListAdapter = new AccountListAdapter(accountManager);
@@ -164,11 +180,21 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 	public boolean onOptionsItemSelected(MenuItem item) {
 		int id = item.getItemId();
 		if (id == R.id.add_account) {
+
+			childWindowActive=true;
 			setContentView(R.layout.addaccount);
 			new AddAccountWindow(accountManager, this);
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+
+	public boolean isChildWindowActive() {
+		return childWindowActive;
+	}
+
+	public void setChildWindowActive(boolean childWindowActive) {
+		this.childWindowActive = childWindowActive;
 	}
 
 	public void refreshAccountList() {
@@ -181,6 +207,8 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 	public boolean onMenuItemClick(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.action_change_password: {
+
+			childWindowActive=true;
 			setContentView(R.layout.changepassword);
 			ChangePasswordWindow window=new ChangePasswordWindow(selectedAccount, this);
 			break;
@@ -202,6 +230,7 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 			break;
 		}
 		case R.id.action_change_account: {
+			childWindowActive=true;
 			setContentView(R.layout.changeaccount);
 			ChangeAccountWindow window=new ChangeAccountWindow(selectedAccount,this);
 			break;
@@ -231,6 +260,7 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 
 	@Override
 	public void onClick(DialogInterface dialog, int which) {
+		childWindowActive=true;
 		setContentView(R.layout.changepassword);
 		ChangePasswordWindow window=new ChangePasswordWindow(selectedAccount, this);
 		

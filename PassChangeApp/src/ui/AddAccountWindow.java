@@ -30,7 +30,7 @@ public class AddAccountWindow implements OnClickListener {
 		websites=new ArrayList<Website>();
 		for(Map.Entry<String, Website> entry:accountManager.getWebsites().entrySet()){
 			websites.add(entry.getValue());
-		}
+		} 
 		Spinner website = (Spinner) mainActivity.findViewById(R.id.spinner1);
 		ArrayAdapter<Website> dataAdapter = new ArrayAdapter<Website>(mainActivity,
 			android.R.layout.simple_spinner_item, websites);
@@ -51,5 +51,6 @@ public class AddAccountWindow implements OnClickListener {
 		accountManager.addAccount(new Account(user.getText().toString(),email.getText().toString(),pass.getText().toString(), temp, websites.get((int)website.getSelectedItemId()), 10));
 		mainActivity.setContentView(R.layout.activity_main);
 		mainActivity.refreshAccountList();
+		mainActivity.setChildWindowActive(false);
 	}
 }
