@@ -19,9 +19,9 @@ public class Account {
 		return userName;
 	}
 
-	public void changePassword(final String newPass) throws Exception {
+	public void changePassword(final String newPass) {
 		website.initialize(userName, actualPassword);
-		final Thread login=new Thread() {
+		final Thread login = new Thread() {
 			@Override
 			public void run() {
 				try {
@@ -33,18 +33,33 @@ public class Account {
 			}
 		};
 		login.start();
-		new Thread() {
+		final Thread change = new Thread() {
 			@Override
 			public void run() {
 				try {
-					while(login.isAlive());
+					while (login.isAlive())
+						;
 					website.changePassword(newPass);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
+		};
+		change.start();
+
+		new Thread() {
+			public void run() {
+				while (change.isAlive())
+					;
+				System.out.println("Success:"
+						+ Boolean.toString(website.isSuccesful()));
+				if (website.isSuccesful()) {
+					actualPassword = newPass;
+				}
+			}
 		}.start();
+
 	}
 
 	public void setUserName(String userName) {
