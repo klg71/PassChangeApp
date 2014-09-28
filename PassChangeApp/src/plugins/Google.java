@@ -6,6 +6,8 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import android.app.Activity;
+import android.content.Context;
 import core.RequestType;
 import core.WebClient;
 import core.Website;
@@ -18,13 +20,13 @@ public class Google extends Website {
 	private HashMap<String,String> formData;
 	String passwordNew;
 
-	public Google(String username, String password) {
-		super();
+	public Google(String username, String password,Activity activity) {
+		super(activity);
 		initialize(username, password);
 	}
 
-	public Google() {
-		super();
+	public Google(Activity activity) {
+		super(activity);
 	}
 
 	@Override
@@ -34,6 +36,8 @@ public class Google extends Website {
 		token = "";
 		formData=new HashMap<String,String>();
 		passwordNew="";;
+		succesful=false;
+		authenticated=false;
 	}
 
 	@Override
@@ -89,13 +93,16 @@ public class Google extends Website {
 		body = webClient.sendRequest(
 				"https://accounts.google.com/b/0/EditPasswd",
 				RequestType.POST, post, "googleChange1", false);
-
+		validatePasswordChange();
 	}
 
 	@Override
 	protected void validateAuthentification() throws Exception {
-		if(body.contains("errormsg_0_Passwd"))
+		if(body.contains("errormsg_0_Passwd")){
+			displayErrorMessage("Google: Login unsuccsessful please try again");
 			throw new Exception("Login unsuccsessful please try again");
+		}
+		authenticated=true;
 	}
 
 	
@@ -108,8 +115,10 @@ public class Google extends Website {
 			authenticate();
 		} catch (Exception e) {
 			pass=tempPass;
+			displayErrorMessage("Google: Change Password unsuccessful please try again");
 			throw new Exception ("Change Password unsuccessful please try again");
 		}
+		succesful=true;
 
 	}
 
@@ -175,6 +184,18 @@ public class Google extends Website {
 	@Override
 	public Integer getId() {
 		return 2;
+	}
+
+	@Override
+	public boolean validatePassword(String pass) {
+		return pass.length()>8;
+		
+	}
+
+	@Override
+	public String getPasswordCondition() {
+		// TODO Auto-generated method stub
+		return "Password should be at least 9 characters";
 	}
 
 }

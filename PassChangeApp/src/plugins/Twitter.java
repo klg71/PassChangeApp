@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import android.app.Activity;
+import android.content.Context;
 import core.RequestType;
 import core.WebClient;
 import core.Website;
@@ -16,11 +18,12 @@ public class Twitter extends Website {
 	private String body;
 	private String passwordNew;
 
-	public Twitter(String username, String pass) {
+	public Twitter(String username, String pass,Activity activity) {
+		super(activity);
 		initialize(username, pass);
 	}
-	public Twitter() {
-		super();
+	public Twitter(Activity activity) {
+		super(activity);
 	}
 
 	@Override
@@ -29,6 +32,8 @@ public class Twitter extends Website {
 		webClient = new WebClient();
 		token = "";
 		passwordNew = "";
+		succesful=false;
+		authenticated=false;
 	
 	}
 	@Override
@@ -85,8 +90,11 @@ public class Twitter extends Website {
 	@Override
 	protected void validateAuthentification() throws Exception {
 		if (body.indexOf("signup-field") > 0) {
-			throw new Exception("Login unsuccsessful please try again");
+			displayErrorMessage("Twitter: Login unsuccessful please ckeck your username and password");
+			throw new Exception("Login unsuccessful please ckeck your username and password");
 		}
+
+		authenticated=true;
 
 	}
 
@@ -98,8 +106,10 @@ public class Twitter extends Website {
 			authenticate();
 		} catch (Exception e) {
 			pass = tempPass;
-			throw new Exception("Change Password unsuccessful please try again");
+			displayErrorMessage("Twitter: Change Password unsuccessful maybe u tried it to much?");
+			throw new Exception("Change Password unsuccessful maybe u tried it to much?");
 		}
+		succesful=true;
 
 	}
 
@@ -133,6 +143,23 @@ public class Twitter extends Website {
 	@Override
 	public Integer getId() {
 		return 3;
+	}
+	@Override
+	public boolean validatePassword(String pass) {
+		if(pass.length()>7){
+			Pattern pattern = Pattern.compile("(?=.{7,})(((?=.*[A-Za-z]))|((?=.*[A-Z])(?=.*[0-9]))).*$",Pattern.MULTILINE);
+			Matcher m=pattern.matcher(pass);
+			if(m.find()){
+				return true;
+			}
+		}
+		return false;
+		
+	}
+	@Override
+	public String getPasswordCondition() {
+		// TODO Auto-generated method stub
+		return "Your passwords should have at least 7 characters one letter and one number";
 	}
 
 }

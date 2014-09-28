@@ -3,6 +3,8 @@ package plugins;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
+import android.app.Activity;
+import android.content.Context;
 import core.RequestType;
 import core.WebClient;
 import core.Website;
@@ -15,8 +17,8 @@ public class Facebook extends Website {
 	private String PassForm;
 	private String Login;
 
-	public Facebook(String username, String pass) {
-		super();
+	public Facebook(String username, String pass,Activity activity) {
+		super(activity);
 		initialize(username, pass);
 	}
 	@Override
@@ -25,10 +27,12 @@ public class Facebook extends Website {
 		webClient = new WebClient();
 		fb_dtsg = "";
 		charset_test = "";
+		succesful=false;
+		authenticated=false;
 	}
 
-	public Facebook(){
-		super();
+	public Facebook(Activity activity){
+		super(activity);
 	}
 
 	@Override
@@ -102,8 +106,11 @@ public class Facebook extends Website {
 	@Override
 	protected void validateAuthentification() throws Exception {
 		if(Login.indexOf("login_form")>0){
-			throw new Exception("Login unsuccsessful please try again");
+			displayErrorMessage("Facebook: Login unsuccsessful please check username and password");
+			throw new Exception("Login unsuccsessful please check username and password");
 		}
+
+		authenticated=true;
 		
 	}
 
@@ -115,9 +122,10 @@ public class Facebook extends Website {
 			authenticate();
 		} catch (Exception e) {
 			pass=tempPass;
+			displayErrorMessage("Facebook: Change Password unsuccessful please try again");
 			throw new Exception ("Change Password unsuccessful please try again");
 		}
-		
+		succesful=true;
 	}
 
 	@Override
@@ -138,6 +146,16 @@ public class Facebook extends Website {
 	@Override
 	public Integer getId() {
 		return 1;
+	}
+	@Override
+	public boolean validatePassword(String pass) {
+		return pass.length()>6;
+		
+	}
+	@Override
+	public String getPasswordCondition() {
+		// TODO Auto-generated method stub
+		return "Password should be at least 7 characters";
 	}
 
 
