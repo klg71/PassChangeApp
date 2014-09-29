@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import ui.MainActivity;
 import android.app.Activity;
 import android.content.Context;
 import core.RequestType;
@@ -40,11 +41,11 @@ public class Twitter extends Website {
 	public void authenticate() throws Exception {
 		// webClient.sendRequest("https://twitter.com/", RequestType.GET, "",
 		// "home2", false);
-		System.out.println();
 		body = webClient.sendRequest("https://mobile.twitter.com/session/",
 				RequestType.GET, "", "home3", false);
-		System.out.println();
 		getToken();
+
+		if(MainActivity.DEBUG_ACTIVATED)
 		System.out.println(token);
 		String post = URLEncoder.encode("username", "UTF-8") + "="
 				+ URLEncoder.encode(username, "UTF-8") + "&"
@@ -53,11 +54,10 @@ public class Twitter extends Website {
 				+ "&submit=submit&authenticity_token="
 				+ URLEncoder.encode(token, "UTF-8");
 
+		if(MainActivity.DEBUG_ACTIVATED)
 		System.out.println(post);
-		System.out.println();
 		body = webClient.sendRequest("https://mobile.twitter.com/session/",
 				RequestType.POST, post, "twitter1", false);
-		System.out.println();
 		validateAuthentification();
 		body = webClient.sendRequest(
 				"https://mobile.twitter.com/settings/password",
@@ -70,6 +70,8 @@ public class Twitter extends Website {
 
 		passwordNew = newPass;
 		getToken();
+
+		if(MainActivity.DEBUG_ACTIVATED)
 		System.out.println(token);
 		String post = URLEncoder.encode("settings[current_password]", "UTF-8")
 				+ "=" + URLEncoder.encode(pass, "UTF-8")
@@ -78,8 +80,8 @@ public class Twitter extends Website {
 				+ URLEncoder.encode(newPass, "UTF-8") + "&authenticity_token="
 				+ URLEncoder.encode(token, "UTF-8");
 
+		if(MainActivity.DEBUG_ACTIVATED)
 		System.out.println(post);
-		System.out.println();
 		body = webClient.sendRequest(
 				"https://mobile.twitter.com//settings/password/",
 				RequestType.POST, post, "pwChange", false);

@@ -34,6 +34,8 @@ import java.util.zip.GZIPInputStream;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import ui.MainActivity;
+
 public class WebClient {
 	private RequestType type;
 	private String body;
@@ -113,6 +115,7 @@ public class WebClient {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		if(MainActivity.DEBUG_ACTIVATED)
 		System.out.println("cookies: " + connection.getRequestProperty(COOKIE));
 		if (type == RequestType.GET) {
 			try {
@@ -158,7 +161,6 @@ public class WebClient {
 			String filename, Boolean ref, String referer) {
 		this.referer = referer;
 		String ret = "";
-		System.out.println(filename);
 		FileWriter fileWriter = null;
 		try {
 			fileWriter = new FileWriter("/sdcard/" + filename + ".html");
@@ -184,11 +186,9 @@ public class WebClient {
 				writer = new OutputStreamWriter(
 						((HttpsURLConnection) connection).getOutputStream());
 				writer.write(body);
-				System.out.println(body);
 				writer.flush();
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -199,8 +199,9 @@ public class WebClient {
 			e2.printStackTrace();
 		}
 
-		// System.out.println(cookieStore.getCookies().get(0));
 		try {
+
+			if(MainActivity.DEBUG_ACTIVATED)
 			System.out.println(((HttpURLConnection) connection)
 					.getResponseCode());
 		} catch (IOException e2) {
@@ -215,6 +216,8 @@ public class WebClient {
 								((HttpURLConnection) connection)
 										.getErrorStream())));
 				for (String line; (line = reader.readLine()) != null;) {
+
+					if(MainActivity.DEBUG_ACTIVATED)
 					System.out.println(line);
 				}
 			}
@@ -234,6 +237,8 @@ public class WebClient {
 		// e.printStackTrace();
 		// }
 		// }
+
+		if(MainActivity.DEBUG_ACTIVATED)
 		System.out.println(store);
 		BufferedReader reader = null;
 		if (!ref) {

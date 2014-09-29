@@ -39,16 +39,12 @@ public class Facebook extends Website {
 	public void authenticate() throws Exception {
 		webClient.sendRequest("https://m.facebook.com/", RequestType.GET, "",
 				"home1", false);
-		System.out.println("");
-		System.out.println("");
 		try {
 			Login=webClient.sendRequest("https://m.facebook.com/login.php",
 					RequestType.POST,
 					"email=" + URLEncoder.encode(username, "UTF-8") + "&"
 							+ "pass=" + URLEncoder.encode(pass, "UTF-8"),
 					"login", false);
-			System.out.println("");
-			System.out.println("");
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -82,8 +78,6 @@ public class Facebook extends Website {
 							+ "fb_dtsg="
 							+ URLEncoder.encode(fb_dtsg, "UTF-8")
 							+ "&change_password", "pwchange", false);
-			System.out.println("");
-			System.out.println("");
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -100,7 +94,6 @@ public class Facebook extends Website {
 		charset_test = body.substring(body.indexOf("charset_test") + 21);
 		charset_test = charset_test.substring(0, charset_test.indexOf("\""));
 
-		System.out.println(charset_test);
 	}
 
 	@Override

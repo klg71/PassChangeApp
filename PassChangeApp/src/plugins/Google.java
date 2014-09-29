@@ -6,6 +6,7 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import ui.MainActivity;
 import android.app.Activity;
 import android.content.Context;
 import core.RequestType;
@@ -42,13 +43,12 @@ public class Google extends Website {
 
 	@Override
 	public void authenticate() throws Exception {
-		System.out.println();
 		body = webClient.sendRequest(
 				"https://accounts.google.com/ServiceLogin", RequestType.GET,
 				"", "home1", false);
 		token = webClient.getCookie("google.com", "GALX");
-		// System.out.println();
-		// getToken();
+
+		if(MainActivity.DEBUG_ACTIVATED)
 		 System.out.println(token);
 		String post = URLEncoder.encode("GALX", "UTF-8")
 				+ "="
@@ -61,12 +61,10 @@ public class Google extends Website {
 				+ URLEncoder.encode(username, "UTF-8") + "&Passwd="
 				+ URLEncoder.encode(pass, "UTF-8");
 
-		System.out.println(post);
-		System.out.println();
+		if(MainActivity.DEBUG_ACTIVATED)
 		body = webClient.sendRequest(
 				"https://accounts.google.com/ServiceLoginAuth",
 				RequestType.POST, post, "google1", false);
-		System.out.println();
 		validateAuthentification();
 		
 
@@ -148,6 +146,8 @@ public class Google extends Website {
 
 		while (m.find()) {
 			token = m.group(0).substring(50, m.group(0).length() - 2);
+
+			if(MainActivity.DEBUG_ACTIVATED)
 			System.out.println(m.group(0));
 		}
 		return;
@@ -167,6 +167,8 @@ public class Google extends Website {
 		while (m.find()) {
 			Matcher MatcherName = namePattern.matcher(m.group(1));
 			Matcher MatcherValue = valuePattern.matcher(m.group(1));
+
+			if(MainActivity.DEBUG_ACTIVATED)
 			System.out.println(m.group(1));
 			MatcherName.find();
 			if (MatcherValue.find()){
@@ -177,6 +179,8 @@ public class Google extends Website {
 				tempFormMap.put(MatcherName.group(0).substring(6,MatcherName.group(0).length()-1), "");
 
 		}
+
+		if(MainActivity.DEBUG_ACTIVATED)
 		System.out.println(tempFormMap);
 		formData=tempFormMap;
 	}

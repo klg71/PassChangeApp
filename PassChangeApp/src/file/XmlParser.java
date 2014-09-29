@@ -32,6 +32,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import ui.MainActivity;
 import account.Account;
 import account.AccountManager;
 import android.util.Log;
@@ -60,7 +61,6 @@ public class XmlParser {
 				new File(filename)), Crypt.generateKey(password,salt)));
 		Document document = null;
 		document = builder.parse(new ByteArrayInputStream(content.getBytes()));
-		System.out.println(document.getFirstChild().getNodeName());
 		NodeList nodeList = document.getFirstChild().getChildNodes();
 		for (int i = 0; i < nodeList.getLength(); i++) {
 			if (nodeList.item(i).getNodeName().equals("website")) {
@@ -77,6 +77,8 @@ public class XmlParser {
 											.getNodeValue());
 							tempCalendar.setTime(tempDate);
 						}
+
+						if(MainActivity.DEBUG_ACTIVATED)
 						System.out.println(nodeList.item(i).getAttributes()
 								.getNamedItem("name").getNodeValue());
 						
@@ -96,10 +98,7 @@ public class XmlParser {
 				}
 			}
 
-		}
-		for (Account account : accounts) {
-			Log.e("Accounts",account.toString());
-		}
+		} 
 		return accounts;
 	}
 
@@ -141,6 +140,8 @@ public class XmlParser {
 				.newInstance();
 		Transformer transformer = transformerFactory.newTransformer();
 		DOMSource source = new DOMSource(doc);
+
+		if(MainActivity.DEBUG_ACTIVATED)
 		System.out.println(source.toString());
 		StringWriter stringWriter = new StringWriter();
 		StreamResult result = new StreamResult(stringWriter);

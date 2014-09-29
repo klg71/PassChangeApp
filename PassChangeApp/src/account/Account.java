@@ -50,10 +50,7 @@ public class Account {
 
 		new Thread() {
 			public void run() {
-				while (change.isAlive())
-					;
-				System.out.println("Success:"
-						+ Boolean.toString(website.isSuccesful()));
+				while (change.isAlive());
 				if (website.isSuccesful()) {
 					actualPassword = newPass;
 				}

@@ -47,6 +47,18 @@ import android.widget.Toast;
 public class MainActivity extends Activity implements OnItemLongClickListener,
 		android.widget.PopupMenu.OnMenuItemClickListener, android.content.DialogInterface.OnClickListener {
 
+
+	public final static boolean DEBUG_ACTIVATED=true;
+	
+	private AccountManager accountManager;
+	private HashMap<String, Website> websites;
+	private ArrayList<TextView> accountTextViews;
+	private AccountListAdapter accountListAdapter;
+	private PopupMenu popupMenu;
+	private Account selectedAccount;
+	private String password;
+	private boolean childWindowActive;
+
 	@Override
 	public void onBackPressed() {
 		if(childWindowActive)
@@ -73,16 +85,6 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 
 		super.onRestart();
 	}
-
-	private AccountManager accountManager;
-	private HashMap<String, Website> websites;
-	private ArrayList<TextView> accountTextViews;
-	private AccountListAdapter accountListAdapter;
-	private PopupMenu popupMenu;
-	private Account selectedAccount;
-	private String password;
-	private boolean childWindowActive;
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -111,13 +113,16 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 				websites.put("Google", new Google(activity));
 				websites.put("League of Legends", new LeagueOfLegends(activity));
 				accountManager = new AccountManager("/sdcard/accounts.xml",password, websites);
+				if(DEBUG_ACTIVATED)
 				Log.e("file","/sdcard/accounts.xml");
 				File file = new File("/sdcard/accounts.xml");
 				if (file.exists()) {
 				try {	
 					accountManager.loadFromFile();
 				} catch (Exception e) {
+					if(DEBUG_ACTIVATED)
 					Log.e("Error",e.getMessage());
+					if(DEBUG_ACTIVATED)
 					e.printStackTrace();
 				    AlertDialog.Builder ad = new AlertDialog.Builder(activity);  
 				    ad.setCancelable(false); // This blocks the 'BACK' button  
@@ -160,10 +165,11 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 
 	@Override
 	protected void onStop() {
-		Log.e("Debug","onStop");
 		try {
 			accountManager.writeToFile();
 		} catch (Exception e) {
+
+			if(DEBUG_ACTIVATED)
 			Log.e("Error",e.getMessage());
 			e.printStackTrace();
 		}
@@ -254,7 +260,6 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 		popupMenu.setOnMenuItemClickListener(this);
 		popupMenu.show();
 		selectedAccount = accountManager.getAccount(position);
-		Log.e("PassChange", " " + position);
 		return false;
 	}
 

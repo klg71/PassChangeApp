@@ -13,6 +13,7 @@ import java.net.URLEncoder;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import ui.MainActivity;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -75,7 +76,11 @@ public class LeagueOfLegends extends Website {
 						"https://www.google.com/recaptcha/api/challenge?k=6LcwdeESAAAAAJg_ltVGdjrqlf7Bmbg449SyUcSW&ajax=1&lang=de",
 						RequestType.GET, "", "lolCaptcha", false);
 		getImage();
+
+		if(MainActivity.DEBUG_ACTIVATED)
 		System.out.println(solvedTask);
+
+		if(MainActivity.DEBUG_ACTIVATED)
 		System.out.println(recaptchaID);
 		String post = "";
 		post = "username=" + URLEncoder.encode(username, "UTF-8")
@@ -110,6 +115,8 @@ public class LeagueOfLegends extends Website {
 						"lolpasschange",
 						false,
 						"	https://account.leagueoflegends.com/pm.html?xdm_e=http%3A%2F%2Feuw.leagueoflegends.com&xdm_c=default1602&xdm_p=1");
+
+		if(MainActivity.DEBUG_ACTIVATED)
 		System.out.println(body);
 		validatePasswordChange();
 

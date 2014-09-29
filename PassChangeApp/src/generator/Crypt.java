@@ -59,7 +59,6 @@ public class Crypt {
 	  static public byte[] decode( InputStream is, String pass ) throws Exception
 	  {
 	    Cipher c = Cipher.getInstance( "AES" );
-	    Log.e("Key",Integer.toString(pass.getBytes().length));
 	    Key k = new SecretKeySpec( pass.getBytes(), "AES" );
 	    c.init( Cipher.DECRYPT_MODE, k );
 
