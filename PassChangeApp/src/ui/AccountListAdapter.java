@@ -1,7 +1,12 @@
 package ui;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 import account.AccountManager;
 import android.database.DataSetObserver;
+import android.graphics.LinearGradient;
+import android.text.format.DateFormat;
 import android.view.View;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
@@ -13,9 +18,11 @@ import android.widget.TextView;
 public class AccountListAdapter extends BaseAdapter {
 
 	private AccountManager accountManager;
+	private SimpleDateFormat format;
 
 	public AccountListAdapter(AccountManager accountManager) {
 		this.accountManager = accountManager;
+		format=(SimpleDateFormat) new SimpleDateFormat().getDateInstance(SimpleDateFormat.MEDIUM);
 	}
 
 	@Override
@@ -36,9 +43,11 @@ public class AccountListAdapter extends BaseAdapter {
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
+		Calendar tempCal=(Calendar) accountManager.getAccount(position).getLastChangedCalendar().clone();
+		tempCal.add(Calendar.DAY_OF_YEAR,accountManager.getAccount(position).getExpire());
 		TextView view = new TextView(parent.getContext());
 		view.setText(accountManager.getAccount(position).getUserName() + " - "
-				+ accountManager.getAccount(position).getWebsite());
+				+ accountManager.getAccount(position).getWebsite()+System.getProperty("line.separator")+"Expires: "+format.format(tempCal.getTime()));
 
 		return view;
 	}
