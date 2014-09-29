@@ -4,6 +4,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import ui.MainActivity;
+import android.widget.Toast;
 import core.Website;
 
 public class Account {
@@ -19,7 +21,7 @@ public class Account {
 		return userName;
 	}
 
-	public void changePassword(final String newPass) {
+	public void changePassword(final String newPass,final MainActivity activity) {
 		website.initialize(userName, actualPassword);
 		final Thread login = new Thread() {
 			@Override
@@ -53,6 +55,7 @@ public class Account {
 				while (change.isAlive());
 				if (website.isSuccesful()) {
 					actualPassword = newPass;
+					Toast.makeText(activity, website.getName()+": Password change succesful",3 );
 				}
 			}
 		}.start();

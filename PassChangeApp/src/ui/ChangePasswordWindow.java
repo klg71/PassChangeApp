@@ -33,7 +33,7 @@ public class ChangePasswordWindow implements OnClickListener {
 		EditText pass;
 		pass = (EditText) mainActivity.findViewById(R.id.editNewPass);
 		if (account.getWebsite().validatePassword(pass.getText().toString())) {
-			account.changePassword(pass.getText().toString());
+			account.changePassword(pass.getText().toString(),mainActivity);
 
 			// Hide Keyboard
 			InputMethodManager im = (InputMethodManager) mainActivity
