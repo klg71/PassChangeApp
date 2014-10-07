@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import ui.MainActivity;
+import android.util.Log;
 import android.widget.Toast;
 import core.Website;
 
@@ -21,7 +22,7 @@ public class Account {
 		return userName;
 	}
 
-	public void changePassword(final String newPass,final MainActivity activity) {
+	public void changePassword(final String newPass, final MainActivity activity) {
 		website.initialize(userName, actualPassword);
 		final Thread login = new Thread() {
 			@Override
@@ -52,10 +53,21 @@ public class Account {
 
 		new Thread() {
 			public void run() {
-				while (change.isAlive());
+				while (change.isAlive())
+					;
 				if (website.isSuccesful()) {
 					actualPassword = newPass;
-					Toast.makeText(activity, website.getName()+": Password change succesful",3 );
+					activity.runOnUiThread(new Runnable() {
+						@Override
+						public void run() {
+							Toast.makeText(
+									activity,
+									website.getName()
+											+ ": Password change succesful",
+									Toast.LENGTH_LONG).show();
+
+						}
+					});
 				}
 			}
 		}.start();
@@ -137,4 +149,52 @@ public class Account {
 		this.expire = expire;
 	}
 
+	public void testLogin(final MainActivity activity) {
+		website.initialize(userName, actualPassword);
+		final Thread login = new Thread() {
+			@Override
+			public void run() {
+				try {
+					website.authenticate();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+
+					e.printStackTrace();
+				}
+			}
+		};
+		login.start();
+		Log.e("test", Boolean.toString(website.isAuthenticated()));
+		new Thread() {
+			public void run() {
+
+				while (login.isAlive())
+					;
+
+				if (website.isAuthenticated()) {
+
+					activity.runOnUiThread(new Runnable() {
+						@Override
+						public void run() {
+							Toast.makeText(activity,
+									website.getName() + ": Login succesful",
+									Toast.LENGTH_LONG).show();
+
+						}
+					});
+				} else {
+					activity.runOnUiThread(new Runnable() {
+
+						@Override
+						public void run() {
+							Toast.makeText(activity,
+									website.getName() + ": Login unsuccesful",
+									Toast.LENGTH_LONG).show();
+
+						}
+					});
+				}
+			}
+		}.start();
+	}
 }

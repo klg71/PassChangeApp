@@ -68,8 +68,9 @@ public class AccountManager {
 		
 	}
 	
-	public void addAccount(Account newAccount){
+	public Account addAccount(Account newAccount){
 		accounts.add(newAccount);
+		return newAccount;
 	}
 	
 	public void removeAccount(String website,String accountName){
