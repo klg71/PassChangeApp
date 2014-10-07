@@ -52,9 +52,10 @@ public class AddAccountWindow implements OnClickListener {
 		pass = (EditText) mainActivity.findViewById(R.id.editPass);
 		website = (Spinner) mainActivity.findViewById(R.id.spinner1);
 		Calendar temp = Calendar.getInstance();
-		accountManager.addAccount(new Account(user.getText().toString(), email
+		Account tempAcc=accountManager.addAccount(new Account(user.getText().toString(), email
 				.getText().toString(), pass.getText().toString(), temp,
 				websites.get((int) website.getSelectedItemId()), 10));
+		tempAcc.testLogin(mainActivity);
 		// Hide Keyboard
 		InputMethodManager im = (InputMethodManager) mainActivity
 				.getApplicationContext().getSystemService(
