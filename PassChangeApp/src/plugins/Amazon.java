@@ -98,7 +98,6 @@ public class Amazon extends Website {
 		post = post.substring(0, post.length() - 1);
 		body=webClient.sendRequest(pwLink, RequestType.POST, post,"changeAmazonPw", false);
 		validatePasswordChange();
-		System.out.println(post);
 	}
 	
 
@@ -131,7 +130,7 @@ public class Amazon extends Website {
 			pass=tempPass;
 			throw new Exception ("Change Password unsuccessful please try again");
 		}
-		succesful=false;
+		succesful=true;
 
 
 	}
