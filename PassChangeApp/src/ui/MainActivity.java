@@ -2,12 +2,9 @@ package ui;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
-
+import plugins.Amazon;
 import plugins.Facebook;
 import plugins.Google;
 import plugins.LeagueOfLegends;
@@ -22,141 +19,168 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class MainActivity extends Activity implements OnItemLongClickListener,
-		android.widget.PopupMenu.OnMenuItemClickListener, android.content.DialogInterface.OnClickListener {
+		android.widget.PopupMenu.OnMenuItemClickListener,
+		android.content.DialogInterface.OnClickListener {
 
+	public final static boolean DEBUG_ACTIVATED = true;
 
-	public final static boolean DEBUG_ACTIVATED=true;
-	
 	private AccountManager accountManager;
 	private HashMap<String, Website> websites;
-	private ArrayList<TextView> accountTextViews;
 	private AccountListAdapter accountListAdapter;
 	private PopupMenu popupMenu;
 	private Account selectedAccount;
 	private String password;
 	private boolean childWindowActive;
 
+	private boolean loaded;
+
 	@Override
 	public void onBackPressed() {
-		if(childWindowActive)
+		if (childWindowActive)
 			setContentView(R.layout.activity_main);
 		else
-		super.onBackPressed();
+			super.onBackPressed();
 	}
 
 	@Override
 	protected void onRestart() {
-		for(Account account:accountManager.getAccounts()){
-			selectedAccount=account;
-			if(account.isExpired()){
-				AlertDialog.Builder builder = new AlertDialog.Builder(this);
-				builder.setTitle("Password expired")
-						.setMessage("Your Password for: "+account.getUserName()+"@"+account.getWebsite().getName()+" is expired do you want to change it now?")
-						.setIcon(android.R.drawable.ic_dialog_alert)
-						.setPositiveButton("Yes",
-								this
-								).setNegativeButton("No", null) // Do nothing on no
-						.show();
+		if (loaded) {
+			for (Account account : accountManager.getAccounts()) {
+				selectedAccount = account;
+				if (account.isExpired()) {
+					AlertDialog.Builder builder = new AlertDialog.Builder(this);
+					builder.setTitle("Password expired")
+							.setMessage(
+									"Your Password for: "
+											+ account.getUserName()
+											+ "@"
+											+ account.getWebsite().getName()
+											+ " is expired do you want to change it now?")
+							.setIcon(android.R.drawable.ic_dialog_alert)
+							.setPositiveButton("Yes", this)
+							.setNegativeButton("No", null) // Do nothing on no
+							.show();
+				}
 			}
-			}
+		} else {
 
+		}
 		super.onRestart();
+
 	}
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		childWindowActive=false;
+		childWindowActive = false;
 		login();
 	}
-	
-	private void login(){
+
+	private void login() {
+		loaded = false;
 		LayoutInflater factory = LayoutInflater.from(this);
 		final View textEntryView = factory.inflate(R.layout.dialog_login, null);
 		AlertDialog.Builder alert = new AlertDialog.Builder(this);
 		alert.setTitle("Login");
+		alert.setCancelable(false);
 		alert.setMessage("Enter Pin :");
 		alert.setView(textEntryView);
-		final Activity activity=this;
+		final Activity activity = this;
 		alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int whichButton) {
-				 //String value = input.getText().toString();
+				// String value = input.getText().toString();
 				EditText mUserText = (EditText) textEntryView
 						.findViewById(R.id.txt_password);
 				password = mUserText.getText().toString();
+				if (password.length() > 0) {
 
-				websites = new HashMap<String, Website>();
-				websites.put("Facebook", new Facebook(activity));
-				websites.put("Twitter", new Twitter(activity));
-				websites.put("Google", new Google(activity));
-				websites.put("League of Legends", new LeagueOfLegends(activity));
-				accountManager = new AccountManager("/sdcard/accounts.xml",password, websites);
-				if(DEBUG_ACTIVATED)
-				Log.e("file","/sdcard/accounts.xml");
-				File file = new File("/sdcard/accounts.xml");
-				if (file.exists()) {
-				try {	
-					accountManager.loadFromFile();
-				} catch (Exception e) {
-					if(DEBUG_ACTIVATED)
-					Log.e("Error",e.getMessage());
-					if(DEBUG_ACTIVATED)
-					e.printStackTrace();
-				    AlertDialog.Builder ad = new AlertDialog.Builder(activity);  
-				    ad.setCancelable(false); // This blocks the 'BACK' button  
-				    ad.setMessage("An error occured, maybe you entered the wrong password try it again!");  
-				    ad.setPositiveButton("OK", new DialogInterface.OnClickListener() {  
-				        @Override  
-				        public void onClick(DialogInterface dialog, int which) {  
-				            dialog.dismiss();    
-						    login();
-				        }  
-				    });  
-				    ad.create().show(); 
+					loaded = true;
+					websites = new HashMap<String, Website>();
+					websites.put("Facebook", new Facebook(activity));
+					websites.put("Twitter", new Twitter(activity));
+					websites.put("Google", new Google(activity));
+					websites.put("League of Legends", new LeagueOfLegends(
+							activity));
+					websites.put("Amazon", new Amazon(activity));
+					accountManager = new AccountManager("/sdcard/accounts.xml",
+							password, websites);
+					if (DEBUG_ACTIVATED)
+						Log.e("file", "/sdcard/accounts.xml");
+					File file = new File("/sdcard/accounts.xml");
+					if (file.exists()) {
+						try {
+							accountManager.loadFromFile();
+						} catch (Exception e) {
+							if (DEBUG_ACTIVATED)
+								Log.e("Error", e.getMessage());
+							if (DEBUG_ACTIVATED)
+								e.printStackTrace();
+							AlertDialog.Builder ad = new AlertDialog.Builder(
+									activity);
+							ad.setCancelable(false); // This blocks the 'BACK'
+														// button
+							ad.setMessage("An error occured, maybe you entered the wrong password try it again!");
+							ad.setPositiveButton("OK",
+									new DialogInterface.OnClickListener() {
+										@Override
+										public void onClick(
+												DialogInterface dialog,
+												int which) {
+											dialog.dismiss();
+											login();
+										}
+									});
+							ad.create().show();
+							return;
+						}
+					}
+					setContentView(R.layout.activity_main);
+					accountListAdapter = new AccountListAdapter(accountManager);
+					new ArrayList<TextView>();
+					refreshAccountList();
 					return;
-				}
-				}
-				setContentView(R.layout.activity_main);
-				accountListAdapter = new AccountListAdapter(accountManager);
-				accountTextViews = new ArrayList<TextView>();
-				refreshAccountList();
-				if (password.length() != 0) {
-
 				} else {
-					finish();
+					AlertDialog.Builder ad = new AlertDialog.Builder(activity);
+					ad.setCancelable(false); // This blocks the 'BACK'
+												// button
+					ad.setMessage("An error occured, maybe you entered the wrong password try it again!");
+					ad.setPositiveButton("OK",
+							new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+									dialog.dismiss();
+									login();
+								}
+							});
+					ad.create().show();
 				}
-				return;
+
 			}
 		});
-
 
 		alert.setNegativeButton("Cancel",
 				new DialogInterface.OnClickListener() {
 
 					public void onClick(DialogInterface dialog, int which) {
-
+						finish();
 						return;
 					}
 				});
@@ -165,13 +189,15 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 
 	@Override
 	protected void onStop() {
-		try {
-			accountManager.writeToFile();
-		} catch (Exception e) {
+		if (loaded) {
+			try {
+				accountManager.writeToFile();
+			} catch (Exception e) {
 
-			if(DEBUG_ACTIVATED)
-			Log.e("Error",e.getMessage());
-			e.printStackTrace();
+				if (DEBUG_ACTIVATED)
+					Log.e("Error", e.getMessage());
+				e.printStackTrace();
+			}
 		}
 		super.onStop();
 	}
@@ -187,10 +213,15 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 		int id = item.getItemId();
 		if (id == R.id.add_account) {
 
-			childWindowActive=true;
+			childWindowActive = true;
 			setContentView(R.layout.addaccount);
 			new AddAccountWindow(accountManager, this);
 			return true;
+		}
+		if (id == R.id.settings) {
+			childWindowActive = true;
+			setContentView(R.layout.settings);
+			new SettingsWindow(this);
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -214,9 +245,9 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 		switch (item.getItemId()) {
 		case R.id.action_change_password: {
 
-			childWindowActive=true;
+			childWindowActive = true;
 			setContentView(R.layout.changepassword);
-			ChangePasswordWindow window=new ChangePasswordWindow(selectedAccount, this);
+			new ChangePasswordWindow(selectedAccount, this);
 			break;
 		}
 		case R.id.action_delete_account: {
@@ -228,25 +259,28 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 							new DialogInterface.OnClickListener() {
 								public void onClick(DialogInterface dialog,
 										int which) {
-									accountManager.removeAccount(selectedAccount);
+									accountManager
+											.removeAccount(selectedAccount);
 									refreshAccountList();
 								}
-							}).setNegativeButton("No", null) 
-					.show();
+							}).setNegativeButton("No", null).show();
 			break;
 		}
 		case R.id.action_change_account: {
-			childWindowActive=true;
+			childWindowActive = true;
 			setContentView(R.layout.changeaccount);
-			ChangeAccountWindow window=new ChangeAccountWindow(selectedAccount,this);
+			new ChangeAccountWindow(selectedAccount, this);
 			break;
 		}
-		case R.id.action_copy_password:{
-			ClipboardManager clipboard = (ClipboardManager)
-			        getSystemService(this.CLIPBOARD_SERVICE);
-			ClipData clip = ClipData.newPlainText("password",selectedAccount.getActualPassword());
+		case R.id.action_copy_password: {
+			ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+			ClipData clip = ClipData.newPlainText("password",
+					selectedAccount.getActualPassword());
 			clipboard.setPrimaryClip(clip);
 			break;
+		}
+		case R.id.action_test_login: {
+			selectedAccount.testLogin(this);
 		}
 		}
 		return false;
@@ -265,9 +299,9 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 
 	@Override
 	public void onClick(DialogInterface dialog, int which) {
-		childWindowActive=true;
+		childWindowActive = true;
 		setContentView(R.layout.changepassword);
-		ChangePasswordWindow window=new ChangePasswordWindow(selectedAccount, this);
-		
+		new ChangePasswordWindow(selectedAccount, this);
+
 	}
 }
