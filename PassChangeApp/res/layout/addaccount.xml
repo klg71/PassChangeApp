@@ -73,7 +73,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Expire" />
+                android:text="Expire (in days)" />
             
             <EditText
                 android:id="@+id/editExpire"

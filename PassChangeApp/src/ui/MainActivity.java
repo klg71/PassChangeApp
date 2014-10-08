@@ -57,6 +57,23 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 			setContentView(R.layout.activity_main);
 		else
 			super.onBackPressed();
+		finish();
+	}
+
+	@Override
+	protected void onPause() {
+		if (loaded) {
+			try {
+				accountManager.writeToFile();
+				loaded=false;
+			} catch (Exception e) {
+
+				if (DEBUG_ACTIVATED)
+					Log.e("Error", e.getMessage());
+				e.printStackTrace();
+			}
+		}
+		super.onStop();
 	}
 
 	@Override
@@ -80,7 +97,7 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 				}
 			}
 		} else {
-
+			login();
 		}
 		super.onRestart();
 
@@ -100,7 +117,7 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 		AlertDialog.Builder alert = new AlertDialog.Builder(this);
 		alert.setTitle("Login");
 		alert.setCancelable(false);
-		alert.setMessage("Enter Pin :");
+		alert.setMessage("Please enter your Masterpassword:");
 		alert.setView(textEntryView);
 		final Activity activity = this;
 		alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
