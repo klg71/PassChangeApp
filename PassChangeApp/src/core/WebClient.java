@@ -159,10 +159,14 @@ public class WebClient {
 
 	public String sendRequest(String url, RequestType type, String body,
 			String filename, Boolean ref, String referer) {
+		if(MainActivity.DEBUG_ACTIVATED){
+			System.out.println("File"+filename);
+		}
 		this.referer = referer;
 		String ret = "";
 		FileWriter fileWriter = null;
 		try {
+			if(MainActivity.DEBUG_ACTIVATED)
 			fileWriter = new FileWriter("/sdcard/" + filename + ".html");
 		} catch (IOException e2) {
 			// TODO Auto-generated catch block
@@ -263,6 +267,8 @@ public class WebClient {
 			try {
 				for (String line; (line = reader.readLine()) != null;) {
 					ret += line;
+
+					if(MainActivity.DEBUG_ACTIVATED)
 					fileWriter.write(line
 							+ System.getProperty("line.separator"));
 				}
@@ -276,6 +282,8 @@ public class WebClient {
 				reader.close();
 			if (writer != null)
 				writer.close();
+
+			if(MainActivity.DEBUG_ACTIVATED)
 			fileWriter.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
