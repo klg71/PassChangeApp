@@ -45,16 +45,17 @@ public class AddAccountWindow implements OnClickListener {
 
 	@Override
 	public void onClick(View v) {
-		EditText user, email, pass;
+		EditText user, email, pass,expire;
 		Spinner website;
 		user = (EditText) mainActivity.findViewById(R.id.editUserName);
 		email = (EditText) mainActivity.findViewById(R.id.editEmail);
 		pass = (EditText) mainActivity.findViewById(R.id.editPass);
 		website = (Spinner) mainActivity.findViewById(R.id.spinner1);
+		expire = (EditText) mainActivity.findViewById(R.id.editExpire);
 		Calendar temp = Calendar.getInstance();
 		Account tempAcc=accountManager.addAccount(new Account(user.getText().toString(), email
 				.getText().toString(), pass.getText().toString(), temp,
-				websites.get((int) website.getSelectedItemId()), 10));
+				websites.get((int) website.getSelectedItemId()), Integer.parseInt(expire.getText().toString())));
 		tempAcc.testLogin(mainActivity);
 		// Hide Keyboard
 		InputMethodManager im = (InputMethodManager) mainActivity
