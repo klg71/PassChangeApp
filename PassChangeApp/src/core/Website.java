@@ -1,5 +1,7 @@
 package core;
 
+import java.util.Map;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -10,6 +12,7 @@ import android.widget.TextView;
 
 public abstract class Website {
 	protected String username;
+	protected WebClient webClient;
 	protected String pass;
 	protected Activity activity;
 	protected boolean succesful;
@@ -81,5 +84,13 @@ public abstract class Website {
 		});	
 	}
 
+	public Map<String, Map<String, Map<String, String>>> getCookies(){
+		return webClient.getCookies();
+	}
+	
+	public abstract String getWebsiteUrl();
+	
 	public abstract String getPasswordCondition();
+
+	public abstract int getImageSource();
 }

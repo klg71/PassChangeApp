@@ -449,5 +449,18 @@ public class WebClient {
 		return (String) ((Map<String, String>) ((Map<String, Map<String, String>>) store
 				.get(domain)).get(name)).get(name);
 	}
+	public Map<String, Map<String, Map<String, String>>> getCookies(){
+		return store;
+	}
+
+	public int getResponseCode() {
+		try {
+			return ((HttpURLConnection) connection).getResponseCode();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return 0;
+	}
 
 }
