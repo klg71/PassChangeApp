@@ -3,6 +3,8 @@ package plugins;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
+import com.passchange.passchangeapp.R;
+
 import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
@@ -11,7 +13,6 @@ import core.WebClient;
 import core.Website;
 
 public class Facebook extends Website {
-	private WebClient webClient;
 	private String passwordNew;
 	private String fb_dtsg;
 	private String charset_test;
@@ -153,6 +154,14 @@ public class Facebook extends Website {
 	public String getPasswordCondition() {
 		// TODO Auto-generated method stub
 		return "Password should be at least 7 characters";
+	}
+	@Override
+	public String getWebsiteUrl() {
+		return "https://www.facebook.com";
+	}
+	@Override
+	public int getImageSource() {
+		return R.drawable.facebook;
 	}
 
 

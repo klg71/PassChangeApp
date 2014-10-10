@@ -6,6 +6,8 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.passchange.passchangeapp.R;
+
 import android.app.Activity;
 import core.RequestType;
 import core.WebClient;
@@ -13,7 +15,6 @@ import core.Website;
 
 public class Amazon extends Website {
 
-	private WebClient webClient;
 	private String body,pwLink;
 	private HashMap<String, String> formData;
 	private String passwordNew;
@@ -224,5 +225,15 @@ public class Amazon extends Website {
 	@Override
 	public String getPasswordCondition() {
 		return "Password should be at least 6 characters long";
+	}
+
+	@Override
+	public String getWebsiteUrl() {
+		return "http://www.amazon.com/";
+	}
+
+	@Override
+	public int getImageSource() {
+		return R.drawable.amazon;
 	}
 }

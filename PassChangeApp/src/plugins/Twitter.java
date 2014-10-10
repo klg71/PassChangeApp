@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.passchange.passchangeapp.R;
+
 import ui.MainActivity;
 import android.app.Activity;
 import android.content.Context;
@@ -14,7 +16,6 @@ import core.Website;
 
 public class Twitter extends Website {
 
-	private WebClient webClient;
 	private String token;
 	private String body;
 	private String passwordNew;
@@ -41,7 +42,8 @@ public class Twitter extends Website {
 	public void authenticate() throws Exception {
 		// webClient.sendRequest("https://twitter.com/", RequestType.GET, "",
 		// "home2", false);
-		body = webClient.sendRequest("https://mobile.twitter.com/session/",
+		body=webClient.sendRequest("https://twitter.com",RequestType.GET, "", "desktopVersion", false);
+		body = webClient.sendRequest("https://mobile.twitter.com/session/new",
 				RequestType.GET, "", "home3", false);
 		getToken();
 
@@ -162,6 +164,14 @@ public class Twitter extends Website {
 	public String getPasswordCondition() {
 		// TODO Auto-generated method stub
 		return "Your passwords should have at least 7 characters one letter and one number";
+	}
+	@Override
+	public String getWebsiteUrl() {
+		return "https://twitter.com/";
+	}
+	@Override
+	public int getImageSource() {
+		return R.drawable.twitter;
 	}
 
 }

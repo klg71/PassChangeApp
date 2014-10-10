@@ -13,6 +13,8 @@ import java.net.URLEncoder;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.passchange.passchangeapp.R;
+
 import ui.MainActivity;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -35,7 +37,6 @@ import core.WebClient;
 import core.Website;
 
 public class LeagueOfLegends extends Website {
-	private WebClient webClient;
 	private String body;
 	private ImageView captchaImage;
 	private String solvedTask;
@@ -260,6 +261,16 @@ public class LeagueOfLegends extends Website {
 	@Override
 	public String getPasswordCondition() {
 		return "Password needs one letter, one number and needs to be between 8 and 24 characters long";
+	}
+
+	@Override
+	public String getWebsiteUrl() {
+		return "http://leagueoflegends.com/";
+	}
+
+	@Override
+	public int getImageSource() {
+		return R.drawable.leagueoflegends;
 	}
 
 }

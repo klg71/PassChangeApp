@@ -6,6 +6,8 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.passchange.passchangeapp.R;
+
 import ui.MainActivity;
 import android.app.Activity;
 import android.content.Context;
@@ -15,7 +17,6 @@ import core.Website;
 
 public class Google extends Website {
 
-	private WebClient webClient;
 	private String body;
 	private String token; // GALX
 	private HashMap<String,String> formData;
@@ -65,6 +66,10 @@ public class Google extends Website {
 		body = webClient.sendRequest(
 				"https://accounts.google.com/ServiceLoginAuth",
 				RequestType.POST, post, "google1", false);
+		if (webClient.getResponseCode() == 302) {
+			body = webClient.sendRequest("https://www.google.com/settings/personalinfo", RequestType.GET, "",
+					"alternativeResponse", false);
+		}
 		validateAuthentification();
 		
 
@@ -200,6 +205,16 @@ public class Google extends Website {
 	public String getPasswordCondition() {
 		// TODO Auto-generated method stub
 		return "Password should be at least 9 characters";
+	}
+
+	@Override
+	public String getWebsiteUrl() {
+		return "https://www.google.com/settings/personalinfo";
+	}
+
+	@Override
+	public int getImageSource() {
+		return R.drawable.google;
 	}
 
 }
