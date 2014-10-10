@@ -35,7 +35,7 @@ public class AddAccountWindow implements OnClickListener {
 			websites.add(entry.getValue());
 		}
 		Spinner website = (Spinner) mainActivity.findViewById(R.id.spinner1);
-		ArrayAdapter<Website> dataAdapter = new ArrayAdapter<Website>(
+		WebsiteSpinnerAdapter dataAdapter = new WebsiteSpinnerAdapter(
 				mainActivity, android.R.layout.simple_spinner_item, websites);
 		dataAdapter
 				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
