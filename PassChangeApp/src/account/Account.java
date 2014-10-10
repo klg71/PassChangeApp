@@ -1,11 +1,20 @@
 package account;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.Map;
+
+import com.passchange.passchangeapp.R;
 
 import ui.MainActivity;
 import android.util.Log;
+import android.webkit.CookieManager;
+import android.webkit.CookieSyncManager;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Toast;
 import core.Website;
 
@@ -17,6 +26,17 @@ public class Account {
 	private Website website;
 	private SimpleDateFormat simpleDateFormat;
 	private int expire;
+	private static final String SET_COOKIE = "Set-Cookie";
+	private static final String COOKIE_VALUE_DELIMITER = ";";
+	private static final String PATH = "path";
+	private static final String EXPIRES = "expires";
+	private static final String DATE_FORMAT = "EEE, dd-MMM-yyyy hh:mm:ss z";
+	private static final String SET_COOKIE_SEPARATOR = "; ";
+	private static final String COOKIE = "Cookie";
+
+	private static final char NAME_VALUE_SEPARATOR = '=';
+	private static final char DOT = '.';
+	private DateFormat dateFormat;
 
 	public String getUserName() {
 		return userName;
@@ -42,7 +62,8 @@ public class Account {
 				try {
 					while (login.isAlive())
 						;
-					website.changePassword(newPass);
+					if (website.isAuthenticated())
+						website.changePassword(newPass);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -72,6 +93,92 @@ public class Account {
 			}
 		}.start();
 
+	}
+
+	public void openBrowser(final WebView webView, final MainActivity activity) {
+
+		CookieSyncManager.createInstance(webView.getContext());
+		final CookieManager cookieManager = CookieManager.getInstance();
+		cookieManager.setAcceptCookie(true);
+		cookieManager.removeSessionCookie();
+		cookieManager.removeAllCookie();
+		website.initialize(userName, actualPassword);
+		final Thread login = new Thread() {
+			@Override
+			public void run() {
+				try {
+					website.authenticate();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		};
+		login.start();
+
+		final Thread openBrowser = new Thread() {
+			@Override
+			public void run() {
+				try {
+					while (login.isAlive())
+						;
+					if (website.isAuthenticated()) {
+
+						Map<String, Map<String, Map<String, String>>> cookieStore = website
+								.getCookies();
+
+						for (Map.Entry<String, Map<String, Map<String, String>>> domainStore : cookieStore
+								.entrySet()) {
+
+							if (domainStore == null)
+								continue;
+
+							StringBuffer cookieStringBuffer = new StringBuffer();
+
+							Iterator<String> cookieNames = domainStore
+									.getValue().keySet().iterator();
+							while (cookieNames.hasNext()) {
+								String cookieName = (String) cookieNames.next();
+								Map<String, String> cookie = domainStore
+										.getValue().get(cookieName);
+								// check cookie to ensure path matches and
+								// cookie is
+								// not expired
+								// if all is cool, add cookie to header string
+								if (isNotExpired((String) cookie.get(EXPIRES))) {
+									cookieStringBuffer.append(cookieName);
+									cookieStringBuffer.append("=");
+									cookieStringBuffer.append((String) cookie
+											.get(cookieName));
+									cookieStringBuffer
+											.append(SET_COOKIE_SEPARATOR);
+									cookieStringBuffer.append(" domain=" + domainStore.getKey());
+								}
+								Log.e("Cookie:", cookieStringBuffer.toString());
+								cookieManager.setCookie(domainStore.getKey(),
+										cookieStringBuffer.toString());
+								cookieStringBuffer = new StringBuffer();
+							}
+							CookieSyncManager.getInstance().sync();
+							activity.runOnUiThread(new Runnable() {
+								@Override
+								public void run() {
+									webView.setWebViewClient(new WebViewClient());
+									webView.getSettings().setJavaScriptEnabled(true);
+									webView.loadUrl(website.getWebsiteUrl());
+
+								}
+							});
+						}
+
+					}
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		};
+		openBrowser.start();
 	}
 
 	public void setUserName(String userName) {
@@ -131,6 +238,7 @@ public class Account {
 		this.website = website;
 		this.expire = expire;
 		simpleDateFormat = new SimpleDateFormat("yyyy-MM-d k:m:s");
+		dateFormat = new SimpleDateFormat(DATE_FORMAT);
 	}
 
 	public Calendar getLastChangedCalendar() {
@@ -196,5 +304,17 @@ public class Account {
 				}
 			}
 		}.start();
+	}
+
+	private boolean isNotExpired(String cookieExpires) {
+		if (cookieExpires == null)
+			return true;
+		Date now = new Date();
+		try {
+			return (now.compareTo(dateFormat.parse(cookieExpires))) <= 0;
+		} catch (java.text.ParseException pe) {
+			pe.printStackTrace();
+			return false;
+		}
 	}
 }
