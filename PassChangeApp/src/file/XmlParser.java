@@ -149,6 +149,7 @@ public class XmlParser {
 		// StreamResult result = new StreamResult(System.out);
 
 		transformer.transform(source, result);
+		if(MainActivity.DEBUG_ACTIVATED)
 		System.out.println(stringWriter.toString());
 		Crypt.encode(stringWriter.toString().getBytes(), new FileOutputStream(
 				new File(filename)), Crypt.generateKey(password,salt));

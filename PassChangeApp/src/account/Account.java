@@ -154,6 +154,7 @@ public class Account {
 											.append(SET_COOKIE_SEPARATOR);
 									cookieStringBuffer.append(" domain=" + domainStore.getKey());
 								}
+								if(MainActivity.DEBUG_ACTIVATED)
 								Log.e("Cookie:", cookieStringBuffer.toString());
 								cookieManager.setCookie(domainStore.getKey(),
 										cookieStringBuffer.toString());

@@ -10,5 +10,6 @@
 	<string name="change_password">Change Password</string>
 	<string name="settings">Settings</string>
 	<string name="test_login">Test Login</string>
+	<string name="show_in_browser">Open Browser</string>
     
 </resources>
