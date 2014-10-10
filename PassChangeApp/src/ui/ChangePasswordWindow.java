@@ -5,13 +5,16 @@ import com.passchange.passchangeapp.R;
 import account.Account;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.text.Html;
 import android.text.InputType;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 public class ChangePasswordWindow implements OnClickListener {
 
@@ -21,6 +24,11 @@ public class ChangePasswordWindow implements OnClickListener {
 	public ChangePasswordWindow(Account account, MainActivity mainActivity) {
 		this.account = account;
 		this.mainActivity = mainActivity;
+		ImageView imageView=(ImageView)mainActivity.findViewById(R.id.imageViewIcon);
+		imageView.setImageResource(account.getWebsite().getImageSource());
+		TextView textView=(TextView)mainActivity.findViewById(R.id.textViewInformation);
+		String source="You are about to change the password<br>"+System.getProperty("line.separator")+"of account: <br>"+System.getProperty("line.separator")+"<b>"+account.getUserName()+"</b> at <b>"+account.getWebsite().getName()+"</b>.";
+		textView.setText(Html.fromHtml(source));
 		Button submit = (Button) mainActivity
 				.findViewById(R.id.buttonChangeSubmit);
 		submit.setOnClickListener(this);
