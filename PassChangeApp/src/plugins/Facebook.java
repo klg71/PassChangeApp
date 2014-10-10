@@ -5,6 +5,7 @@ import java.net.URLEncoder;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import core.RequestType;
 import core.WebClient;
 import core.Website;
@@ -45,8 +46,11 @@ public class Facebook extends Website {
 					"email=" + URLEncoder.encode(username, "UTF-8") + "&"
 							+ "pass=" + URLEncoder.encode(pass, "UTF-8"),
 					"login", false);
+			Login=webClient.sendRequest(
+					"https://m.facebook.com/settings/account/?password",
+					RequestType.GET, "", "home2", false);
 		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
+			Log.e("Debug",e.getMessage());
 			e.printStackTrace();
 		}
 		PassForm=webClient.sendRequest(
@@ -98,7 +102,7 @@ public class Facebook extends Website {
 
 	@Override
 	protected void validateAuthentification() throws Exception {
-		if(Login.indexOf("login_form")>0){
+		if(Login.indexOf("login_form")>0 || Login.length()==0){
 			displayErrorMessage("Facebook: Login unsuccsessful please check username and password");
 			throw new Exception("Login unsuccsessful please check username and password");
 		}

@@ -28,6 +28,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.EditText;
@@ -39,7 +40,7 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 		android.widget.PopupMenu.OnMenuItemClickListener,
 		android.content.DialogInterface.OnClickListener {
 
-	public final static boolean DEBUG_ACTIVATED = true;
+	public final static boolean DEBUG_ACTIVATED = false;
 
 	private AccountManager accountManager;
 	private HashMap<String, Website> websites;
@@ -48,16 +49,19 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 	private Account selectedAccount;
 	private String password;
 	private boolean childWindowActive;
+	private WebView webView;
 
 	private boolean loaded;
 
 	@Override
 	public void onBackPressed() {
-		if (childWindowActive)
+		if (childWindowActive) {
 			setContentView(R.layout.activity_main);
-		else
+			refreshAccountList();
+		} else {
 			super.onBackPressed();
-		finish();
+			finish();
+		}
 	}
 
 	@Override
@@ -65,7 +69,7 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 		if (loaded) {
 			try {
 				accountManager.writeToFile();
-				loaded=false;
+				loaded = false;
 			} catch (Exception e) {
 
 				if (DEBUG_ACTIVATED)
