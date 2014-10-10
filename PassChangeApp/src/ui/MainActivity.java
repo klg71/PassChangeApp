@@ -57,6 +57,7 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 	public void onBackPressed() {
 		if (childWindowActive) {
 			setContentView(R.layout.activity_main);
+			childWindowActive=false;
 			refreshAccountList();
 		} else {
 			super.onBackPressed();
