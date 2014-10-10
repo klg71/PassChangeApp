@@ -28,6 +28,9 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.CookieManager;
+import android.webkit.CookieSyncManager;
+import android.webkit.WebStorage;
 import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
@@ -40,7 +43,7 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 		android.widget.PopupMenu.OnMenuItemClickListener,
 		android.content.DialogInterface.OnClickListener {
 
-	public final static boolean DEBUG_ACTIVATED = false;
+	public final static boolean DEBUG_ACTIVATED = true;
 
 	private AccountManager accountManager;
 	private HashMap<String, Website> websites;
@@ -175,7 +178,6 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 					}
 					setContentView(R.layout.activity_main);
 					accountListAdapter = new AccountListAdapter(accountManager);
-					new ArrayList<TextView>();
 					refreshAccountList();
 					return;
 				} else {
@@ -207,6 +209,7 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 					}
 				});
 		alert.create().show();
+		
 	}
 
 	@Override
@@ -272,6 +275,15 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 			new ChangePasswordWindow(selectedAccount, this);
 			break;
 		}
+		
+		case R.id.action_show_browser:{
+			childWindowActive=true;
+
+			setContentView(R.layout.webview);
+			selectedAccount.openBrowser((WebView) findViewById(R.id.webView1),this);
+			break;
+		}
+		
 		case R.id.action_delete_account: {
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setTitle("Delete Account")
