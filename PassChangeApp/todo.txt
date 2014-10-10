@@ -1,0 +1,2 @@
+- einfach Möglichkeit zum zurücksetzen des Passworts
+- webView implementation
