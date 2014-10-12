@@ -3,6 +3,8 @@ package ui;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import plugins.Amazon;
 import plugins.Facebook;
@@ -21,6 +23,7 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -28,22 +31,26 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 import android.webkit.WebStorage;
 import android.webkit.WebView;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends Activity implements OnItemLongClickListener,
 		android.widget.PopupMenu.OnMenuItemClickListener,
-		android.content.DialogInterface.OnClickListener {
+		android.content.DialogInterface.OnClickListener, OnItemClickListener {
 
-	public final static boolean DEBUG_ACTIVATED =false;
+	public final static boolean DEBUG_ACTIVATED = true;
 
 	private AccountManager accountManager;
 	private HashMap<String, Website> websites;
@@ -52,16 +59,32 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 	private Account selectedAccount;
 	private String password;
 	private boolean childWindowActive;
-	private WebView webView;
+	private boolean webViewActive;
+	private boolean showInfoToast;
+	private boolean resetPassword;
+
+	public boolean isShowInfoToast() {
+		return showInfoToast;
+	}
+
+	public void setShowInfoToast(boolean showInfoToast) {
+		this.showInfoToast = showInfoToast;
+	}
 
 	private boolean loaded;
 
 	@Override
 	public void onBackPressed() {
 		if (childWindowActive) {
-			setContentView(R.layout.activity_main);
-			childWindowActive=false;
-			refreshAccountList();
+			if (webViewActive) {
+				WebView webView=(WebView)findViewById(R.id.webView1);
+				if(webView.canGoBack()){
+					webView.goBack();
+				} else
+					handleChildBackButton();
+			} else {
+				handleChildBackButton();
+			}
 		} else {
 			super.onBackPressed();
 			finish();
@@ -73,6 +96,7 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 		if (loaded) {
 			try {
 				accountManager.writeToFile();
+				if(accountManager.getConfiguration().isLogoutWhenAppIsPaused())
 				loaded = false;
 			} catch (Exception e) {
 
@@ -121,6 +145,7 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 	private void login() {
 		loaded = false;
 		LayoutInflater factory = LayoutInflater.from(this);
+
 		final View textEntryView = factory.inflate(R.layout.dialog_login, null);
 		AlertDialog.Builder alert = new AlertDialog.Builder(this);
 		alert.setTitle("Login");
@@ -128,6 +153,8 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 		alert.setMessage("Please enter your Masterpassword:");
 		alert.setView(textEntryView);
 		final Activity activity = this;
+		resetPassword = false;
+
 		alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int whichButton) {
 				// String value = input.getText().toString();
@@ -137,6 +164,7 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 				if (password.length() > 0) {
 
 					loaded = true;
+					
 					websites = new HashMap<String, Website>();
 					websites.put("Facebook", new Facebook(activity));
 					websites.put("Twitter", new Twitter(activity));
@@ -149,12 +177,23 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 					if (DEBUG_ACTIVATED)
 						Log.e("file", "/sdcard/accounts.xml");
 					File file = new File("/sdcard/accounts.xml");
-					if (file.exists()) {
+					if (file.exists() && !resetPassword) {
 						try {
 							accountManager.loadFromFile();
+							if(!accountManager.getConfiguration().isLogoutWhenAppIsPaused()){
+								Timer timer=new Timer();
+								timer.schedule(new TimerTask() {
+									
+									@Override
+									public void run() {
+										loaded=false;
+										
+									}
+								}, accountManager.getConfiguration().getLogoutTimeMinutes()*60000);
+							}
 						} catch (Exception e) {
-							if (DEBUG_ACTIVATED)
-								Log.e("Error", e.getMessage());
+//							if (DEBUG_ACTIVATED)
+//								Log.e("Error", e.getMessage());
 							if (DEBUG_ACTIVATED)
 								e.printStackTrace();
 							AlertDialog.Builder ad = new AlertDialog.Builder(
@@ -209,7 +248,38 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 					}
 				});
 		alert.create().show();
-		
+		Button button = (Button) textEntryView
+				.findViewById(R.id.button_reset_password);
+		button.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+
+				AlertDialog.Builder ad = new AlertDialog.Builder(activity);
+				ad.setMessage("Do you really want to reset your password an loose all of your account data?");
+				ad.setPositiveButton("yes",
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+								dialog.dismiss();
+								resetPassword = true;
+							}
+						});
+				ad.setNegativeButton("cancel",
+						new DialogInterface.OnClickListener() {
+
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+								dialog.dismiss();
+
+							}
+						});
+				ad.create().show();
+
+			}
+		});
 	}
 
 	@Override
@@ -246,7 +316,11 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 		if (id == R.id.settings) {
 			childWindowActive = true;
 			setContentView(R.layout.settings);
-			new SettingsWindow(this);
+			new SettingsWindow(this,accountManager.getConfiguration());
+		}
+		if (id == R.id.main_page) {
+
+			handleChildBackButton();
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -260,9 +334,17 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 	}
 
 	public void refreshAccountList() {
-		ListView listViewAccounts = (ListView) findViewById(R.id.listViewAccounts);
-		listViewAccounts.setAdapter(accountListAdapter);
-		listViewAccounts.setOnItemLongClickListener(this);
+		if (!accountListAdapter.isEmpty()) {
+			setContentView(R.layout.activity_main);
+			ListView listViewAccounts = (ListView) findViewById(R.id.listViewAccounts);
+			listViewAccounts.setAdapter(accountListAdapter);
+			listViewAccounts.setOnItemLongClickListener(this);
+			listViewAccounts.setOnItemClickListener(this);
+
+			showInfoToast = true;
+		} else {
+			setContentView(R.layout.empty_activity_main);
+		}
 	}
 
 	@Override
@@ -275,15 +357,17 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 			new ChangePasswordWindow(selectedAccount, this);
 			break;
 		}
-		
-		case R.id.action_show_browser:{
-			childWindowActive=true;
 
+		case R.id.action_show_browser: {
+			childWindowActive = true;
+			webViewActive = true;
 			setContentView(R.layout.webview);
-			selectedAccount.openBrowser((WebView) findViewById(R.id.webView1),this);
+			selectedAccount.openBrowser((WebView) findViewById(R.id.webView1),
+					this);
+			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
 			break;
 		}
-		
+
 		case R.id.action_delete_account: {
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setTitle("Delete Account")
@@ -337,5 +421,35 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 		setContentView(R.layout.changepassword);
 		new ChangePasswordWindow(selectedAccount, this);
 
+	}
+
+	@Override
+	public void onItemClick(AdapterView<?> parent, View view, int position,
+			long id) {
+		if (showInfoToast) {
+
+			Toast.makeText(this, "Long Click on Item to interact",
+					Toast.LENGTH_SHORT).show();
+			showInfoToast = false;
+			Timer timer = new Timer();
+			final MainActivity activity = this;
+			timer.schedule(new TimerTask() {
+
+				@Override
+				public void run() {
+					activity.setShowInfoToast(true);
+				}
+			}, 5000);
+		}
+
+	}
+
+	private void handleChildBackButton() {
+		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
+		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+		setContentView(R.layout.activity_main);
+		childWindowActive = false;
+		webViewActive = false;
+		refreshAccountList();
 	}
 }
