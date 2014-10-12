@@ -62,6 +62,7 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 	private boolean webViewActive;
 	private boolean showInfoToast;
 	private boolean resetPassword;
+	private boolean longClicked;
 
 	public boolean isShowInfoToast() {
 		return showInfoToast;
@@ -101,7 +102,7 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 			} catch (Exception e) {
 
 				if (DEBUG_ACTIVATED)
-					Log.e("Error", e.getMessage());
+					//Log.e("Error", e.getMessage());
 				e.printStackTrace();
 			}
 		}
@@ -407,6 +408,7 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 	@Override
 	public boolean onItemLongClick(AdapterView<?> parent, View view,
 			int position, long id) {
+		longClicked=true;
 		popupMenu = new PopupMenu(view.getContext(), view);
 		popupMenu.getMenuInflater().inflate(R.menu.popup, popupMenu.getMenu());
 		popupMenu.setOnMenuItemClickListener(this);
@@ -426,7 +428,7 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
-		if (showInfoToast) {
+		if (showInfoToast&&!longClicked) {
 
 			Toast.makeText(this, "Long Click on Item to interact",
 					Toast.LENGTH_SHORT).show();
@@ -441,6 +443,7 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 				}
 			}, 5000);
 		}
+		longClicked=false;
 
 	}
 
@@ -451,5 +454,16 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 		childWindowActive = false;
 		webViewActive = false;
 		refreshAccountList();
+	}
+	
+	public void startLogoutTimer(){
+		Timer timer=new Timer();
+		timer.schedule(new TimerTask() {
+			
+			@Override
+			public void run() {
+				loaded=false;
+			}
+		}, 60000*accountManager.getConfiguration().getLogoutTimeMinutes());
 	}
 }
