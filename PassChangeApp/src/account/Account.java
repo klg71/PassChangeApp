@@ -166,6 +166,8 @@ public class Account {
 								public void run() {
 									webView.setWebViewClient(new WebViewClient());
 									webView.getSettings().setJavaScriptEnabled(true);
+									webView.getSettings().setBuiltInZoomControls(true);
+									webView.getSettings().setDisplayZoomControls(false);
 									webView.loadUrl(website.getWebsiteUrl());
 
 								}

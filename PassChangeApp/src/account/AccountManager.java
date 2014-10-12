@@ -7,6 +7,7 @@ import java.util.HashMap;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
+import core.Configuration;
 import core.Website;
 import file.XmlParser;
 
@@ -16,6 +17,7 @@ public class AccountManager {
 	private String masterPass;
 	private XmlParser xmlParser;
 	private HashMap<String,Website> websites;
+	private Configuration configuration;
 	//private MysqlManager mysqlManager;
 	
 	public AccountManager(String accountFile, String masterPass,HashMap<String,Website> websites){
@@ -41,16 +43,20 @@ public class AccountManager {
 	}
 	public void loadFromFile() throws Exception{
 		accounts=xmlParser.loadAccountsFromFile(accountFile,masterPass);
+		configuration=xmlParser.loadConfigurationFromFile(accountFile, masterPass);
 	}
 	
 	public void writeToFile() throws FileNotFoundException, Exception{
-		xmlParser.saveAccountsToFile(accountFile,masterPass,this);
+		xmlParser.saveAccountsToFile(accountFile,masterPass,this,configuration);
 	}
 	
 	public void writeToFile(String pass) throws FileNotFoundException, Exception{
-		xmlParser.saveAccountsToFile(accountFile,pass,this);
+		xmlParser.saveAccountsToFile(accountFile,pass,this,configuration);
 	}
 	
+	public Configuration getConfiguration() {
+		return configuration;
+	}
 	public void loadFromDatabase(){
 		//accounts=mysqlManager.loadFromDatabase(getId(), masterPass);
 	}
