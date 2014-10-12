@@ -12,23 +12,26 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import core.Configuration;
 
-public class SettingsWindow implements OnCheckedChangeListener, OnEditorActionListener {
+public class SettingsWindow implements OnCheckedChangeListener,
+		OnEditorActionListener {
 
 	private MainActivity mainActivity;
 	private Configuration configuration;
 	private CheckBox checkBox;
 	private EditText editText;
-	
+
 	public SettingsWindow(MainActivity mainActivity, Configuration configuration) {
-		this.mainActivity=mainActivity;
-		this.configuration=configuration;
-		checkBox=(CheckBox)mainActivity.findViewById(R.id.checkBoxLogOutWhenAppIsPaused);
+		this.mainActivity = mainActivity;
+		this.configuration = configuration;
+		checkBox = (CheckBox) mainActivity
+				.findViewById(R.id.checkBoxLogOutWhenAppIsPaused);
 		checkBox.setChecked(configuration.isLogoutWhenAppIsPaused());
 		checkBox.setOnCheckedChangeListener(this);
-		
-		editText=(EditText)mainActivity.findViewById(R.id.editTextTimeTillLogout);
+
+		editText = (EditText) mainActivity
+				.findViewById(R.id.editTextTimeTillLogout);
 		editText.setText(Integer.toString(configuration.getLogoutTimeMinutes()));
-		if(configuration.isLogoutWhenAppIsPaused()){
+		if (configuration.isLogoutWhenAppIsPaused()) {
 			editText.setEnabled(false);
 		} else {
 			editText.setEnabled(true);
@@ -40,13 +43,15 @@ public class SettingsWindow implements OnCheckedChangeListener, OnEditorActionLi
 	public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 		configuration.setLogoutWhenAppIsPaused(checkBox.isChecked());
 		editText.setEnabled(!checkBox.isChecked());
-		
+		if (!configuration.isLogoutWhenAppIsPaused())
+			mainActivity.startLogoutTimer();
 	}
 
 	@Override
 	public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-		if(EditorInfo.IME_ACTION_DONE==actionId){
-			configuration.setLogoutTimeMinutes(Integer.parseInt(editText.getText().toString()));
+		if (EditorInfo.IME_ACTION_DONE == actionId) {
+			configuration.setLogoutTimeMinutes(Integer.parseInt(editText
+					.getText().toString()));
 		}
 		return false;
 	}

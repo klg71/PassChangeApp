@@ -34,7 +34,7 @@ public class WebsiteSpinnerAdapter extends ArrayAdapter<Website> {
 		
 		ImageView imageView=new ImageView(parent.getContext());
 		imageView.setImageResource(websites.get(position).getImageSource());
-		imageView.setLayoutParams(new LayoutParams(128, 128));
+		//imageView.setLayoutParams(new LayoutParams(128, 128));
 		layout.addView(imageView);
 		layout.addView(view);
 		return layout;
@@ -50,7 +50,7 @@ public class WebsiteSpinnerAdapter extends ArrayAdapter<Website> {
 		
 		ImageView imageView=new ImageView(parent.getContext());
 		imageView.setImageResource(websites.get(position).getImageSource());
-		imageView.setLayoutParams(new LayoutParams(128, 128));
+		//imageView.setLayoutParams(new LayoutParams(128, 128));
 		layout.addView(imageView);
 		layout.addView(view);
 		return layout;
