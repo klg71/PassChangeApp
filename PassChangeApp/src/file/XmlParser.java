@@ -36,18 +36,19 @@ import ui.MainActivity;
 import account.Account;
 import account.AccountManager;
 import android.util.Log;
+import core.Configuration;
 import core.Website;
 
 public class XmlParser {
 	private HashMap<String, Website> websites;
 	private DateFormat simpleDateFormat;
 	private String salt;
-	
+
 	public XmlParser(HashMap<String, Website> websites) {
 		this.websites = websites;
 		simpleDateFormat = SimpleDateFormat.getDateTimeInstance(
 				SimpleDateFormat.MEDIUM, SimpleDateFormat.MEDIUM);
-		salt="1234567890ABCDEFGHIJKLMONPQRSTUVWXYZ";
+		salt = "1234567890ABCDEFGHIJKLMONPQRSTUVWXYZ";
 	}
 
 	public ArrayList<Account> loadAccountsFromFile(String filename,
@@ -58,10 +59,17 @@ public class XmlParser {
 		builder = factory.newDocumentBuilder();
 		String content = null;
 		content = new String(Crypt.decode(new FileInputStream(
-				new File(filename)), Crypt.generateKey(password,salt)));
+				new File(filename)), Crypt.generateKey(password, salt)));
 		Document document = null;
 		document = builder.parse(new ByteArrayInputStream(content.getBytes()));
-		NodeList nodeList = document.getFirstChild().getChildNodes();
+		NodeList nodeList =null;
+		//Compatibility with old version of xml file
+		if (document.getFirstChild().getNodeName().equals("file")) {
+			nodeList = document.getFirstChild().getFirstChild()
+					.getChildNodes();
+		} else {
+			nodeList = document.getFirstChild().getChildNodes();
+		}
 		for (int i = 0; i < nodeList.getLength(); i++) {
 			if (nodeList.item(i).getNodeName().equals("website")) {
 				NodeList accountList = nodeList.item(i).getChildNodes();
@@ -78,10 +86,10 @@ public class XmlParser {
 							tempCalendar.setTime(tempDate);
 						}
 
-						if(MainActivity.DEBUG_ACTIVATED)
-						System.out.println(nodeList.item(i).getAttributes()
-								.getNamedItem("name").getNodeValue());
-						
+						if (MainActivity.DEBUG_ACTIVATED)
+							System.out.println(nodeList.item(i).getAttributes()
+									.getNamedItem("name").getNodeValue());
+
 						accounts.add(new Account(accountList.item(k)
 								.getAttributes().getNamedItem("name")
 								.getNodeValue(), accountList.item(k)
@@ -98,21 +106,23 @@ public class XmlParser {
 				}
 			}
 
-		} 
+		}
 		return accounts;
 	}
 
 	public void saveAccountsToFile(String filename, String password,
-			AccountManager accountManager) throws FileNotFoundException,
-			Exception {
+			AccountManager accountManager, Configuration configuration)
+			throws FileNotFoundException, Exception {
 		DocumentBuilderFactory docFactory = DocumentBuilderFactory
 				.newInstance();
 		DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 
 		// root elements
 		Document doc = docBuilder.newDocument();
+		Element rootElementTop = doc.createElement("file");
 		Element rootElement = doc.createElement("websites");
-		doc.appendChild(rootElement);
+		doc.appendChild(rootElementTop);
+		rootElementTop.appendChild(rootElement);
 
 		// staff elements
 		for (Entry<String, ArrayList<Account>> entry : accountManager
@@ -135,25 +145,90 @@ public class XmlParser {
 			rootElement.appendChild(website);
 		}
 
+		Element rootElement2 = doc.createElement("config");
+		rootElementTop.appendChild(rootElement2);
+		Element logOutWhenPausedElement = doc.createElement("attribute");
+		logOutWhenPausedElement.setAttribute("name", "logOutWhenPaused");
+		logOutWhenPausedElement.setAttribute("value",
+				Boolean.toString(configuration.isLogoutWhenAppIsPaused()));
+		rootElement2.appendChild(logOutWhenPausedElement);
+
+		Element logOutTimeElement = doc.createElement("attribute");
+		logOutTimeElement.setAttribute("name", "logOutTime");
+		logOutTimeElement.setAttribute("value",
+				Integer.toString(configuration.getLogoutTimeMinutes()));
+		rootElement2.appendChild(logOutTimeElement);
+
 		// write the content into xml file
 		TransformerFactory transformerFactory = TransformerFactory
 				.newInstance();
 		Transformer transformer = transformerFactory.newTransformer();
 		DOMSource source = new DOMSource(doc);
 
-		if(MainActivity.DEBUG_ACTIVATED)
-		System.out.println(source.toString());
+		if (MainActivity.DEBUG_ACTIVATED)
+			System.out.println(source.toString());
 		StringWriter stringWriter = new StringWriter();
 		StreamResult result = new StreamResult(stringWriter);
 		// Output to console for testing
 		// StreamResult result = new StreamResult(System.out);
 
 		transformer.transform(source, result);
-		if(MainActivity.DEBUG_ACTIVATED)
-		System.out.println(stringWriter.toString());
+		if (MainActivity.DEBUG_ACTIVATED)
+			System.out.println(stringWriter.toString());
 		Crypt.encode(stringWriter.toString().getBytes(), new FileOutputStream(
-				new File(filename)), Crypt.generateKey(password,salt));
+				new File(filename)), Crypt.generateKey(password, salt));
 
+	}
+
+	public Configuration loadConfigurationFromFile(String filename,
+			String password) throws FileNotFoundException, Exception {
+		Configuration configuration = new Configuration(true, 0);
+
+		ArrayList<Account> accounts = new ArrayList<Account>();
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder builder = null;
+		builder = factory.newDocumentBuilder();
+		String content = null;
+		content = new String(Crypt.decode(new FileInputStream(
+				new File(filename)), Crypt.generateKey(password, salt)));
+		System.out.println(content);
+		Document document = null;
+		document = builder.parse(new ByteArrayInputStream(content.getBytes()));
+		NodeList nodeList = document.getFirstChild().getFirstChild().getChildNodes();
+		for (int i = 0; i < nodeList.getLength(); i++) {
+			if (nodeList.item(i).getNodeName().equals("config")) {
+				NodeList accountList = nodeList.item(i).getChildNodes();
+				for (int k = 0; k < accountList.getLength(); k++) {
+					if (accountList.item(k).getNodeName().equals("attribute")) {
+
+						if (MainActivity.DEBUG_ACTIVATED)
+							System.out.println(nodeList.item(i).getAttributes()
+									.getNamedItem("name").getNodeValue());
+
+						if (nodeList.item(i).getAttributes()
+								.getNamedItem("name")
+								.equals("logOutWhenPaused")) {
+							configuration.setLogoutWhenAppIsPaused(Boolean
+									.parseBoolean(nodeList.item(i)
+											.getAttributes()
+											.getNamedItem("value")
+											.getNodeValue()));
+						}
+						if (nodeList.item(i).getAttributes()
+								.getNamedItem("name").equals("logOutTime")) {
+							configuration.setLogoutTimeMinutes(Integer
+									.parseInt(nodeList.item(i).getAttributes()
+											.getNamedItem("value")
+											.getNodeValue()));
+						}
+
+					}
+				}
+			}
+
+		}
+
+		return configuration;
 	}
 
 }
