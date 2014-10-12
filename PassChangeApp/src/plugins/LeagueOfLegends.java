@@ -73,7 +73,7 @@ public class LeagueOfLegends extends Website {
 				RequestType.GET, "", "lologin", false);
 
 		body = webClient
-				.sendRequest(
+				.sendRequest(											  
 						"https://www.google.com/recaptcha/api/challenge?k=6LcwdeESAAAAAJg_ltVGdjrqlf7Bmbg449SyUcSW&ajax=1&lang=de",
 						RequestType.GET, "", "lolCaptcha", false);
 		getImage();
@@ -184,14 +184,14 @@ public class LeagueOfLegends extends Website {
 
 	private void getImage() {
 		Looper.prepare();
-		Pattern urlPattern = Pattern.compile("'([0-9A-Za-z_-]{200,250}')",
+		Pattern urlPattern = Pattern.compile("'([0-9A-Za-z_-]{200,300}')",
 				Pattern.MULTILINE | Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
 		Pattern reloadPattern = Pattern.compile("([0-9A-Za-z_-]{206,})");
-
 		Matcher m = urlPattern.matcher(body);
 		m.find();
 		recaptchaID = m.group().substring(1, m.group().length() - 1);
 		String path = m.group();
+
 		body = webClient
 				.sendRequest(
 						"https://www.google.com/recaptcha/api/reload?c="
