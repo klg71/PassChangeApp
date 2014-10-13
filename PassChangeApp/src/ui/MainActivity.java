@@ -50,7 +50,7 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 		android.widget.PopupMenu.OnMenuItemClickListener,
 		android.content.DialogInterface.OnClickListener, OnItemClickListener {
 
-	public final static boolean DEBUG_ACTIVATED = true;
+	public final static boolean DEBUG_ACTIVATED =false;
 
 	private AccountManager accountManager;
 	private HashMap<String, Website> websites;
@@ -430,7 +430,7 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 			long id) {
 		if (showInfoToast&&!longClicked) {
 
-			Toast.makeText(this, "Long Click on Item to interact",
+			Toast.makeText(this, getResources().getString(R.string.hold_item_string),
 					Toast.LENGTH_SHORT).show();
 			showInfoToast = false;
 			Timer timer = new Timer();
