@@ -43,8 +43,6 @@ public class SettingsWindow implements OnCheckedChangeListener,
 	public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 		configuration.setLogoutWhenAppIsPaused(checkBox.isChecked());
 		editText.setEnabled(!checkBox.isChecked());
-		if (!configuration.isLogoutWhenAppIsPaused())
-			mainActivity.startLogoutTimer();
 	}
 
 	@Override
@@ -52,6 +50,8 @@ public class SettingsWindow implements OnCheckedChangeListener,
 		if (EditorInfo.IME_ACTION_DONE == actionId) {
 			configuration.setLogoutTimeMinutes(Integer.parseInt(editText
 					.getText().toString()));
+			if (!configuration.isLogoutWhenAppIsPaused())
+				mainActivity.startLogoutTimer();
 		}
 		return false;
 	}

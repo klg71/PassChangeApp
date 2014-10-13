@@ -88,6 +88,12 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 			}
 		} else {
 			super.onBackPressed();
+			try {
+				accountManager.writeToFile();
+			} catch (Exception e) {
+				if (DEBUG_ACTIVATED)
+				e.printStackTrace();
+			}
 			finish();
 		}
 	}
@@ -463,6 +469,8 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 			@Override
 			public void run() {
 				loaded=false;
+				if(DEBUG_ACTIVATED)
+					System.out.println("Login falsed");
 			}
 		}, 60000*accountManager.getConfiguration().getLogoutTimeMinutes());
 	}
