@@ -7,6 +7,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import plugins.Amazon;
+import plugins.Ebay;
 import plugins.Facebook;
 import plugins.Google;
 import plugins.LeagueOfLegends;
@@ -50,7 +51,7 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 		android.widget.PopupMenu.OnMenuItemClickListener,
 		android.content.DialogInterface.OnClickListener, OnItemClickListener {
 
-	public final static boolean DEBUG_ACTIVATED =false;
+	public final static boolean DEBUG_ACTIVATED = false;
 
 	private AccountManager accountManager;
 	private HashMap<String, Website> websites;
@@ -78,8 +79,8 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 	public void onBackPressed() {
 		if (childWindowActive) {
 			if (webViewActive) {
-				WebView webView=(WebView)findViewById(R.id.webView1);
-				if(webView.canGoBack()){
+				WebView webView = (WebView) findViewById(R.id.webView1);
+				if (webView.canGoBack()) {
 					webView.goBack();
 				} else
 					handleChildBackButton();
@@ -92,7 +93,7 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 				accountManager.writeToFile();
 			} catch (Exception e) {
 				if (DEBUG_ACTIVATED)
-				e.printStackTrace();
+					e.printStackTrace();
 			}
 			finish();
 		}
@@ -103,13 +104,13 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 		if (loaded) {
 			try {
 				accountManager.writeToFile();
-				if(accountManager.getConfiguration().isLogoutWhenAppIsPaused())
-				loaded = false;
+				if (accountManager.getConfiguration().isLogoutWhenAppIsPaused())
+					loaded = false;
 			} catch (Exception e) {
 
 				if (DEBUG_ACTIVATED)
-					//Log.e("Error", e.getMessage());
-				e.printStackTrace();
+					// Log.e("Error", e.getMessage());
+					e.printStackTrace();
 			}
 		}
 		super.onStop();
@@ -171,7 +172,7 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 				if (password.length() > 0) {
 
 					loaded = true;
-					
+
 					websites = new HashMap<String, Website>();
 					websites.put("Facebook", new Facebook(activity));
 					websites.put("Twitter", new Twitter(activity));
@@ -179,6 +180,7 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 					websites.put("League of Legends", new LeagueOfLegends(
 							activity));
 					websites.put("Amazon", new Amazon(activity));
+					websites.put("Ebay", new Ebay(activity));
 					accountManager = new AccountManager("/sdcard/accounts.xml",
 							password, websites);
 					if (DEBUG_ACTIVATED)
@@ -187,20 +189,22 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 					if (file.exists() && !resetPassword) {
 						try {
 							accountManager.loadFromFile();
-							if(!accountManager.getConfiguration().isLogoutWhenAppIsPaused()){
-								Timer timer=new Timer();
+							if (!accountManager.getConfiguration()
+									.isLogoutWhenAppIsPaused()) {
+								Timer timer = new Timer();
 								timer.schedule(new TimerTask() {
-									
+
 									@Override
 									public void run() {
-										loaded=false;
-										
+										loaded = false;
+
 									}
-								}, accountManager.getConfiguration().getLogoutTimeMinutes()*60000);
+								}, accountManager.getConfiguration()
+										.getLogoutTimeMinutes() * 60000);
 							}
 						} catch (Exception e) {
-//							if (DEBUG_ACTIVATED)
-//								Log.e("Error", e.getMessage());
+							// if (DEBUG_ACTIVATED)
+							// Log.e("Error", e.getMessage());
 							if (DEBUG_ACTIVATED)
 								e.printStackTrace();
 							AlertDialog.Builder ad = new AlertDialog.Builder(
@@ -323,7 +327,7 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 		if (id == R.id.settings) {
 			childWindowActive = true;
 			setContentView(R.layout.settings);
-			new SettingsWindow(this,accountManager.getConfiguration());
+			new SettingsWindow(this, accountManager.getConfiguration());
 		}
 		if (id == R.id.main_page) {
 
@@ -414,7 +418,7 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 	@Override
 	public boolean onItemLongClick(AdapterView<?> parent, View view,
 			int position, long id) {
-		longClicked=true;
+		longClicked = true;
 		popupMenu = new PopupMenu(view.getContext(), view);
 		popupMenu.getMenuInflater().inflate(R.menu.popup, popupMenu.getMenu());
 		popupMenu.setOnMenuItemClickListener(this);
@@ -434,9 +438,10 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
-		if (showInfoToast&&!longClicked) {
+		if (showInfoToast && !longClicked) {
 
-			Toast.makeText(this, getResources().getString(R.string.hold_item_string),
+			Toast.makeText(this,
+					getResources().getString(R.string.hold_item_string),
 					Toast.LENGTH_SHORT).show();
 			showInfoToast = false;
 			Timer timer = new Timer();
@@ -449,7 +454,7 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 				}
 			}, 5000);
 		}
-		longClicked=false;
+		longClicked = false;
 
 	}
 
@@ -461,17 +466,17 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 		webViewActive = false;
 		refreshAccountList();
 	}
-	
-	public void startLogoutTimer(){
-		Timer timer=new Timer();
+
+	public void startLogoutTimer() {
+		Timer timer = new Timer();
 		timer.schedule(new TimerTask() {
-			
+
 			@Override
 			public void run() {
-				loaded=false;
-				if(DEBUG_ACTIVATED)
+				loaded = false;
+				if (DEBUG_ACTIVATED)
 					System.out.println("Login falsed");
 			}
-		}, 60000*accountManager.getConfiguration().getLogoutTimeMinutes());
+		}, 60000 * accountManager.getConfiguration().getLogoutTimeMinutes());
 	}
 }
