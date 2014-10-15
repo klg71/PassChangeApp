@@ -45,6 +45,7 @@ public class WebClient {
 	private URL url;
 	boolean ref;
 	private String referer;
+	private String location;
 
 	private Map<String, Map<String, Map<String, String>>> store;
 
@@ -202,7 +203,11 @@ public class WebClient {
 			// TODO Auto-generated catch block
 			e2.printStackTrace();
 		}
-
+		try {
+			location=((HttpURLConnection) connection).getHeaderField("Location");
+		} catch(Exception e){
+			e.printStackTrace();
+		}
 		try {
 
 			if(MainActivity.DEBUG_ACTIVATED)
@@ -461,6 +466,10 @@ public class WebClient {
 			e.printStackTrace();
 		}
 		return 0;
+	}
+
+	public String getLocation() {
+		return location;
 	}
 
 }
