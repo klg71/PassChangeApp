@@ -57,7 +57,7 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 		android.widget.PopupMenu.OnMenuItemClickListener,
 		android.content.DialogInterface.OnClickListener, OnItemClickListener {
 
-	public final static boolean DEBUG_ACTIVATED = true;
+	public final static boolean DEBUG_ACTIVATED = false;
 
 	private AccountManager accountManager;
 	private HashMap<String, Website> websites;
