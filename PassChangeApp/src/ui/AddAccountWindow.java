@@ -40,6 +40,8 @@ public class AddAccountWindow implements OnClickListener {
 		dataAdapter
 				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		website.setAdapter(dataAdapter);
+		EditText expire = (EditText) mainActivity.findViewById(R.id.editExpire);
+		expire.setText("10");
 
 	}
 
