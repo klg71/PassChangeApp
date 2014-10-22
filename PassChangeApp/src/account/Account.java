@@ -223,7 +223,7 @@ public class Account {
 
 	public boolean isExpired() {
 		Calendar now = Calendar.getInstance();
-		now.add(Calendar.DAY_OF_YEAR, -10);
+		now.add(Calendar.DAY_OF_YEAR, -expire);
 		if (lastChangedCalendar.get(Calendar.DAY_OF_YEAR) > now
 				.get(Calendar.DAY_OF_YEAR))
 			return false;
