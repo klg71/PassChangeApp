@@ -26,6 +26,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Scanner;
@@ -71,7 +72,7 @@ public class WebClient {
 		cookieStore = cookieManager.getCookieStore();
 
 		store = new HashMap<String, Map<String, Map<String, String>>>();
-		dateFormat = new SimpleDateFormat(DATE_FORMAT);
+		dateFormat = new SimpleDateFormat(DATE_FORMAT,Locale.ENGLISH);
 
 	}
 
