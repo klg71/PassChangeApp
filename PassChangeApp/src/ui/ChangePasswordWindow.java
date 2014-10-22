@@ -1,5 +1,7 @@
 package ui;
 
+import generator.CompleteRandomContextGenerator;
+
 import com.passchange.passchangeapp.R;
 
 import account.Account;
@@ -9,61 +11,122 @@ import android.text.Html;
 import android.text.InputType;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TableRow;
 import android.widget.TextView;
 
-public class ChangePasswordWindow implements OnClickListener {
+public class ChangePasswordWindow implements OnClickListener,
+		OnCheckedChangeListener {
 
 	private Account account;
 	private MainActivity mainActivity;
+	private CheckBox checkBoxGenerator;
+	private TableRow tableRowGen, tableRowGen1;
+	private Button generatorButton, submit;
+	private CompleteRandomContextGenerator generator;
+	private EditText lengthEditText, pass;
 
 	public ChangePasswordWindow(Account account, MainActivity mainActivity) {
 		this.account = account;
 		this.mainActivity = mainActivity;
-		ImageView imageView=(ImageView)mainActivity.findViewById(R.id.imageViewIcon);
+
+		pass = (EditText) mainActivity.findViewById(R.id.editNewPass);
+		generator = new CompleteRandomContextGenerator();
+
+		generatorButton = (Button) mainActivity
+				.findViewById(R.id.buttonPassGenerate);
+		generatorButton.setOnClickListener(this);
+		lengthEditText = (EditText) mainActivity
+				.findViewById(R.id.editNewPassLength);
+
+		checkBoxGenerator = (CheckBox) mainActivity
+				.findViewById(R.id.checkPasswordGenerator);
+		checkBoxGenerator.setOnCheckedChangeListener(this);
+
+		tableRowGen = (TableRow) mainActivity.findViewById(R.id.rowGenerator);
+		tableRowGen1 = (TableRow) mainActivity.findViewById(R.id.rowGenerator1);
+
+		ImageView imageView = (ImageView) mainActivity
+				.findViewById(R.id.imageViewIcon);
 		imageView.setImageResource(account.getWebsite().getImageSource());
-		TextView textView=(TextView)mainActivity.findViewById(R.id.textViewInformation);
-		String source="You are about to change the password<br>"+System.getProperty("line.separator")+"of account: <br>"+System.getProperty("line.separator")+"<b>"+account.getUserName()+"</b> at <b>"+account.getWebsite().getName()+"</b>.";
+		TextView textView = (TextView) mainActivity
+				.findViewById(R.id.textViewInformation);
+		String source = "You are about to change the password<br>"
+				+ System.getProperty("line.separator") + "of account: <br>"
+				+ System.getProperty("line.separator") + "<b>"
+				+ account.getUserName() + "</b> at <b>"
+				+ account.getWebsite().getName() + "</b>.";
 		textView.setText(Html.fromHtml(source));
-		Button submit = (Button) mainActivity
-				.findViewById(R.id.buttonChangeSubmit);
+		submit = (Button) mainActivity.findViewById(R.id.buttonChangeSubmit);
 		submit.setOnClickListener(this);
 
 	}
 
 	@Override
 	public void onClick(View v) {
+		if (v.equals(submit)) {
+			if (account.getWebsite()
+					.validatePassword(pass.getText().toString())) {
+				account.changePassword(pass.getText().toString(), mainActivity);
 
-		EditText pass;
-		pass = (EditText) mainActivity.findViewById(R.id.editNewPass);
-		if (account.getWebsite().validatePassword(pass.getText().toString())) {
-			account.changePassword(pass.getText().toString(),mainActivity);
+				// Hide Keyboard
+				InputMethodManager im = (InputMethodManager) mainActivity
+						.getApplicationContext().getSystemService(
+								MainActivity.INPUT_METHOD_SERVICE);
+				im.hideSoftInputFromWindow(mainActivity.getWindow()
+						.getDecorView().getWindowToken(),
+						InputMethodManager.HIDE_NOT_ALWAYS);
+				mainActivity.setContentView(R.layout.activity_main);
+				mainActivity.refreshAccountList();
+				mainActivity.setChildWindowActive(false);
+			} else {
+				new AlertDialog.Builder(mainActivity)
+						.setMessage(
+								"Pls enter a password that fullfilles following Conditions: "
+										+ account.getWebsite()
+												.getPasswordCondition())
+						.setTitle("Error")
+						.setCancelable(true)
+						.setNeutralButton(android.R.string.cancel,
+								new DialogInterface.OnClickListener() {
+									public void onClick(DialogInterface dialog,
+											int whichButton) {
+									}
+								}).show();
+			}
+		} else if (v.equals(generatorButton)) {
+			int length = 0;
+			try {
+				length = Integer.parseInt(lengthEditText.getText().toString());
+			} catch (Exception e) {
 
-			// Hide Keyboard
-			InputMethodManager im = (InputMethodManager) mainActivity
-					.getApplicationContext().getSystemService(
-							MainActivity.INPUT_METHOD_SERVICE);
-			im.hideSoftInputFromWindow(mainActivity.getWindow().getDecorView()
-					.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-			mainActivity.setContentView(R.layout.activity_main);
-			mainActivity.refreshAccountList();
-			mainActivity.setChildWindowActive(false);
-		} else {
-			new AlertDialog.Builder(mainActivity)
-					.setMessage(
-							"Pls enter a password that fullfilles following Conditions: "+account.getWebsite().getPasswordCondition())
-					.setTitle("Error")
-					.setCancelable(true)
-					.setNeutralButton(android.R.string.cancel,
-							new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog,
-										int whichButton) {
-								}
-							}).show();
+			}
+			if (length > 0) {
+				pass.setInputType(EditorInfo.TYPE_TEXT_VARIATION_NORMAL);
+				pass.setText(generator.generatePassword(length));
+			}
 		}
+	}
+
+	@Override
+	public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+		if (checkBoxGenerator.isChecked()) {
+			tableRowGen.setVisibility(View.VISIBLE);
+			tableRowGen1.setVisibility(View.VISIBLE);
+			lengthEditText.setText("10");
+		} else {
+			tableRowGen.setVisibility(View.INVISIBLE);
+			tableRowGen1.setVisibility(View.INVISIBLE);
+			pass.setInputType(EditorInfo.TYPE_TEXT_VARIATION_PASSWORD);
+		}
+
 	}
 }
