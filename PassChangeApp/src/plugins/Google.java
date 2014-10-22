@@ -61,8 +61,8 @@ public class Google extends Website {
 				+ "&bgresponse=js_diabled&pstMsg=0&dnConn=&signIn=Anmelden&checkConnection=&checkedDomains=youtube&Email="
 				+ URLEncoder.encode(username, "UTF-8") + "&Passwd="
 				+ URLEncoder.encode(pass, "UTF-8");
-
 		if(MainActivity.DEBUG_ACTIVATED)
+			System.out.println(post);
 		body = webClient.sendRequest(
 				"https://accounts.google.com/ServiceLoginAuth",
 				RequestType.POST, post, "google1", false);
