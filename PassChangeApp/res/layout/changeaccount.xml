@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-     <TableLayout
+  <TableLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" >
 
@@ -23,7 +23,23 @@
                 android:layout_height="wrap_content"
                 android:ems="10" />
         </TableRow>
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dip" >
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="" />
+            
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/usernameDescription" />
+
+	</TableRow>
         <TableRow
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -67,7 +83,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Expire" />
+                android:text="Expire (in days)" />
             
             <EditText
                 android:id="@+id/editChangeExpire"
@@ -94,5 +110,4 @@
             </TableRow>
             
     </TableLayout>
-
 </LinearLayout>
