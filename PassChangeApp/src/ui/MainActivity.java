@@ -20,13 +20,19 @@ import account.Account;
 import account.AccountManager;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Looper;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -51,7 +57,7 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 		android.widget.PopupMenu.OnMenuItemClickListener,
 		android.content.DialogInterface.OnClickListener, OnItemClickListener {
 
-	public final static boolean DEBUG_ACTIVATED = false;
+	public final static boolean DEBUG_ACTIVATED = true;
 
 	private AccountManager accountManager;
 	private HashMap<String, Website> websites;
@@ -64,6 +70,7 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 	private boolean showInfoToast;
 	private boolean resetPassword;
 	private boolean longClicked;
+	private boolean active;
 
 	public boolean isShowInfoToast() {
 		return showInfoToast;
@@ -95,6 +102,7 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 				if (DEBUG_ACTIVATED)
 					e.printStackTrace();
 			}
+			active = false;
 			finish();
 		}
 	}
@@ -103,6 +111,7 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 	protected void onPause() {
 		if (loaded) {
 			try {
+				active = false;
 				accountManager.writeToFile();
 				if (accountManager.getConfiguration().isLogoutWhenAppIsPaused())
 					loaded = false;
@@ -119,23 +128,7 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 	@Override
 	protected void onRestart() {
 		if (loaded) {
-			for (Account account : accountManager.getAccounts()) {
-				selectedAccount = account;
-				if (account.isExpired()) {
-					AlertDialog.Builder builder = new AlertDialog.Builder(this);
-					builder.setTitle("Password expired")
-							.setMessage(
-									"Your Password for: "
-											+ account.getUserName()
-											+ "@"
-											+ account.getWebsite().getName()
-											+ " is expired do you want to change it now?")
-							.setIcon(android.R.drawable.ic_dialog_alert)
-							.setPositiveButton("Yes", this)
-							.setNegativeButton("No", null) // Do nothing on no
-							.show();
-				}
-			}
+			active = true;
 		} else {
 			login();
 		}
@@ -148,6 +141,7 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 		super.onCreate(savedInstanceState);
 		childWindowActive = false;
 		login();
+		startExpirationTimer();
 	}
 
 	private void login() {
@@ -228,6 +222,7 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 					}
 					setContentView(R.layout.activity_main);
 					accountListAdapter = new AccountListAdapter(accountManager);
+					active = true;
 					refreshAccountList();
 					return;
 				} else {
@@ -356,6 +351,8 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 		} else {
 			setContentView(R.layout.empty_activity_main);
 		}
+
+		checkExpired();
 	}
 
 	@Override
@@ -467,6 +464,69 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 		refreshAccountList();
 	}
 
+	private void checkExpired() {
+		int i=0;
+		for (final Account account : accountManager.getAccounts()) {
+			selectedAccount = account;
+			if (account.isExpired()) {
+				i++;
+				if (active) {
+					final MainActivity activity=this;
+					runOnUiThread(new Runnable() {
+						
+						@Override
+						public void run() {
+							AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+							builder.setTitle("Password expired")
+									.setMessage(
+											"Your Password for: "
+													+ account.getUserName()
+													+ " on "
+													+ account.getWebsite().getName()
+													+ " is expired do you want to change it now?")
+									.setIcon(android.R.drawable.ic_dialog_alert)
+									.setPositiveButton("Yes", activity)
+									.setNegativeButton("No", null) // Do nothing on no
+									.show();
+							
+						}
+					});
+
+					return;
+				} else {
+
+				}
+
+			}
+		}
+		if(!active){
+			int mId = 0;
+			NotificationCompat.Builder mBuilder =
+			        new NotificationCompat.Builder(this)
+			        .setSmallIcon(R.drawable.ic_passchange)
+			        .setContentTitle("Account Expired")
+			        .setContentText("There are "+Integer.toString(i)+" passwords expired in PassChange please change them in time.");
+
+			Intent resultIntent = new Intent(this, MainActivity.class);
+
+			TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+			// Adds the back stack for the Intent (but not the Intent itself)
+			stackBuilder.addParentStack(MainActivity.class);
+			// Adds the Intent that starts the Activity to the top of the stack
+			stackBuilder.addNextIntent(resultIntent);
+			PendingIntent resultPendingIntent =
+			        stackBuilder.getPendingIntent(
+			            0,
+			            PendingIntent.FLAG_UPDATE_CURRENT
+			        );
+			mBuilder.setContentIntent(resultPendingIntent);
+			NotificationManager mNotificationManager =
+			    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+			// mId allows you to update the notification later on.
+			mNotificationManager.notify(mId, mBuilder.build());
+		}
+	}
+
 	public void startLogoutTimer() {
 		Timer timer = new Timer();
 		timer.schedule(new TimerTask() {
@@ -478,5 +538,25 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 					System.out.println("Login falsed");
 			}
 		}, 60000 * accountManager.getConfiguration().getLogoutTimeMinutes());
+	}
+
+	public void startExpirationTimer() {
+		Timer timer = new Timer();
+		timer.schedule(new TimerTask() {
+
+			@Override
+			public void run() {
+				if(MainActivity.DEBUG_ACTIVATED){
+					Log.e("debug","run task");
+				}
+				if(accountManager!=null){
+					checkExpired();
+					if(MainActivity.DEBUG_ACTIVATED){
+						Log.e("debug","run task: check expire");
+					}
+				}
+
+			}
+		}, 60000 * 10,60000*10);
 	}
 }
