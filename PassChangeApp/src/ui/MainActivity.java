@@ -57,9 +57,9 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 		android.widget.PopupMenu.OnMenuItemClickListener,
 		android.content.DialogInterface.OnClickListener, OnItemClickListener {
 
-	public final static boolean DEBUG_ACTIVATED = false;
+	public final static boolean DEBUG_ACTIVATED = true;
 
-	private AccountManager accountManager;
+	private LoginManager loginManager;
 	private HashMap<String, Website> websites;
 	private AccountListAdapter accountListAdapter;
 	private PopupMenu popupMenu;
@@ -97,7 +97,7 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 		} else {
 			super.onBackPressed();
 			try {
-				accountManager.writeToFile();
+				loginManager.OnAppStopped();
 			} catch (Exception e) {
 				if (DEBUG_ACTIVATED)
 					e.printStackTrace();
@@ -109,29 +109,13 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 
 	@Override
 	protected void onPause() {
-		if (loaded) {
-			try {
-				active = false;
-				accountManager.writeToFile();
-				if (accountManager.getConfiguration().isLogoutWhenAppIsPaused())
-					loaded = false;
-			} catch (Exception e) {
-
-				if (DEBUG_ACTIVATED)
-					// Log.e("Error", e.getMessage());
-					e.printStackTrace();
-			}
-		}
+		loginManager.OnAppPaused();
 		super.onStop();
 	}
 
 	@Override
 	protected void onRestart() {
-		if (loaded) {
-			active = true;
-		} else {
-			login();
-		}
+		loginManager.OnAppStarted();
 		super.onRestart();
 
 	}
@@ -140,166 +124,16 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		childWindowActive = false;
-		login();
+		loginManager=new LoginManager(this);
+		loginManager.OnAppStarted();
+		//login();
 		startExpirationTimer();
 	}
 
-	private void login() {
-		loaded = false;
-		LayoutInflater factory = LayoutInflater.from(this);
-
-		final View textEntryView = factory.inflate(R.layout.dialog_login, null);
-		AlertDialog.Builder alert = new AlertDialog.Builder(this);
-		alert.setTitle("Login");
-		alert.setCancelable(false);
-		alert.setMessage("Please enter your Masterpassword:");
-		alert.setView(textEntryView);
-		final Activity activity = this;
-		resetPassword = false;
-
-		alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int whichButton) {
-				// String value = input.getText().toString();
-				EditText mUserText = (EditText) textEntryView
-						.findViewById(R.id.txt_password);
-				password = mUserText.getText().toString();
-				if (password.length() > 0) {
-
-					loaded = true;
-
-					websites = new HashMap<String, Website>();
-					websites.put("Facebook", new Facebook(activity));
-					websites.put("Twitter", new Twitter(activity));
-					websites.put("Google", new Google(activity));
-					websites.put("League of Legends", new LeagueOfLegends(
-							activity));
-					websites.put("Amazon", new Amazon(activity));
-					websites.put("Ebay", new Ebay(activity));
-					accountManager = new AccountManager("/sdcard/accounts.xml",
-							password, websites);
-					if (DEBUG_ACTIVATED)
-						Log.e("file", "/sdcard/accounts.xml");
-					File file = new File("/sdcard/accounts.xml");
-					if (file.exists() && !resetPassword) {
-						try {
-							accountManager.loadFromFile();
-							if (!accountManager.getConfiguration()
-									.isLogoutWhenAppIsPaused()) {
-								Timer timer = new Timer();
-								timer.schedule(new TimerTask() {
-
-									@Override
-									public void run() {
-										loaded = false;
-
-									}
-								}, accountManager.getConfiguration()
-										.getLogoutTimeMinutes() * 60000);
-							}
-						} catch (Exception e) {
-							// if (DEBUG_ACTIVATED)
-							// Log.e("Error", e.getMessage());
-							if (DEBUG_ACTIVATED)
-								e.printStackTrace();
-							AlertDialog.Builder ad = new AlertDialog.Builder(
-									activity);
-							ad.setCancelable(false); // This blocks the 'BACK'
-														// button
-							ad.setMessage("An error occured, maybe you entered the wrong password try it again!");
-							ad.setPositiveButton("OK",
-									new DialogInterface.OnClickListener() {
-										@Override
-										public void onClick(
-												DialogInterface dialog,
-												int which) {
-											dialog.dismiss();
-											login();
-										}
-									});
-							ad.create().show();
-							return;
-						}
-					}
-					setContentView(R.layout.activity_main);
-					accountListAdapter = new AccountListAdapter(accountManager);
-					active = true;
-					refreshAccountList();
-					return;
-				} else {
-					AlertDialog.Builder ad = new AlertDialog.Builder(activity);
-					ad.setCancelable(false); // This blocks the 'BACK'
-												// button
-					ad.setMessage("An error occured, maybe you entered the wrong password try it again!");
-					ad.setPositiveButton("OK",
-							new DialogInterface.OnClickListener() {
-								@Override
-								public void onClick(DialogInterface dialog,
-										int which) {
-									dialog.dismiss();
-									login();
-								}
-							});
-					ad.create().show();
-				}
-
-			}
-		});
-
-		alert.setNegativeButton("Cancel",
-				new DialogInterface.OnClickListener() {
-
-					public void onClick(DialogInterface dialog, int which) {
-						finish();
-						return;
-					}
-				});
-		alert.create().show();
-		Button button = (Button) textEntryView
-				.findViewById(R.id.button_reset_password);
-		button.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-
-				AlertDialog.Builder ad = new AlertDialog.Builder(activity);
-				ad.setMessage("Do you really want to reset your password an loose all of your account data?");
-				ad.setPositiveButton("yes",
-						new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-								dialog.dismiss();
-								resetPassword = true;
-							}
-						});
-				ad.setNegativeButton("cancel",
-						new DialogInterface.OnClickListener() {
-
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-								dialog.dismiss();
-
-							}
-						});
-				ad.create().show();
-
-			}
-		});
-	}
 
 	@Override
 	protected void onStop() {
-		if (loaded) {
-			try {
-				accountManager.writeToFile();
-			} catch (Exception e) {
-
-				if (DEBUG_ACTIVATED)
-					Log.e("Error", e.getMessage());
-				e.printStackTrace();
-			}
-		}
+		loginManager.OnAppStopped();
 		super.onStop();
 	}
 
@@ -316,13 +150,13 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 
 			childWindowActive = true;
 			setContentView(R.layout.addaccount);
-			new AddAccountWindow(accountManager, this);
+			new AddAccountWindow(loginManager.getAccountManager(), this);
 			return true;
 		}
 		if (id == R.id.settings) {
 			childWindowActive = true;
 			setContentView(R.layout.settings);
-			new SettingsWindow(this, accountManager.getConfiguration());
+			new SettingsWindow(this, loginManager.getAccountManager().getConfiguration());
 		}
 		if (id == R.id.main_page) {
 
@@ -340,6 +174,7 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 	}
 
 	public void refreshAccountList() {
+		accountListAdapter=loginManager.getAccountListAdapter();
 		if (!accountListAdapter.isEmpty()) {
 			setContentView(R.layout.activity_main);
 			ListView listViewAccounts = (ListView) findViewById(R.id.listViewAccounts);
@@ -385,7 +220,7 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 							new DialogInterface.OnClickListener() {
 								public void onClick(DialogInterface dialog,
 										int which) {
-									accountManager
+									loginManager.getAccountManager()
 											.removeAccount(selectedAccount);
 									refreshAccountList();
 								}
@@ -420,7 +255,7 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 		popupMenu.getMenuInflater().inflate(R.menu.popup, popupMenu.getMenu());
 		popupMenu.setOnMenuItemClickListener(this);
 		popupMenu.show();
-		selectedAccount = accountManager.getAccount(position);
+		selectedAccount = loginManager.getAccountManager().getAccount(position);
 		return false;
 	}
 
@@ -466,7 +301,7 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 
 	private void checkExpired() {
 		int i=0;
-		for (final Account account : accountManager.getAccounts()) {
+		for (final Account account : loginManager.getAccountManager().getAccounts()) {
 			selectedAccount = account;
 			if (account.isExpired()) {
 				i++;
@@ -527,18 +362,6 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 		}
 	}
 
-	public void startLogoutTimer() {
-		Timer timer = new Timer();
-		timer.schedule(new TimerTask() {
-
-			@Override
-			public void run() {
-				loaded = false;
-				if (DEBUG_ACTIVATED)
-					System.out.println("Login falsed");
-			}
-		}, 60000 * accountManager.getConfiguration().getLogoutTimeMinutes());
-	}
 
 	public void startExpirationTimer() {
 		Timer timer = new Timer();
@@ -549,7 +372,7 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 				if(MainActivity.DEBUG_ACTIVATED){
 					Log.e("debug","run task");
 				}
-				if(accountManager!=null){
+				if(loginManager.getAccountManager()!=null){
 					checkExpired();
 					if(MainActivity.DEBUG_ACTIVATED){
 						Log.e("debug","run task: check expire");

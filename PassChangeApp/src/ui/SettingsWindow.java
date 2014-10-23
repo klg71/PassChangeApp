@@ -49,9 +49,7 @@ public class SettingsWindow implements OnCheckedChangeListener,
 	public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
 		if (EditorInfo.IME_ACTION_DONE == actionId) {
 			configuration.setLogoutTimeMinutes(Integer.parseInt(editText
-					.getText().toString()));
-			if (!configuration.isLogoutWhenAppIsPaused())
-				mainActivity.startLogoutTimer();
+					.getText().toString()));;
 		}
 		return false;
 	}
