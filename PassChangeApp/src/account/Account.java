@@ -79,6 +79,7 @@ public class Account {
 				if (website.isSuccesful()) {
 					actualPassword = newPass;
 					lastChangedCalendar.setTime(new Date());
+					activity.refreshAccountList();
 					activity.runOnUiThread(new Runnable() {
 						@Override
 						public void run() {
