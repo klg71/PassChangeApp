@@ -380,6 +380,6 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 				}
 
 			}
-		}, 60000 * 10,60000*10);
+		}, 60000 * loginManager.getAccountManager().getConfiguration().getRememberTimeMinmutes(),60000*loginManager.getAccountManager().getConfiguration().getRememberTimeMinmutes());
 	}
 }
