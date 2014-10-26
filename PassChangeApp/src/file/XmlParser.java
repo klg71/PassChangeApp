@@ -62,11 +62,10 @@ public class XmlParser {
 				new File(filename)), Crypt.generateKey(password, salt)));
 		Document document = null;
 		document = builder.parse(new ByteArrayInputStream(content.getBytes()));
-		NodeList nodeList =null;
-		//Compatibility with old version of xml file
+		NodeList nodeList = null;
+		// Compatibility with old version of xml file
 		if (document.getFirstChild().getNodeName().equals("file")) {
-			nodeList = document.getFirstChild().getFirstChild()
-					.getChildNodes();
+			nodeList = document.getFirstChild().getFirstChild().getChildNodes();
 		} else {
 			nodeList = document.getFirstChild().getChildNodes();
 		}
@@ -160,10 +159,10 @@ public class XmlParser {
 		rootElement2.appendChild(logOutTimeElement);
 
 		Element rememberTimeElement = doc.createElement("attribute");
-		logOutTimeElement.setAttribute("name", "rememberTime");
-		logOutTimeElement.setAttribute("value",
+		rememberTimeElement.setAttribute("name", "rememberTime");
+		rememberTimeElement.setAttribute("value",
 				Integer.toString(configuration.getRememberTimeMinmutes()));
-		rootElement2.appendChild(logOutTimeElement);
+		rootElement2.appendChild(rememberTimeElement);
 
 		// write the content into xml file
 		TransformerFactory transformerFactory = TransformerFactory
@@ -188,7 +187,7 @@ public class XmlParser {
 
 	public Configuration loadConfigurationFromFile(String filename,
 			String password) throws FileNotFoundException, Exception {
-		Configuration configuration = new Configuration(true, 0,10);
+		Configuration configuration = new Configuration(true, 0, 10);
 
 		ArrayList<Account> accounts = new ArrayList<Account>();
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -200,39 +199,48 @@ public class XmlParser {
 		System.out.println(content);
 		Document document = null;
 		document = builder.parse(new ByteArrayInputStream(content.getBytes()));
-		NodeList nodeList = document.getFirstChild().getFirstChild().getChildNodes();
+		NodeList nodeList = document.getFirstChild().getChildNodes();
 		for (int i = 0; i < nodeList.getLength(); i++) {
 			if (nodeList.item(i).getNodeName().equals("config")) {
-				NodeList accountList = nodeList.item(i).getChildNodes();
-				for (int k = 0; k < accountList.getLength(); k++) {
-					if (accountList.item(k).getNodeName().equals("attribute")) {
+				NodeList configList = nodeList.item(i).getChildNodes();
+				for (int k = 0; k < configList.getLength(); k++) {
+					;
+					System.out.println(nodeList.item(i).getNodeName());
+					if (configList.item(k).getNodeName().equals("attribute")) {
 
 						if (MainActivity.DEBUG_ACTIVATED)
-							System.out.println(nodeList.item(i).getAttributes()
-									.getNamedItem("name").getNodeValue());
+							System.out.println(configList.item(k)
+									.getAttributes().getNamedItem("name")
+									.getNodeValue());
 
-						if (nodeList.item(i).getAttributes()
-								.getNamedItem("name")
+						if (configList.item(k).getAttributes()
+								.getNamedItem("name").getNodeValue()
 								.equals("logOutWhenPaused")) {
 							configuration.setLogoutWhenAppIsPaused(Boolean
-									.parseBoolean(nodeList.item(i)
+									.parseBoolean(configList.item(k)
 											.getAttributes()
 											.getNamedItem("value")
 											.getNodeValue()));
 						}
-						if (nodeList.item(i).getAttributes()
-								.getNamedItem("name").equals("logOutTime")) {
+						if (configList.item(k).getAttributes()
+								.getNamedItem("name").getNodeValue()
+								.equals("logOutTime")) {
 							configuration.setLogoutTimeMinutes(Integer
-									.parseInt(nodeList.item(i).getAttributes()
+									.parseInt(configList.item(k)
+											.getAttributes()
 											.getNamedItem("value")
 											.getNodeValue()));
 						}
-						if (nodeList.item(i).getAttributes()
-								.getNamedItem("name").equals("rememberTime")) {
+						if (configList.item(k).getAttributes()
+								.getNamedItem("name").getNodeValue()
+								.equals("rememberTime")) {
 							configuration.setRememberTimeMinmutes(Integer
-									.parseInt(nodeList.item(i).getAttributes()
+									.parseInt(configList.item(k)
+											.getAttributes()
 											.getNamedItem("value")
 											.getNodeValue()));
+							System.out.println("Time: "
+									+ configuration.getRememberTimeMinmutes());
 						}
 
 					}
