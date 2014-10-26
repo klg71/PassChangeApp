@@ -3,10 +3,19 @@ package core;
 public class Configuration {
 	private boolean logoutWhenAppIsPaused;
 	private int logoutTimeMinutes;
-	public Configuration(boolean logoutWhenAppIsPaused, int logoutTimeMinutes) {
+	private int rememberTimeMinmutes;
+	public Configuration(boolean logoutWhenAppIsPaused, int logoutTimeMinutes,
+			int rememberTimeMinmutes) {
 		super();
 		this.logoutWhenAppIsPaused = logoutWhenAppIsPaused;
 		this.logoutTimeMinutes = logoutTimeMinutes;
+		this.rememberTimeMinmutes = rememberTimeMinmutes;
+	}
+	public int getRememberTimeMinmutes() {
+		return rememberTimeMinmutes;
+	}
+	public void setRememberTimeMinmutes(int rememberTimeMinmutes) {
+		this.rememberTimeMinmutes = rememberTimeMinmutes;
 	}
 	public boolean isLogoutWhenAppIsPaused() {
 		return logoutWhenAppIsPaused;
