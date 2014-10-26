@@ -29,7 +29,7 @@ public class AccountManager {
 		this.websites = websites;
 		// mysqlManager=new MysqlManager("", "", websites);
 		xmlParser = new XmlParser(websites);
-		configuration = new Configuration(true, 0);
+		configuration = new Configuration(true, 0,10);
 
 	}
 
