@@ -159,6 +159,12 @@ public class XmlParser {
 				Integer.toString(configuration.getLogoutTimeMinutes()));
 		rootElement2.appendChild(logOutTimeElement);
 
+		Element rememberTimeElement = doc.createElement("attribute");
+		logOutTimeElement.setAttribute("name", "rememberTime");
+		logOutTimeElement.setAttribute("value",
+				Integer.toString(configuration.getRememberTimeMinmutes()));
+		rootElement2.appendChild(logOutTimeElement);
+
 		// write the content into xml file
 		TransformerFactory transformerFactory = TransformerFactory
 				.newInstance();
@@ -182,7 +188,7 @@ public class XmlParser {
 
 	public Configuration loadConfigurationFromFile(String filename,
 			String password) throws FileNotFoundException, Exception {
-		Configuration configuration = new Configuration(true, 0);
+		Configuration configuration = new Configuration(true, 0,10);
 
 		ArrayList<Account> accounts = new ArrayList<Account>();
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -217,6 +223,13 @@ public class XmlParser {
 						if (nodeList.item(i).getAttributes()
 								.getNamedItem("name").equals("logOutTime")) {
 							configuration.setLogoutTimeMinutes(Integer
+									.parseInt(nodeList.item(i).getAttributes()
+											.getNamedItem("value")
+											.getNodeValue()));
+						}
+						if (nodeList.item(i).getAttributes()
+								.getNamedItem("name").equals("rememberTime")) {
+							configuration.setRememberTimeMinmutes(Integer
 									.parseInt(nodeList.item(i).getAttributes()
 											.getNamedItem("value")
 											.getNodeValue()));
