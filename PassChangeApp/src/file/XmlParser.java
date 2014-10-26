@@ -196,6 +196,7 @@ public class XmlParser {
 		String content = null;
 		content = new String(Crypt.decode(new FileInputStream(
 				new File(filename)), Crypt.generateKey(password, salt)));
+		if(MainActivity.DEBUG_ACTIVATED)
 		System.out.println(content);
 		Document document = null;
 		document = builder.parse(new ByteArrayInputStream(content.getBytes()));
@@ -204,8 +205,7 @@ public class XmlParser {
 			if (nodeList.item(i).getNodeName().equals("config")) {
 				NodeList configList = nodeList.item(i).getChildNodes();
 				for (int k = 0; k < configList.getLength(); k++) {
-					;
-					System.out.println(nodeList.item(i).getNodeName());
+					
 					if (configList.item(k).getNodeName().equals("attribute")) {
 
 						if (MainActivity.DEBUG_ACTIVATED)
@@ -239,8 +239,6 @@ public class XmlParser {
 											.getAttributes()
 											.getNamedItem("value")
 											.getNodeValue()));
-							System.out.println("Time: "
-									+ configuration.getRememberTimeMinmutes());
 						}
 
 					}
