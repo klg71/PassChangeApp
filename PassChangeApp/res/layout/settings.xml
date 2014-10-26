@@ -65,7 +65,45 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAlignment="gravity"
-                    android:text="2"
+                    android:text="10"
+                    android:gravity="right"
+                    android:layout_gravity="end"
+                    android:inputType="number"
+                    android:ems="10" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="@string/minutes"
+                    android:textSize="16sp" />
+            </LinearLayout>
+        </TableRow>
+
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dip" >
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/timeTillRememberText"
+                android:textSize="16sp" />
+        </TableRow>
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dip" >
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <EditText
+                    android:id="@+id/editTextTimeTillRemember"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="gravity"
+                    android:text="10"
                     android:gravity="right"
                     android:layout_gravity="end"
                     android:inputType="number"
