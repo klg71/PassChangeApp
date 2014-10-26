@@ -62,7 +62,7 @@ public class SettingsWindow implements OnCheckedChangeListener,
 			}
 		} else if (v.equals(rememberEditText)) {
 			if (EditorInfo.IME_ACTION_DONE == actionId) {
-				configuration.setRememberTimeMinmutes(Integer.parseInt(editText
+				configuration.setRememberTimeMinmutes(Integer.parseInt(rememberEditText
 						.getText().toString()));
 
 			}
