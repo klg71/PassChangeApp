@@ -126,8 +126,6 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 		childWindowActive = false;
 		loginManager=new LoginManager(this);
 		loginManager.OnAppStarted();
-		//login();
-		startExpirationTimer();
 	}
 
 
