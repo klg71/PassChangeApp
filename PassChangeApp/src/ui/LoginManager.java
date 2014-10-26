@@ -168,6 +168,7 @@ public class LoginManager {
 					accountListAdapter = new AccountListAdapter(accountManager);
 					active = true;
 					((MainActivity) activity).refreshAccountList();
+					activity.startExpirationTimer();
 					return;
 				} else {
 					AlertDialog.Builder ad = new AlertDialog.Builder(activity);
