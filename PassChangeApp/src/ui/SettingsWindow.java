@@ -19,6 +19,7 @@ public class SettingsWindow implements OnCheckedChangeListener,
 	private Configuration configuration;
 	private CheckBox checkBox;
 	private EditText editText;
+	private EditText rememberEditText;
 
 	public SettingsWindow(MainActivity mainActivity, Configuration configuration) {
 		this.mainActivity = mainActivity;
@@ -37,6 +38,12 @@ public class SettingsWindow implements OnCheckedChangeListener,
 			editText.setEnabled(true);
 		}
 		editText.setOnEditorActionListener(this);
+
+		rememberEditText = (EditText) mainActivity
+				.findViewById(R.id.editTextTimeTillRemember);
+		rememberEditText.setText(Integer.toString(configuration
+				.getRememberTimeMinmutes()));
+		rememberEditText.setOnEditorActionListener(this);
 	}
 
 	@Override
@@ -47,9 +54,19 @@ public class SettingsWindow implements OnCheckedChangeListener,
 
 	@Override
 	public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-		if (EditorInfo.IME_ACTION_DONE == actionId) {
-			configuration.setLogoutTimeMinutes(Integer.parseInt(editText
-					.getText().toString()));;
+		if (v.equals(editText)) {
+			if (EditorInfo.IME_ACTION_DONE == actionId) {
+				configuration.setLogoutTimeMinutes(Integer.parseInt(editText
+						.getText().toString()));
+
+			}
+		} else if (v.equals(rememberEditText)) {
+			if (EditorInfo.IME_ACTION_DONE == actionId) {
+				configuration.setRememberTimeMinmutes(Integer.parseInt(editText
+						.getText().toString()));
+
+			}
+
 		}
 		return false;
 	}
