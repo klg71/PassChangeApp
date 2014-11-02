@@ -79,10 +79,11 @@ public class Account {
 				if (website.isSuccesful()) {
 					actualPassword = newPass;
 					lastChangedCalendar.setTime(new Date());
-					activity.refreshAccountList();
 					activity.runOnUiThread(new Runnable() {
 						@Override
 						public void run() {
+
+							activity.refreshAccountList();
 							Toast.makeText(
 									activity,
 									website.getName()
