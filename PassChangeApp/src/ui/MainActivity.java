@@ -1,23 +1,11 @@
 package ui;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import plugins.Amazon;
-import plugins.Ebay;
-import plugins.Facebook;
-import plugins.Google;
-import plugins.LeagueOfLegends;
-import plugins.Twitter;
-
 import com.passchange.passchangeapp.R;
 
-import core.Website;
 import account.Account;
-import account.AccountManager;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.NotificationManager;
@@ -30,27 +18,17 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
-import android.os.Environment;
-import android.os.Looper;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.webkit.CookieManager;
-import android.webkit.CookieSyncManager;
-import android.webkit.WebStorage;
 import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.PopupMenu;
-import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends Activity implements OnItemLongClickListener,
@@ -60,15 +38,13 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 	public final static boolean DEBUG_ACTIVATED = false;
 
 	private LoginManager loginManager;
-	private HashMap<String, Website> websites;
 	private AccountListAdapter accountListAdapter;
 	private PopupMenu popupMenu;
 	private Account selectedAccount;
-	private String password;
+	private Timer expirationTimer;
 	private boolean childWindowActive;
 	private boolean webViewActive;
 	private boolean showInfoToast;
-	private boolean resetPassword;
 	private boolean longClicked;
 	private boolean active;
 
@@ -332,7 +308,7 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 
 			}
 		}
-		if(!active){
+		if(!active&&i>0){
 			int mId = 0;
 			NotificationCompat.Builder mBuilder =
 			        new NotificationCompat.Builder(this)
@@ -362,8 +338,10 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 
 
 	public void startExpirationTimer() {
-		Timer timer = new Timer();
-		timer.schedule(new TimerTask() {
+		if(expirationTimer!=null)
+			expirationTimer.cancel();
+		expirationTimer = new Timer();
+		expirationTimer.schedule(new TimerTask() {
 
 			@Override
 			public void run() {
