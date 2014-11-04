@@ -130,7 +130,7 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 		if (id == R.id.settings) {
 			childWindowActive = true;
 			setContentView(R.layout.settings);
-			new SettingsWindow(this, loginManager.getAccountManager().getConfiguration());
+			new SettingsWindow(this, loginManager.getAccountManager().getConfiguration(),loginManager.getAccountManager());
 		}
 		if (id == R.id.main_page) {
 

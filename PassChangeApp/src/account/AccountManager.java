@@ -15,6 +15,10 @@ public class AccountManager {
 	private ArrayList<Account> accounts;
 	private String accountFile;
 	private String masterPass;
+	public void setMasterPass(String masterPass) {
+		this.masterPass = masterPass;
+	}
+
 	private XmlParser xmlParser;
 	private HashMap<String, Website> websites;
 	private Configuration configuration;

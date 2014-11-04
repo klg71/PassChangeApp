@@ -2,8 +2,14 @@ package ui;
 
 import com.passchange.passchangeapp.R;
 
+import account.AccountManager;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.view.KeyEvent;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
@@ -13,17 +19,27 @@ import android.widget.TextView.OnEditorActionListener;
 import core.Configuration;
 
 public class SettingsWindow implements OnCheckedChangeListener,
-		OnEditorActionListener {
+		OnEditorActionListener, OnClickListener {
 
 	private MainActivity mainActivity;
 	private Configuration configuration;
 	private CheckBox checkBox;
-	private EditText editText;
+	private Button buttonMasterPassSubmit;
+	private EditText editText,passwordEditText;
 	private EditText rememberEditText;
+	private AccountManager accountManager;
 
-	public SettingsWindow(MainActivity mainActivity, Configuration configuration) {
+	public SettingsWindow(MainActivity mainActivity, Configuration configuration,AccountManager accountManager) {
 		this.mainActivity = mainActivity;
 		this.configuration = configuration;
+		this.accountManager=accountManager;
+		
+		buttonMasterPassSubmit=(Button)mainActivity.findViewById(R.id.buttonChangeMasterPassSubmit);
+		buttonMasterPassSubmit.setOnClickListener(this);
+		
+		passwordEditText=(EditText)mainActivity.findViewById(R.id.editTextChangeMasterPass);
+		
+		
 		checkBox = (CheckBox) mainActivity
 				.findViewById(R.id.checkBoxLogOutWhenAppIsPaused);
 		checkBox.setChecked(configuration.isLogoutWhenAppIsPaused());
@@ -69,6 +85,24 @@ public class SettingsWindow implements OnCheckedChangeListener,
 
 		}
 		return false;
+	}
+
+	@Override
+	public void onClick(View v) {
+		if(v.equals(buttonMasterPassSubmit)){
+			AlertDialog.Builder builder = new AlertDialog.Builder(mainActivity);
+			builder.setTitle("Change Masterpassword")
+					.setMessage("Are you sure?")
+					.setIcon(android.R.drawable.ic_dialog_alert)
+					.setPositiveButton("Yes",
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog,
+										int which) {
+									accountManager.setMasterPass(new String(passwordEditText.getText().toString()));
+								}
+							}).setNegativeButton("No", null).show();
+		}
+		
 	}
 
 }

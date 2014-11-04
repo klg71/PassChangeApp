@@ -20,5 +20,6 @@
 	<string name="hold_item_string">Hold to interact</string>
 	<string name="usernameDescription">Your id you use to login on this \n website (can also be an email)</string>
 	<string name="timeTillRememberText">Time till when you will be remembered \n to change your passwords. (in minutes)</string>
+	<string name="changeMasterPasswordText">Change the Master Password \n of the Passwordfile</string>
     
 </resources>
