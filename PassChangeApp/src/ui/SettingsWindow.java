@@ -25,21 +25,23 @@ public class SettingsWindow implements OnCheckedChangeListener,
 	private Configuration configuration;
 	private CheckBox checkBox;
 	private Button buttonMasterPassSubmit;
-	private EditText editText,passwordEditText;
+	private EditText editText, passwordEditText;
 	private EditText rememberEditText;
 	private AccountManager accountManager;
 
-	public SettingsWindow(MainActivity mainActivity, Configuration configuration,AccountManager accountManager) {
+	public SettingsWindow(MainActivity mainActivity,
+			Configuration configuration, AccountManager accountManager) {
 		this.mainActivity = mainActivity;
 		this.configuration = configuration;
-		this.accountManager=accountManager;
-		
-		buttonMasterPassSubmit=(Button)mainActivity.findViewById(R.id.buttonChangeMasterPassSubmit);
+		this.accountManager = accountManager;
+
+		buttonMasterPassSubmit = (Button) mainActivity
+				.findViewById(R.id.buttonChangeMasterPassSubmit);
 		buttonMasterPassSubmit.setOnClickListener(this);
-		
-		passwordEditText=(EditText)mainActivity.findViewById(R.id.editTextChangeMasterPass);
-		
-		
+
+		passwordEditText = (EditText) mainActivity
+				.findViewById(R.id.editTextChangeMasterPass);
+
 		checkBox = (CheckBox) mainActivity
 				.findViewById(R.id.checkBoxLogOutWhenAppIsPaused);
 		checkBox.setChecked(configuration.isLogoutWhenAppIsPaused());
@@ -78,8 +80,8 @@ public class SettingsWindow implements OnCheckedChangeListener,
 			}
 		} else if (v.equals(rememberEditText)) {
 			if (EditorInfo.IME_ACTION_DONE == actionId) {
-				configuration.setRememberTimeMinmutes(Integer.parseInt(rememberEditText
-						.getText().toString()));
+				configuration.setRememberTimeMinmutes(Integer
+						.parseInt(rememberEditText.getText().toString()));
 
 			}
 
@@ -89,20 +91,27 @@ public class SettingsWindow implements OnCheckedChangeListener,
 
 	@Override
 	public void onClick(View v) {
-		if(v.equals(buttonMasterPassSubmit)){
-			AlertDialog.Builder builder = new AlertDialog.Builder(mainActivity);
-			builder.setTitle("Change Masterpassword")
-					.setMessage("Are you sure?")
-					.setIcon(android.R.drawable.ic_dialog_alert)
-					.setPositiveButton("Yes",
-							new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog,
-										int which) {
-									accountManager.setMasterPass(new String(passwordEditText.getText().toString()));
-								}
-							}).setNegativeButton("No", null).show();
+		if (v.equals(buttonMasterPassSubmit)) {
+			if (passwordEditText.getText().toString().length() > 0) {
+				AlertDialog.Builder builder = new AlertDialog.Builder(
+						mainActivity);
+				builder.setTitle("Change Masterpassword")
+						.setMessage("Are you sure?")
+						.setIcon(android.R.drawable.ic_dialog_alert)
+						.setPositiveButton("Yes",
+								new DialogInterface.OnClickListener() {
+									public void onClick(DialogInterface dialog,
+											int which) {
+										accountManager
+												.setMasterPass(new String(
+														passwordEditText
+																.getText()
+																.toString()));
+									}
+								}).setNegativeButton("No", null).show();
+			}
 		}
-		
+
 	}
 
 }
