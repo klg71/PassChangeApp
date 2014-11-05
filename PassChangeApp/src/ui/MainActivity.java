@@ -187,10 +187,10 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 
 		case R.id.action_delete_account: {
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setTitle("Delete Account")
-					.setMessage("Are you sure?")
+			builder.setTitle(getResources().getString(R.string.delete_account))
+					.setMessage(this.getResources().getString(R.string.are_you_sure))
 					.setIcon(android.R.drawable.ic_dialog_alert)
-					.setPositiveButton("Yes",
+					.setPositiveButton(getResources().getString(R.string.yes),
 							new DialogInterface.OnClickListener() {
 								public void onClick(DialogInterface dialog,
 										int which) {
@@ -198,7 +198,7 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 											.removeAccount(selectedAccount);
 									refreshAccountList();
 								}
-							}).setNegativeButton("No", null).show();
+							}).setNegativeButton(getResources().getString(R.string.no), null).show();
 			break;
 		}
 		case R.id.action_change_account: {
@@ -286,16 +286,16 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 						@Override
 						public void run() {
 							AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-							builder.setTitle("Password expired")
+							builder.setTitle(getResources().getString(R.string.account_expired))
 									.setMessage(
-											"Your Password for: "
+											getResources().getString(R.string.password_for)+" "
 													+ account.getUserName()
-													+ " on "
+													+ " "+getResources().getString(R.string.on)+" "
 													+ account.getWebsite().getName()
-													+ " is expired do you want to change it now?")
+													+ " "+getResources().getString(R.string.pass_expire_sentence2))
 									.setIcon(android.R.drawable.ic_dialog_alert)
-									.setPositiveButton("Yes", activity)
-									.setNegativeButton("No", null) // Do nothing on no
+									.setPositiveButton(getResources().getString(R.string.yes), activity)
+									.setNegativeButton(getResources().getString(R.string.no), null) // Do nothing on no
 									.show();
 							
 						}
@@ -313,8 +313,8 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 			NotificationCompat.Builder mBuilder =
 			        new NotificationCompat.Builder(this)
 			        .setSmallIcon(R.drawable.ic_passchange)
-			        .setContentTitle("Account Expired")
-			        .setContentText("There are "+Integer.toString(i)+" passwords expired in PassChange please change them in time.");
+			        .setContentTitle(getResources().getString(R.string.account_expired))
+			        .setContentText(getResources().getString(R.string.there_are)+" "+Integer.toString(i)+" "+getResources().getString(R.string.pass_expire_sentence));
 
 			Intent resultIntent = new Intent(this, MainActivity.class);
 

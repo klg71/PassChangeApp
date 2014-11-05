@@ -59,10 +59,10 @@ public class ChangePasswordWindow implements OnClickListener,
 		imageView.setImageResource(account.getWebsite().getImageSource());
 		TextView textView = (TextView) mainActivity
 				.findViewById(R.id.textViewInformation);
-		String source = "You are about to change the password<br>"
-				+ System.getProperty("line.separator") + "of account: <br>"
+		String source = mainActivity.getResources().getString(R.string.about_change)+"<br>"
+				+ System.getProperty("line.separator") + mainActivity.getResources().getString(R.string.of_account)+": <br>"
 				+ System.getProperty("line.separator") + "<b>"
-				+ account.getUserName() + "</b> at <b>"
+				+ account.getUserName() + "</b>"+mainActivity.getResources().getString(R.string.at) +"<b>"
 				+ account.getWebsite().getName() + "</b>.";
 		textView.setText(Html.fromHtml(source));
 		submit = (Button) mainActivity.findViewById(R.id.buttonChangeSubmit);
@@ -90,10 +90,10 @@ public class ChangePasswordWindow implements OnClickListener,
 			} else {
 				new AlertDialog.Builder(mainActivity)
 						.setMessage(
-								"Pls enter a password that fullfilles following Conditions: "
+								mainActivity.getResources().getString(R.string.please_fulfill_condtion)
 										+ account.getWebsite()
 												.getPasswordCondition())
-						.setTitle("Error")
+						.setTitle(mainActivity.getResources().getString(R.string.error))
 						.setCancelable(true)
 						.setNeutralButton(android.R.string.cancel,
 								new DialogInterface.OnClickListener() {

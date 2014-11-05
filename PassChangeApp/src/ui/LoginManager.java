@@ -108,9 +108,9 @@ public class LoginManager {
 
 		final View textEntryView = factory.inflate(R.layout.dialog_login, null);
 		AlertDialog.Builder alert = new AlertDialog.Builder(activity);
-		alert.setTitle("Login");
+		alert.setTitle(activity.getResources().getString(R.string.login));
 		alert.setCancelable(false);
-		alert.setMessage("Please enter your Masterpassword:");
+		alert.setMessage(activity.getResources().getString(R.string.please_enter_master_password));
 		alert.setView(textEntryView);
 		resetPassword = false;
 
@@ -149,7 +149,7 @@ public class LoginManager {
 									activity);
 							ad.setCancelable(false); // This blocks the 'BACK'
 														// button
-							ad.setMessage("An error occured, maybe you entered the wrong password try it again!");
+							ad.setMessage(activity.getResources().getString(R.string.error_wrong_pass));
 							ad.setPositiveButton("OK",
 									new DialogInterface.OnClickListener() {
 										@Override
@@ -174,7 +174,7 @@ public class LoginManager {
 					AlertDialog.Builder ad = new AlertDialog.Builder(activity);
 					ad.setCancelable(false); // This blocks the 'BACK'
 												// button
-					ad.setMessage("An error occured, maybe you entered the wrong password try it again!");
+					ad.setMessage(activity.getResources().getString(R.string.error_wrong_pass));
 					ad.setPositiveButton("OK",
 							new DialogInterface.OnClickListener() {
 								@Override
@@ -190,7 +190,7 @@ public class LoginManager {
 			}
 		});
 
-		alert.setNegativeButton("Cancel",
+		alert.setNegativeButton(activity.getResources().getString(R.string.cancel),
 				new DialogInterface.OnClickListener() {
 
 					public void onClick(DialogInterface dialog, int which) {
@@ -207,8 +207,8 @@ public class LoginManager {
 			public void onClick(View v) {
 
 				AlertDialog.Builder ad = new AlertDialog.Builder(activity);
-				ad.setMessage("Do you really want to reset your password an loose all of your account data?");
-				ad.setPositiveButton("yes",
+				ad.setMessage(activity.getResources().getString(R.string.reset_password));
+				ad.setPositiveButton(activity.getResources().getString(R.string.yes),
 						new DialogInterface.OnClickListener() {
 							@Override
 							public void onClick(DialogInterface dialog,
@@ -217,7 +217,7 @@ public class LoginManager {
 								resetPassword = true;
 							}
 						});
-				ad.setNegativeButton("cancel",
+				ad.setNegativeButton(activity.getResources().getString(R.string.cancel),
 						new DialogInterface.OnClickListener() {
 
 							@Override

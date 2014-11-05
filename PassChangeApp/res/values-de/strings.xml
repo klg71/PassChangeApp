@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">PassChange</string>
+    <string name="hello_world">Hallo Welt!</string>
+    <string name="account_overview">Account Übersicht</string>
+    <string name="action_settings">Einstellungen</string>
+    <string name="add_account">Account hinzufügen</string>
+    <string name="delete_account">Account löschen</string>
+	<string name="change_password">Passwort ändern</string>
+	<string name="settings">Einstellungen</string>
+	<string name="test_login">Test Login</string>
+	<string name="show_in_browser">Browser öffnen</string>
+	<string name="logOutWhenPausingAppText">Ausloggen wenn App pausiert wird</string>
+	<string name="timeTillLogoutText">Zeit bis App sich ausloggt (in Minuten):</string>
+	<string name="minutes">Minuten</string>
+	<string name="ButtonResetPasswordText">Passwort zurücksetzen</string>
+	<string name="emptyActivityText">Deine Accountliste ist leer. Füge welche hinzu!</string>
+	<string name="switch_to_main_page">Hauptseite</string>
+	<string name="hold_item_string">Halten um zu interagieren</string>
+	<string name="usernameDescription">Deine Benutzername mit dem du dich auf \n der Website anmeldest (kann auch eine Email sein)</string>
+	<string name="timeTillRememberText">Zeit bis App zur Passwortänderung auffordert \n (in minutes)</string>
+	<string name="changeMasterPasswordText">Masterpasswort der Passwortdatei ändern</string>
+    <string name="copy_password">Passwort kopieren</string>
+    <string name="edit_account">Acount ändern</string>
+    <string name="are_you_sure">Bist du sicher?</string>
+    <string name="account_expired">Passwort abgelaufen</string>
+    <string name="there_are">Es gibt</string>
+    <string name="pass_expire_sentence">abgelaufene Passwörter. Bitte ändere diese schnell!</string>
+    <string name="password_for">Dein Passwort für: </string>
+    <string name="on">in</string>
+    <string name="pass_expire_sentence2">ist abgelaufen! Wollen sie es jetzt ändern?</string>
+    <string name="yes">ja</string>
+    <string name="no">nein</string>
+    <string name="about_change">Du änderst gerade das Passwort des Accounts </string>
+    <string name="error">Fehler</string>
+    <string name="of_account">des Accounts</string>
+    <string name="at">der Website</string>
+    <string name="please_fulfill_condtion">Bitte geben sie ein Passwort ein das folgende Bedinungen erfüllt: </string>
+    <string name="please_enter_master_password">Bitte geben sie ihr Masterpasswort ein:</string>
+	<string name="login">Einloggen</string>
+	<string name="error_wrong_pass">Ein Fehler ist aufgetreten, vieleicht hast du ein falsches Passwort eingegeben. Versuch es nochmal!</string>
+	<string name="cancel">Abbrechen</string>
+	<string name="reset_password">Wollen sie wirklich ihr Passwort zurücksetzen und alle Accountdaten löschen?</string>
+	<string name="change_master_pass">Masterpasswort ändern</string>
+    
+</resources>

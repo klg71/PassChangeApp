@@ -95,10 +95,10 @@ public class SettingsWindow implements OnCheckedChangeListener,
 			if (passwordEditText.getText().toString().length() > 0) {
 				AlertDialog.Builder builder = new AlertDialog.Builder(
 						mainActivity);
-				builder.setTitle("Change Masterpassword")
-						.setMessage("Are you sure?")
+				builder.setTitle(mainActivity.getResources().getString(R.string.change_master_pass))
+						.setMessage(mainActivity.getResources().getString(R.string.are_you_sure))
 						.setIcon(android.R.drawable.ic_dialog_alert)
-						.setPositiveButton("Yes",
+						.setPositiveButton(mainActivity.getResources().getString(R.string.yes),
 								new DialogInterface.OnClickListener() {
 									public void onClick(DialogInterface dialog,
 											int which) {
@@ -108,7 +108,7 @@ public class SettingsWindow implements OnCheckedChangeListener,
 																.getText()
 																.toString()));
 									}
-								}).setNegativeButton("No", null).show();
+								}).setNegativeButton(mainActivity.getResources().getString(R.string.no), null).show();
 			}
 		}
 

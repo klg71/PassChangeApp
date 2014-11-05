@@ -7,19 +7,40 @@
     <string name="action_settings">Settings</string>
     <string name="add_account">Add Account</string>
     <string name="delete_account">Delete Account</string>
-	<string name="change_password">Change Password</string>
-	<string name="settings">Settings</string>
-	<string name="test_login">Test Login</string>
-	<string name="show_in_browser">Open Browser</string>
-	<string name="logOutWhenPausingAppText">Log out when app is paused</string>
-	<string name="timeTillLogoutText">Time till app will logout (in minutes):</string>
-	<string name="minutes">minutes</string>
-	<string name="ButtonResetPasswordText">Reset current password</string>
-	<string name="emptyActivityText">Your Accountlist is empty please add some</string>
-	<string name="switch_to_main_page">Main Page</string>
-	<string name="hold_item_string">Hold to interact</string>
-	<string name="usernameDescription">Your id you use to login on this \n website (can also be an email)</string>
-	<string name="timeTillRememberText">Time till when you will be remembered \n to change your passwords. (in minutes)</string>
-	<string name="changeMasterPasswordText">Change the Master Password \n of the Passwordfile</string>
-    
+    <string name="change_password">Change Password</string>
+    <string name="settings">Settings</string>
+    <string name="test_login">Test Login</string>
+    <string name="show_in_browser">Open Browser</string>
+    <string name="logOutWhenPausingAppText">Log out when app is paused</string>
+    <string name="timeTillLogoutText">Time till app will logout (in minutes):</string>
+    <string name="minutes">minutes</string>
+    <string name="ButtonResetPasswordText">Reset current password</string>
+    <string name="emptyActivityText">Your Accountlist is empty please add some</string>
+    <string name="switch_to_main_page">Main Page</string>
+    <string name="hold_item_string">Hold to interact</string>
+    <string name="usernameDescription">Your id you use to login on this \n website (can also be an email)</string>
+    <string name="timeTillRememberText">Time till when you will be remembered \n to change your passwords. (in minutes)</string>
+    <string name="changeMasterPasswordText">Change the Master Password \n of the Passwordfile</string>
+    <string name="copy_password">Copy Password</string>
+    <string name="edit_account">Edit Account</string>
+    <string name="are_you_sure">Are you sure?</string>
+    <string name="account_expired">Account expired</string>
+    <string name="there_are">There are</string>
+    <string name="pass_expire_sentence">passwords expired in PassChange please change them in time.</string>
+    <string name="password_for">Your Password for: </string>
+    <string name="on">on</string>
+    <string name="pass_expire_sentence2">is expired do you want to change it now?</string><string name="about_change">You are about to change the password</string>
+    <string name="error">Error</string>
+    <string name="of_account">of account</string>
+    <string name="at">at</string>
+    <string name="please_fulfill_condtion">Please enter a password that fullfilles following Conditions: </string>
+    <string name="please_enter_master_password">Please enter your Masterpassword:</string>
+	<string name="login">Login</string>
+	<string name="error_wrong_pass">An error occurred, maybe you entered the wrong password try it again!</string>
+	<string name="cancel">Cancel</string>
+	<string name="reset_password">Do you really want to reset your password an loose all of your account data?</string>
+    <string name="change_master_pass">Change Masterpassword</string>
+    <string name="yes">yes</string>
+    <string name="no">no</string>
+
 </resources>
