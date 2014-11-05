@@ -43,4 +43,9 @@
 	<string name="cancel">Cancel</string>
 	<string name="reset_password">Do you really want to reset your password an loose all of your account data?</string>
 	<string name="change_master_pass">Change Masterpassword</string>
+	<string name="submit">Submit</string>
+	<string name="expire_time">Expire (in days)</string>
+	<string name="password">Password</string>
+	<string name="email">Email</string>
+	<string name="username">Username</string>
 </resources>

@@ -18,7 +18,7 @@
 	<string name="emptyActivityText">Deine Accountliste ist leer. Füge welche hinzu!</string>
 	<string name="switch_to_main_page">Hauptseite</string>
 	<string name="hold_item_string">Halten um zu interagieren</string>
-	<string name="usernameDescription">Deine Benutzername mit dem du dich auf \n der Website anmeldest (kann auch eine Email sein)</string>
+	<string name="usernameDescription">Dein Benutzername mit dem du dich\nauf der Website anmeldest\n(kann auch eine Email sein)</string>
 	<string name="timeTillRememberText">Zeit bis App zur Passwortänderung auffordert \n (in minutes)</string>
 	<string name="changeMasterPasswordText">Masterpasswort der Passwortdatei ändern</string>
     <string name="copy_password">Passwort kopieren</string>
@@ -43,5 +43,9 @@
 	<string name="cancel">Abbrechen</string>
 	<string name="reset_password">Wollen sie wirklich ihr Passwort zurücksetzen und alle Accountdaten löschen?</string>
 	<string name="change_master_pass">Masterpasswort ändern</string>
-    
+	<string name="submit">Bestätigen</string>
+	<string name="expire_time">Gültigkeit (in Tagen)</string>
+	<string name="password">Passwort</string>
+	<string name="email">Email</string>
+	<string name="username">Benutzername</string>
 </resources>

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
     android:orientation="vertical" >
 
     <Spinner
         android:id="@+id/spinner1"
-        android:layout_width="match_parent"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content" />
 
     <TableLayout
@@ -14,47 +14,48 @@
         android:layout_height="fill_parent" >
 
         <TableRow
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="5dip" >
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Username" />
+                android:text="@string/username" />
 
             <EditText
                 android:id="@+id/editUserName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+             	android:inputType="text"
                 android:ems="10" />
         </TableRow>
         <TableRow
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="5dip" >
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="" />
             
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/usernameDescription" />
 
 	</TableRow>
         <TableRow
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="5dip" >
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Email" />
+                android:text="@string/email" />
 
             <EditText
                 android:id="@+id/editEmail"
@@ -65,14 +66,14 @@
         </TableRow>
 
         <TableRow
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="5dip" >
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Password" />
+                android:text="@string/password" />
 
             <EditText
                 android:id="@+id/editPass"
@@ -82,14 +83,14 @@
                 android:inputType="textPassword" />
         </TableRow>
         <TableRow
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="5dip" >
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Expire (in days)" />
+                android:text="@string/expire_time" />
             
             <EditText
                 android:id="@+id/editExpire"
@@ -100,18 +101,20 @@
             
             </TableRow>
         <TableRow
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="5dip" >
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="" />
             
             <Button 
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:id="@+id/buttonSubmit"
-                android:text="submit"/>
+                android:text="@string/submit"/>
             
             </TableRow>
             
