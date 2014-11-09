@@ -3,10 +3,23 @@ package account;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
+import com.passchange.passchangeapp.R;
+
+import ui.MainActivity;
+import android.app.AlertDialog;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
+import android.content.Context;
+import android.content.Intent;
+import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 import core.Configuration;
 import core.Website;
 import file.XmlParser;
@@ -15,25 +28,29 @@ public class AccountManager {
 	private ArrayList<Account> accounts;
 	private String accountFile;
 	private String masterPass;
+	private XmlParser xmlParser;
+	private HashMap<String, Website> websites;
+	private Configuration configuration;
+	private AccountExpiredListener accountExpiredListener;
+	private Timer expirationTimer;
+
 	public void setMasterPass(String masterPass) {
 		this.masterPass = masterPass;
 	}
 
-	private XmlParser xmlParser;
-	private HashMap<String, Website> websites;
-	private Configuration configuration;
-
 	// private MysqlManager mysqlManager;
 
 	public AccountManager(String accountFile, String masterPass,
-			HashMap<String, Website> websites) {
+			HashMap<String, Website> websites,
+			AccountExpiredListener accountExpiredListener) {
 		accounts = new ArrayList<Account>();
+		this.accountExpiredListener = accountExpiredListener;
 		this.accountFile = accountFile;
 		this.masterPass = masterPass;
 		this.websites = websites;
 		// mysqlManager=new MysqlManager("", "", websites);
 		xmlParser = new XmlParser(websites);
-		configuration = new Configuration(true, 0,10);
+		configuration = new Configuration(true, 0, 10);
 
 	}
 
@@ -43,6 +60,7 @@ public class AccountManager {
 		this.websites = websites;
 		// mysqlManager=new MysqlManager("", "", websites);
 		xmlParser = new XmlParser(websites);
+		startExpirationTimer();
 
 	}
 
@@ -142,6 +160,41 @@ public class AccountManager {
 
 	public int getId() {
 		return 1;
+	}
+
+	public void startExpirationTimer() {
+		if (expirationTimer != null)
+			expirationTimer.cancel();
+		expirationTimer = new Timer();
+		expirationTimer.schedule(new TimerTask() {
+
+			@Override
+			public void run() {
+				if (MainActivity.DEBUG_ACTIVATED) {
+					Log.e("debug", "run task");
+				}
+				checkExpired();
+				if (MainActivity.DEBUG_ACTIVATED) {
+					Log.e("debug", "run task: check expire");
+				}
+
+			}
+		}, 60000 * getConfiguration().getRememberTimeMinmutes(),
+				60000 * getConfiguration().getRememberTimeMinmutes());
+	}
+
+	private void checkExpired() {
+		ArrayList<Account> expiredAccounts = new ArrayList<Account>();
+		for (final Account account : getAccounts()) {
+			if (account.isExpired()) {
+				expiredAccounts.add(account);
+			}
+
+		}
+		if (expiredAccounts.size() > 0) {
+			accountExpiredListener.accountsExpired(expiredAccounts);
+		}
+
 	}
 
 }

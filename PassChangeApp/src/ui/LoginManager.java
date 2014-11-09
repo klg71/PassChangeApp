@@ -133,7 +133,7 @@ public class LoginManager {
 					websites.put("Amazon", new Amazon(activity));
 					websites.put("Ebay", new Ebay(activity));
 					accountManager = new AccountManager("/sdcard/accounts.xml",
-							password, websites);
+							password, websites,activity);
 					if (MainActivity.DEBUG_ACTIVATED)
 						Log.e("file", "/sdcard/accounts.xml");
 					File file = new File("/sdcard/accounts.xml");
@@ -168,7 +168,7 @@ public class LoginManager {
 					accountListAdapter = new AccountListAdapter(accountManager);
 					active = true;
 					((MainActivity) activity).refreshAccountList();
-					activity.startExpirationTimer();
+					//activity.startExpirationTimer();
 					return;
 				} else {
 					AlertDialog.Builder ad = new AlertDialog.Builder(activity);

@@ -1,11 +1,13 @@
 package ui;
 
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import com.passchange.passchangeapp.R;
 
 import account.Account;
+import account.AccountExpiredListener;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.NotificationManager;
@@ -33,7 +35,7 @@ import android.widget.Toast;
 
 public class MainActivity extends Activity implements OnItemLongClickListener,
 		android.widget.PopupMenu.OnMenuItemClickListener,
-		android.content.DialogInterface.OnClickListener, OnItemClickListener {
+		android.content.DialogInterface.OnClickListener, OnItemClickListener, AccountExpiredListener {
 
 	public final static boolean DEBUG_ACTIVATED = false;
 
@@ -337,25 +339,87 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 	}
 
 
-	public void startExpirationTimer() {
-		if(expirationTimer!=null)
-			expirationTimer.cancel();
-		expirationTimer = new Timer();
-		expirationTimer.schedule(new TimerTask() {
+//	public void startExpirationTimer() {
+//		if(expirationTimer!=null)
+//			expirationTimer.cancel();
+//		expirationTimer = new Timer();
+//		expirationTimer.schedule(new TimerTask() {
+//
+//			@Override
+//			public void run() {
+//				if(MainActivity.DEBUG_ACTIVATED){
+//					Log.e("debug","run task");
+//				}
+//				if(loginManager.getAccountManager()!=null){
+//					checkExpired();
+//					if(MainActivity.DEBUG_ACTIVATED){
+//						Log.e("debug","run task: check expire");
+//					}
+//				}
+//
+//			}
+//		}, 60000 * loginManager.getAccountManager().getConfiguration().getRememberTimeMinmutes(),60000*loginManager.getAccountManager().getConfiguration().getRememberTimeMinmutes());
+//	}
 
-			@Override
-			public void run() {
-				if(MainActivity.DEBUG_ACTIVATED){
-					Log.e("debug","run task");
-				}
-				if(loginManager.getAccountManager()!=null){
-					checkExpired();
-					if(MainActivity.DEBUG_ACTIVATED){
-						Log.e("debug","run task: check expire");
-					}
+	@Override
+	public void accountsExpired(ArrayList<Account> accounts) {
+		for (final Account account : accounts) {
+			selectedAccount = account;
+				if (active) {
+					final MainActivity activity=this;
+					runOnUiThread(new Runnable() {
+						
+						@Override
+						public void run() {
+							AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+							builder.setTitle(getResources().getString(R.string.account_expired))
+									.setMessage(
+											getResources().getString(R.string.password_for)+" "
+													+ account.getUserName()
+													+ " "+getResources().getString(R.string.on)+" "
+													+ account.getWebsite().getName()
+													+ " "+getResources().getString(R.string.pass_expire_sentence2))
+									.setIcon(android.R.drawable.ic_dialog_alert)
+									.setPositiveButton(getResources().getString(R.string.yes), activity)
+									.setNegativeButton(getResources().getString(R.string.no), null) // Do nothing on no
+									.show();
+							
+						}
+					});
+
+					return;
+				} else {
+
 				}
 
 			}
-		}, 60000 * loginManager.getAccountManager().getConfiguration().getRememberTimeMinmutes(),60000*loginManager.getAccountManager().getConfiguration().getRememberTimeMinmutes());
+		
+		if(!active){
+			int mId = 0;
+			NotificationCompat.Builder mBuilder =
+			        new NotificationCompat.Builder(this)
+			        .setSmallIcon(R.drawable.ic_passchange)
+			        .setContentTitle(getResources().getString(R.string.account_expired))
+			        .setContentText(getResources().getString(R.string.there_are)+" "+Integer.toString(accounts.size())+" "+getResources().getString(R.string.pass_expire_sentence));
+
+			Intent resultIntent = new Intent(this, MainActivity.class);
+
+			TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+			// Adds the back stack for the Intent (but not the Intent itself)
+			stackBuilder.addParentStack(MainActivity.class);
+			// Adds the Intent that starts the Activity to the top of the stack
+			stackBuilder.addNextIntent(resultIntent);
+			PendingIntent resultPendingIntent =
+			        stackBuilder.getPendingIntent(
+			            0,
+			            PendingIntent.FLAG_UPDATE_CURRENT
+			        );
+			mBuilder.setContentIntent(resultPendingIntent);
+			NotificationManager mNotificationManager =
+			    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+			// mId allows you to update the notification later on.
+			mNotificationManager.notify(mId, mBuilder.build());
+		}
+		
 	}
 }
