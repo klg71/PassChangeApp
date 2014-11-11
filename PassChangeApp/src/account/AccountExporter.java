@@ -2,14 +2,10 @@ package account;
 
 import generator.Crypt;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.nio.ByteOrder;
-
 import core.RequestType;
 import core.WebClient;
 
@@ -29,12 +25,11 @@ public class AccountExporter {
 		try {
 			ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();
 			Crypt.encode(account.getActualPassword().getBytes(), byteArrayOutputStream, Crypt.generateKey(masterPass, salt));
-			String encryptedPass=new String(byteArrayOutputStream.toByteArray());
+			String encryptedPass=byteArrayOutputStream.toString("ISO-8859-1");
 			hash = webClient
 					.sendRequest(
-							"http://klg71.us.to/PassChangeServer/sendPassword",
-							RequestType.POST, URLEncoder.encode("password="
-									+ encryptedPass, "UTF-8"),
+							"http://klg71.us.to/PassChangeServer/sendPassword.php",
+							RequestType.POST, "password="+URLEncoder.encode(encryptedPass, "ISO-8859-1"),
 							"exportAnswer", false);
 			if(hash.contains("failed")){
 				throw new Exception("Export failed");
