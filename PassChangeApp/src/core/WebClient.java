@@ -189,8 +189,7 @@ public class WebClient {
 
 		try {
 			if (type == RequestType.POST) {
-				writer = new OutputStreamWriter(
-						((HttpsURLConnection) connection).getOutputStream());
+				writer = new OutputStreamWriter( connection.getOutputStream());
 				writer.write(body);
 				writer.flush();
 			}
