@@ -53,6 +53,24 @@ public class AccountManager {
 		configuration = new Configuration(true, 0, 10);
 
 	}
+	
+	public void exportAccount(final AccountExportListener exportListener,final Account account){
+		final AccountExporter accountExporter=new AccountExporter(masterPass);
+		final Thread export = new Thread() {
+			@Override
+			public void run() {
+				try {
+					String hash=accountExporter.exportAccount(account);
+					exportListener.exportSuccessful(hash);
+				} catch (Exception e) {
+					exportListener.exportFailed();
+					e.printStackTrace();
+				}
+			}
+		};
+		export.start();
+		
+	}
 
 	public AccountManager(String masterPass, HashMap<String, Website> websites) {
 		accounts = new ArrayList<Account>();
@@ -60,7 +78,6 @@ public class AccountManager {
 		this.websites = websites;
 		// mysqlManager=new MysqlManager("", "", websites);
 		xmlParser = new XmlParser(websites);
-		startExpirationTimer();
 
 	}
 
@@ -72,6 +89,7 @@ public class AccountManager {
 		accounts = xmlParser.loadAccountsFromFile(accountFile, masterPass);
 		configuration = xmlParser.loadConfigurationFromFile(accountFile,
 				masterPass);
+		startExpirationTimer();
 	}
 
 	public void writeToFile() throws FileNotFoundException, Exception {

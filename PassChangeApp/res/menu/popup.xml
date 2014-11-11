@@ -16,5 +16,6 @@
     <item android:id="@+id/action_copy_password" android:title="@string/copy_password"></item>
     <item android:id="@+id/action_test_login" android:title="@string/test_login"></item>
     <item android:id="@+id/action_show_browser" android:title="@string/show_in_browser"></item>
+    <item android:id="@+id/action_export_password" android:title="@string/export_account"></item>
 
 </menu>

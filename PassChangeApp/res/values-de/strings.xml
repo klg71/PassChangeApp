@@ -48,4 +48,6 @@
 	<string name="password">Passwort</string>
 	<string name="email">Email</string>
 	<string name="username">Benutzername</string>
+	<string name="export_account">Password exportieren</string>	<string name="account_export_info">Dein Passwort wurde erfolgreich exportiert. Auf der Website: "http://klg71.us.to/PassChangeServer/getPasswordForm.php" um ihr Passwort anzusehen.</string>
+	
 </resources>

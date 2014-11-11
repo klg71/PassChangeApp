@@ -8,6 +8,7 @@ import com.passchange.passchangeapp.R;
 
 import account.Account;
 import account.AccountExpiredListener;
+import account.AccountExportListener;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.NotificationManager;
@@ -18,7 +19,10 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.DialogInterface.OnClickListener;
 import android.content.pm.ActivityInfo;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -29,13 +33,17 @@ import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupMenu;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends Activity implements OnItemLongClickListener,
 		android.widget.PopupMenu.OnMenuItemClickListener,
-		android.content.DialogInterface.OnClickListener, OnItemClickListener, AccountExpiredListener {
+		android.content.DialogInterface.OnClickListener, OnItemClickListener, AccountExpiredListener, AccountExportListener {
 
 	public final static boolean DEBUG_ACTIVATED = false;
 
@@ -218,6 +226,11 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 		}
 		case R.id.action_test_login: {
 			selectedAccount.testLogin(this);
+		}
+		
+		case R.id.action_export_password:{
+			loginManager.getAccountManager().exportAccount(this, selectedAccount);
+			break;
 		}
 		}
 		return false;
@@ -420,6 +433,31 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 			// mId allows you to update the notification later on.
 			mNotificationManager.notify(mId, mBuilder.build());
 		}
+		
+	}
+
+	@Override
+	public void exportSuccessful(String hash) {
+		
+		LinearLayout layout = new LinearLayout(this);
+		layout.setOrientation(LinearLayout.VERTICAL);
+		EditText editHash = new EditText(this);
+		TextView textViewInfo=new TextView(this);
+		textViewInfo.setText(getResources().getString(R.string.account_export_info));
+		layout.addView(textViewInfo);
+		layout.addView(editHash);
+		
+		AlertDialog.Builder builder = new AlertDialog.Builder(this)
+		.setMessage("Account exported")
+		.setPositiveButton("OK", null)
+		.setView(layout);
+builder.create().show();
+		
+	}
+
+	@Override
+	public void exportFailed() {
+		// TODO Auto-generated method stub
 		
 	}
 }
