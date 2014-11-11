@@ -43,7 +43,8 @@ import android.widget.Toast;
 
 public class MainActivity extends Activity implements OnItemLongClickListener,
 		android.widget.PopupMenu.OnMenuItemClickListener,
-		android.content.DialogInterface.OnClickListener, OnItemClickListener, AccountExpiredListener, AccountExportListener {
+		android.content.DialogInterface.OnClickListener, OnItemClickListener,
+		AccountExpiredListener, AccountExportListener {
 
 	public final static boolean DEBUG_ACTIVATED = false;
 
@@ -110,10 +111,9 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		childWindowActive = false;
-		loginManager=new LoginManager(this);
+		loginManager = new LoginManager(this);
 		loginManager.OnAppStarted();
 	}
-
 
 	@Override
 	protected void onStop() {
@@ -140,7 +140,8 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 		if (id == R.id.settings) {
 			childWindowActive = true;
 			setContentView(R.layout.settings);
-			new SettingsWindow(this, loginManager.getAccountManager().getConfiguration(),loginManager.getAccountManager());
+			new SettingsWindow(this, loginManager.getAccountManager()
+					.getConfiguration(), loginManager.getAccountManager());
 		}
 		if (id == R.id.main_page) {
 
@@ -158,7 +159,7 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 	}
 
 	public void refreshAccountList() {
-		accountListAdapter=loginManager.getAccountListAdapter();
+		accountListAdapter = loginManager.getAccountListAdapter();
 		if (!accountListAdapter.isEmpty()) {
 			setContentView(R.layout.activity_main);
 			ListView listViewAccounts = (ListView) findViewById(R.id.listViewAccounts);
@@ -198,7 +199,9 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 		case R.id.action_delete_account: {
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setTitle(getResources().getString(R.string.delete_account))
-					.setMessage(this.getResources().getString(R.string.are_you_sure))
+					.setMessage(
+							this.getResources()
+									.getString(R.string.are_you_sure))
 					.setIcon(android.R.drawable.ic_dialog_alert)
 					.setPositiveButton(getResources().getString(R.string.yes),
 							new DialogInterface.OnClickListener() {
@@ -208,7 +211,9 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 											.removeAccount(selectedAccount);
 									refreshAccountList();
 								}
-							}).setNegativeButton(getResources().getString(R.string.no), null).show();
+							})
+					.setNegativeButton(getResources().getString(R.string.no),
+							null).show();
 			break;
 		}
 		case R.id.action_change_account: {
@@ -227,9 +232,10 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 		case R.id.action_test_login: {
 			selectedAccount.testLogin(this);
 		}
-		
-		case R.id.action_export_password:{
-			loginManager.getAccountManager().exportAccount(this, selectedAccount);
+
+		case R.id.action_export_password: {
+			loginManager.getAccountManager().exportAccount(this,
+					selectedAccount);
 			break;
 		}
 		}
@@ -289,30 +295,49 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 	}
 
 	private void checkExpired() {
-		int i=0;
-		for (final Account account : loginManager.getAccountManager().getAccounts()) {
+		int i = 0;
+		for (final Account account : loginManager.getAccountManager()
+				.getAccounts()) {
 			selectedAccount = account;
 			if (account.isExpired()) {
 				i++;
 				if (active) {
-					final MainActivity activity=this;
+					final MainActivity activity = this;
 					runOnUiThread(new Runnable() {
-						
+
 						@Override
 						public void run() {
-							AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-							builder.setTitle(getResources().getString(R.string.account_expired))
+							AlertDialog.Builder builder = new AlertDialog.Builder(
+									activity);
+							builder.setTitle(
+									getResources().getString(
+											R.string.account_expired))
 									.setMessage(
-											getResources().getString(R.string.password_for)+" "
+											getResources().getString(
+													R.string.password_for)
+													+ " "
 													+ account.getUserName()
-													+ " "+getResources().getString(R.string.on)+" "
-													+ account.getWebsite().getName()
-													+ " "+getResources().getString(R.string.pass_expire_sentence2))
+													+ " "
+													+ getResources().getString(
+															R.string.on)
+													+ " "
+													+ account.getWebsite()
+															.getName()
+													+ " "
+													+ getResources()
+															.getString(
+																	R.string.pass_expire_sentence2))
 									.setIcon(android.R.drawable.ic_dialog_alert)
-									.setPositiveButton(getResources().getString(R.string.yes), activity)
-									.setNegativeButton(getResources().getString(R.string.no), null) // Do nothing on no
+									.setPositiveButton(
+											getResources().getString(
+													R.string.yes), activity)
+									.setNegativeButton(
+											getResources().getString(
+													R.string.no), null) // Do
+																		// nothing
+																		// on no
 									.show();
-							
+
 						}
 					});
 
@@ -323,13 +348,20 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 
 			}
 		}
-		if(!active&&i>0){
+		if (!active && i > 0) {
 			int mId = 0;
-			NotificationCompat.Builder mBuilder =
-			        new NotificationCompat.Builder(this)
-			        .setSmallIcon(R.drawable.ic_passchange)
-			        .setContentTitle(getResources().getString(R.string.account_expired))
-			        .setContentText(getResources().getString(R.string.there_are)+" "+Integer.toString(i)+" "+getResources().getString(R.string.pass_expire_sentence));
+			NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
+					this)
+					.setSmallIcon(R.drawable.ic_passchange)
+					.setContentTitle(
+							getResources().getString(R.string.account_expired))
+					.setContentText(
+							getResources().getString(R.string.there_are)
+									+ " "
+									+ Integer.toString(i)
+									+ " "
+									+ getResources().getString(
+											R.string.pass_expire_sentence));
 
 			Intent resultIntent = new Intent(this, MainActivity.class);
 
@@ -338,82 +370,101 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 			stackBuilder.addParentStack(MainActivity.class);
 			// Adds the Intent that starts the Activity to the top of the stack
 			stackBuilder.addNextIntent(resultIntent);
-			PendingIntent resultPendingIntent =
-			        stackBuilder.getPendingIntent(
-			            0,
-			            PendingIntent.FLAG_UPDATE_CURRENT
-			        );
+			PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(
+					0, PendingIntent.FLAG_UPDATE_CURRENT);
 			mBuilder.setContentIntent(resultPendingIntent);
-			NotificationManager mNotificationManager =
-			    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+			NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 			// mId allows you to update the notification later on.
 			mNotificationManager.notify(mId, mBuilder.build());
 		}
 	}
 
-
-//	public void startExpirationTimer() {
-//		if(expirationTimer!=null)
-//			expirationTimer.cancel();
-//		expirationTimer = new Timer();
-//		expirationTimer.schedule(new TimerTask() {
-//
-//			@Override
-//			public void run() {
-//				if(MainActivity.DEBUG_ACTIVATED){
-//					Log.e("debug","run task");
-//				}
-//				if(loginManager.getAccountManager()!=null){
-//					checkExpired();
-//					if(MainActivity.DEBUG_ACTIVATED){
-//						Log.e("debug","run task: check expire");
-//					}
-//				}
-//
-//			}
-//		}, 60000 * loginManager.getAccountManager().getConfiguration().getRememberTimeMinmutes(),60000*loginManager.getAccountManager().getConfiguration().getRememberTimeMinmutes());
-//	}
+	// public void startExpirationTimer() {
+	// if(expirationTimer!=null)
+	// expirationTimer.cancel();
+	// expirationTimer = new Timer();
+	// expirationTimer.schedule(new TimerTask() {
+	//
+	// @Override
+	// public void run() {
+	// if(MainActivity.DEBUG_ACTIVATED){
+	// Log.e("debug","run task");
+	// }
+	// if(loginManager.getAccountManager()!=null){
+	// checkExpired();
+	// if(MainActivity.DEBUG_ACTIVATED){
+	// Log.e("debug","run task: check expire");
+	// }
+	// }
+	//
+	// }
+	// }, 60000 *
+	// loginManager.getAccountManager().getConfiguration().getRememberTimeMinmutes(),60000*loginManager.getAccountManager().getConfiguration().getRememberTimeMinmutes());
+	// }
 
 	@Override
 	public void accountsExpired(ArrayList<Account> accounts) {
 		for (final Account account : accounts) {
 			selectedAccount = account;
-				if (active) {
-					final MainActivity activity=this;
-					runOnUiThread(new Runnable() {
-						
-						@Override
-						public void run() {
-							AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-							builder.setTitle(getResources().getString(R.string.account_expired))
-									.setMessage(
-											getResources().getString(R.string.password_for)+" "
-													+ account.getUserName()
-													+ " "+getResources().getString(R.string.on)+" "
-													+ account.getWebsite().getName()
-													+ " "+getResources().getString(R.string.pass_expire_sentence2))
-									.setIcon(android.R.drawable.ic_dialog_alert)
-									.setPositiveButton(getResources().getString(R.string.yes), activity)
-									.setNegativeButton(getResources().getString(R.string.no), null) // Do nothing on no
-									.show();
-							
-						}
-					});
+			if (active) {
+				final MainActivity activity = this;
+				runOnUiThread(new Runnable() {
 
-					return;
-				} else {
+					@Override
+					public void run() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(
+								activity);
+						builder.setTitle(
+								getResources().getString(
+										R.string.account_expired))
+								.setMessage(
+										getResources().getString(
+												R.string.password_for)
+												+ " "
+												+ account.getUserName()
+												+ " "
+												+ getResources().getString(
+														R.string.on)
+												+ " "
+												+ account.getWebsite()
+														.getName()
+												+ " "
+												+ getResources()
+														.getString(
+																R.string.pass_expire_sentence2))
+								.setIcon(android.R.drawable.ic_dialog_alert)
+								.setPositiveButton(
+										getResources().getString(R.string.yes),
+										activity)
+								.setNegativeButton(
+										getResources().getString(R.string.no),
+										null) // Do nothing on no
+								.show();
 
-				}
+					}
+				});
+
+				return;
+			} else {
 
 			}
-		
-		if(!active){
+
+		}
+
+		if (!active) {
 			int mId = 0;
-			NotificationCompat.Builder mBuilder =
-			        new NotificationCompat.Builder(this)
-			        .setSmallIcon(R.drawable.ic_passchange)
-			        .setContentTitle(getResources().getString(R.string.account_expired))
-			        .setContentText(getResources().getString(R.string.there_are)+" "+Integer.toString(accounts.size())+" "+getResources().getString(R.string.pass_expire_sentence));
+			NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
+					this)
+					.setSmallIcon(R.drawable.ic_passchange)
+					.setContentTitle(
+							getResources().getString(R.string.account_expired))
+					.setContentText(
+							getResources().getString(R.string.there_are)
+									+ " "
+									+ Integer.toString(accounts.size())
+									+ " "
+									+ getResources().getString(
+											R.string.pass_expire_sentence));
 
 			Intent resultIntent = new Intent(this, MainActivity.class);
 
@@ -422,42 +473,48 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 			stackBuilder.addParentStack(MainActivity.class);
 			// Adds the Intent that starts the Activity to the top of the stack
 			stackBuilder.addNextIntent(resultIntent);
-			PendingIntent resultPendingIntent =
-			        stackBuilder.getPendingIntent(
-			            0,
-			            PendingIntent.FLAG_UPDATE_CURRENT
-			        );
+			PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(
+					0, PendingIntent.FLAG_UPDATE_CURRENT);
 			mBuilder.setContentIntent(resultPendingIntent);
-			NotificationManager mNotificationManager =
-			    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+			NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 			// mId allows you to update the notification later on.
 			mNotificationManager.notify(mId, mBuilder.build());
 		}
-		
+
 	}
 
 	@Override
-	public void exportSuccessful(String hash) {
-		
-		LinearLayout layout = new LinearLayout(this);
-		layout.setOrientation(LinearLayout.VERTICAL);
-		EditText editHash = new EditText(this);
-		TextView textViewInfo=new TextView(this);
-		textViewInfo.setText(getResources().getString(R.string.account_export_info));
-		layout.addView(textViewInfo);
-		layout.addView(editHash);
-		
-		AlertDialog.Builder builder = new AlertDialog.Builder(this)
-		.setMessage("Account exported")
-		.setPositiveButton("OK", null)
-		.setView(layout);
-builder.create().show();
-		
+	public void exportSuccessful(final String hash) {
+		final MainActivity mainActivity=this;
+		this.runOnUiThread(new Runnable() {
+			
+			@Override
+			public void run() {
+				LinearLayout layout = new LinearLayout(mainActivity);
+				layout.setOrientation(LinearLayout.VERTICAL);
+				EditText editHash = new EditText(mainActivity);
+				if(DEBUG_ACTIVATED)
+					Log.e("Hash","hash:"+hash);
+				editHash.setText(hash);
+				TextView textViewInfo = new TextView(mainActivity);
+				textViewInfo.setText(getResources().getString(
+						R.string.account_export_info));
+				layout.addView(textViewInfo);
+				layout.addView(editHash);
+
+				AlertDialog.Builder builder = new AlertDialog.Builder(mainActivity)
+						.setMessage("Account exported").setPositiveButton("OK", null)
+						.setView(layout);
+				builder.create().show();
+				
+			}
+		});
+
 	}
 
 	@Override
 	public void exportFailed() {
 		// TODO Auto-generated method stub
-		
+
 	}
 }
