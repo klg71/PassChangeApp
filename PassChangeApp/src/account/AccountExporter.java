@@ -22,22 +22,17 @@ public class AccountExporter {
 		webClient = new WebClient();
 	}
 	
-	public String toHex(String arg) throws UnsupportedEncodingException{
-		return String.format("%x",new BigInteger(1,arg.getBytes("ISO-8859-1")));
-	}
+
 	
 	public String exportAccount(Account account) throws Exception {
 		String hash = "";
 		try {
 			ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();
-			Crypt.encode(account.getActualPassword().getBytes("ISO-8859-1"), byteArrayOutputStream, Crypt.generateKey(masterPass, salt));
-			String encryptedPass=byteArrayOutputStream.toString("ISO-8859-1");
-			System.out.println("Encrypted Pass:"+encryptedPass);
-			//encryptedPass=new String(Crypt.decode(new ByteArrayInputStream(encryptedPass.getBytes("ISO-8859-1")),Crypt.generateKey(masterPass, salt)),"ISO-8859-1");
+			String encryptedPass=Crypt.exportEncode(Crypt.generateKey(masterPass, salt), account.getActualPassword());
 			hash = webClient
 					.sendRequest(
 							"http://klg71.us.to/PassChangeServer/sendPassword.php",
-							RequestType.POST, "password="+toHex(URLEncoder.encode(encryptedPass, "ISO-8859-1")),
+							RequestType.POST, "password="+encryptedPass,
 							"exportAnswer", false);
 			if(hash.contains("failed")){
 				throw new Exception("Export failed");
