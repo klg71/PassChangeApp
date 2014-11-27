@@ -34,38 +34,38 @@ public class ChangePasswordWindow implements OnClickListener,
 	private CompleteRandomContextGenerator generator;
 	private EditText lengthEditText, pass;
 
-	public ChangePasswordWindow(Account account, MainFragmentActivity mainActivity) {
+	public ChangePasswordWindow(Account account, MainFragmentActivity mainActivity,View mainView) {
 		this.account = account;
 		this.mainActivity = mainActivity;
 
-		pass = (EditText) mainActivity.findViewById(R.id.editNewPass);
+		pass = (EditText) mainView.findViewById(R.id.editNewPass);
 		generator = new CompleteRandomContextGenerator();
 
-		generatorButton = (Button) mainActivity
+		generatorButton = (Button) mainView
 				.findViewById(R.id.buttonPassGenerate);
 		generatorButton.setOnClickListener(this);
-		lengthEditText = (EditText) mainActivity
+		lengthEditText = (EditText) mainView
 				.findViewById(R.id.editNewPassLength);
 
-		checkBoxGenerator = (CheckBox) mainActivity
+		checkBoxGenerator = (CheckBox)mainView
 				.findViewById(R.id.checkPasswordGenerator);
 		checkBoxGenerator.setOnCheckedChangeListener(this);
 
-		tableRowGen = (TableRow) mainActivity.findViewById(R.id.rowGenerator);
-		tableRowGen1 = (TableRow) mainActivity.findViewById(R.id.rowGenerator1);
+		tableRowGen = (TableRow) mainView.findViewById(R.id.rowGenerator);
+		tableRowGen1 = (TableRow)mainView.findViewById(R.id.rowGenerator1);
 
-		ImageView imageView = (ImageView) mainActivity
+		ImageView imageView = (ImageView) mainView
 				.findViewById(R.id.imageViewIcon);
 		imageView.setImageResource(account.getWebsite().getImageSource());
-		TextView textView = (TextView) mainActivity
+		TextView textView = (TextView) mainView
 				.findViewById(R.id.textViewInformation);
 		String source = mainActivity.getResources().getString(R.string.about_change)+"<br>"
 				+ System.getProperty("line.separator") + mainActivity.getResources().getString(R.string.of_account)+": <br>"
 				+ System.getProperty("line.separator") + "<b>"
-				+ account.getUserName() + "</b>"+mainActivity.getResources().getString(R.string.at) +"<b>"
+				+ account.getUserName() + "</b> "+mainActivity.getResources().getString(R.string.at) +" <b>"
 				+ account.getWebsite().getName() + "</b>.";
 		textView.setText(Html.fromHtml(source));
-		submit = (Button) mainActivity.findViewById(R.id.buttonChangeSubmit);
+		submit = (Button) mainView.findViewById(R.id.buttonChangeSubmit);
 		submit.setOnClickListener(this);
 
 	}

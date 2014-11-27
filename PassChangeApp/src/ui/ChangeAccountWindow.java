@@ -12,20 +12,20 @@ import android.widget.TextView;
 public class ChangeAccountWindow implements OnClickListener, OnLongClickListener {
 
 	private Account selectedAccount;
-	private MainActivity mainActivity;
+	private MainFragmentActivity mainActivity;
 	private TextView password,user,email,expire;
 	
 	public ChangeAccountWindow(Account selectedAccount,
-			MainActivity mainActivity) {
+			MainFragmentActivity mainFragmentActivity,View mainView) {
 		this.selectedAccount=selectedAccount;
-		this.mainActivity=mainActivity;
-		Button button=(Button)mainActivity.findViewById(R.id.buttonChangeSubmit);
+		this.mainActivity=mainFragmentActivity;
+		Button button=(Button)mainView.findViewById(R.id.buttonChangeSubmit);
 		button.setOnClickListener(this);
-		password=(TextView)mainActivity.findViewById(R.id.editChangePass);
+		password=(TextView)mainView.findViewById(R.id.editChangePass);
 		password.setOnLongClickListener(this);
-		user=(TextView)mainActivity.findViewById(R.id.editChangeUserName);
-		email=(TextView)mainActivity.findViewById(R.id.editChangeEmail);
-		expire=(TextView)mainActivity.findViewById(R.id.editChangeExpire);
+		user=(TextView)mainView.findViewById(R.id.editChangeUserName);
+		email=(TextView)mainView.findViewById(R.id.editChangeEmail);
+		expire=(TextView)mainView.findViewById(R.id.editChangeExpire);
 		user.setText(selectedAccount.getUserName());
 		email.setText(selectedAccount.getEmail());
 		password.setText(selectedAccount.getActualPassword());
@@ -42,9 +42,6 @@ public class ChangeAccountWindow implements OnClickListener, OnLongClickListener
 		selectedAccount.setEmail(email.getText().toString());
 		selectedAccount.setExpire(Integer.parseInt(expire.getText().toString()));
 		mainActivity.setContentView(R.layout.activity_main);
-		mainActivity.refreshAccountList();
-		mainActivity.setChildWindowActive(false);
-		
 	}
 
 

@@ -7,7 +7,6 @@ import account.AccountManager;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,8 +21,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
-public class SettingsFragment extends CustomFragment implements OnClickListener, OnCheckedChangeListener, OnEditorActionListener {
-	
+public class SettingsFragment extends CustomFragment implements
+		OnClickListener, OnCheckedChangeListener, OnEditorActionListener {
+
 	private MainFragmentActivity mainActivity;
 	private Configuration configuration;
 	private CheckBox checkBox;
@@ -31,6 +31,7 @@ public class SettingsFragment extends CustomFragment implements OnClickListener,
 	private EditText editText, passwordEditText;
 	private EditText rememberEditText;
 	private AccountManager accountManager;
+	private View mainView;
 
 	public SettingsFragment(MainFragmentActivity mainActivity,
 			Configuration configuration, AccountManager accountManager) {
@@ -71,10 +72,16 @@ public class SettingsFragment extends CustomFragment implements OnClickListener,
 			if (passwordEditText.getText().toString().length() > 0) {
 				AlertDialog.Builder builder = new AlertDialog.Builder(
 						mainActivity);
-				builder.setTitle(mainActivity.getResources().getString(R.string.change_master_pass))
-						.setMessage(mainActivity.getResources().getString(R.string.are_you_sure))
+				builder.setTitle(
+						mainActivity.getResources().getString(
+								R.string.change_master_pass))
+						.setMessage(
+								mainActivity.getResources().getString(
+										R.string.are_you_sure))
 						.setIcon(android.R.drawable.ic_dialog_alert)
-						.setPositiveButton(mainActivity.getResources().getString(R.string.yes),
+						.setPositiveButton(
+								mainActivity.getResources().getString(
+										R.string.yes),
 								new DialogInterface.OnClickListener() {
 									public void onClick(DialogInterface dialog,
 											int which) {
@@ -84,45 +91,48 @@ public class SettingsFragment extends CustomFragment implements OnClickListener,
 																.getText()
 																.toString()));
 									}
-								}).setNegativeButton(mainActivity.getResources().getString(R.string.no), null).show();
+								})
+						.setNegativeButton(
+								mainActivity.getResources().getString(
+										R.string.no), null).show();
 			}
 		}
 
 	}
-	
+
 	@Override
 	public void onBackPressed() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
-		return getActivity().findViewById(R.layout.settings);
+		mainView = inflater.inflate(
+	             R.layout.settings, container, false);
+		return mainView;
 	}
 
 	@Override
 	public CharSequence getTitle() {
-		return getActivity().getResources().getString(R.string.settings);
+		return  mainActivity.getResources().getString(R.string.settings).toString();
 	}
 
 	@Override
 	public void onStart() {
-		buttonMasterPassSubmit = (Button) mainActivity
-				.findViewById(R.id.buttonChangeMasterPassSubmit);
+		buttonMasterPassSubmit = (Button)mainView.findViewById(R.id.buttonChangeMasterPassSubmit);
 		buttonMasterPassSubmit.setOnClickListener(this);
 
-		passwordEditText = (EditText) mainActivity
+		passwordEditText = (EditText)  mainView
 				.findViewById(R.id.editTextChangeMasterPass);
 
-		checkBox = (CheckBox) mainActivity
+		checkBox = (CheckBox) mainView
 				.findViewById(R.id.checkBoxLogOutWhenAppIsPaused);
 		checkBox.setChecked(configuration.isLogoutWhenAppIsPaused());
 		checkBox.setOnCheckedChangeListener(this);
 
-		editText = (EditText) mainActivity
+		editText = (EditText) mainView
 				.findViewById(R.id.editTextTimeTillLogout);
 		editText.setText(Integer.toString(configuration.getLogoutTimeMinutes()));
 		if (configuration.isLogoutWhenAppIsPaused()) {
@@ -132,7 +142,7 @@ public class SettingsFragment extends CustomFragment implements OnClickListener,
 		}
 		editText.setOnEditorActionListener(this);
 
-		rememberEditText = (EditText) mainActivity
+		rememberEditText = (EditText)  mainView
 				.findViewById(R.id.editTextTimeTillRemember);
 		rememberEditText.setText(Integer.toString(configuration
 				.getRememberTimeMinmutes()));
