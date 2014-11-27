@@ -182,7 +182,7 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 
 			childWindowActive = true;
 			setContentView(R.layout.changepassword);
-			new ChangePasswordWindow(selectedAccount, this);
+			//new ChangePasswordWindow(selectedAccount, this);
 			break;
 		}
 
@@ -258,7 +258,7 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 	public void onClick(DialogInterface dialog, int which) {
 		childWindowActive = true;
 		setContentView(R.layout.changepassword);
-		new ChangePasswordWindow(selectedAccount, this);
+		//new ChangePasswordWindow(selectedAccount, this);
 
 	}
 

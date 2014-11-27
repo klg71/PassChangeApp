@@ -27,14 +27,14 @@ public class ChangePasswordWindow implements OnClickListener,
 		OnCheckedChangeListener {
 
 	private Account account;
-	private MainActivity mainActivity;
+	private MainFragmentActivity mainActivity;
 	private CheckBox checkBoxGenerator;
 	private TableRow tableRowGen, tableRowGen1;
 	private Button generatorButton, submit;
 	private CompleteRandomContextGenerator generator;
 	private EditText lengthEditText, pass;
 
-	public ChangePasswordWindow(Account account, MainActivity mainActivity) {
+	public ChangePasswordWindow(Account account, MainFragmentActivity mainActivity) {
 		this.account = account;
 		this.mainActivity = mainActivity;
 
@@ -70,6 +70,8 @@ public class ChangePasswordWindow implements OnClickListener,
 
 	}
 
+	
+
 	@Override
 	public void onClick(View v) {
 		if (v.equals(submit)) {
@@ -85,8 +87,7 @@ public class ChangePasswordWindow implements OnClickListener,
 						.getDecorView().getWindowToken(),
 						InputMethodManager.HIDE_NOT_ALWAYS);
 				mainActivity.setContentView(R.layout.activity_main);
-				mainActivity.refreshAccountList();
-				mainActivity.setChildWindowActive(false);
+				mainActivity.dataSetChanged();
 			} else {
 				new AlertDialog.Builder(mainActivity)
 						.setMessage(

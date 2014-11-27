@@ -30,14 +30,20 @@ import core.Website;
 public class LoginManager {
 
 	private boolean loggedIn;
-	private MainActivity activity;
+	private MainFragmentActivity activity;
 	private boolean resetPassword;
 	private boolean active;
 	protected AccountManager accountManager;
 	protected AccountListAdapter accountListAdapter;
 
 	public LoginManager(MainActivity activity) {
-		this.activity = activity;
+		//this.activity = activity;
+		active = false;
+	}
+
+	public LoginManager(MainFragmentActivity mainFragmentActivity) {
+		this.activity = mainFragmentActivity;
+		loggedIn=false;
 		active = false;
 	}
 
@@ -114,6 +120,7 @@ public class LoginManager {
 		alert.setView(textEntryView);
 		resetPassword = false;
 
+		System.out.println("Debug2");
 		alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int whichButton) {
 				// String value = input.getText().toString();
@@ -167,7 +174,7 @@ public class LoginManager {
 					activity.setContentView(R.layout.activity_main);
 					accountListAdapter = new AccountListAdapter(accountManager);
 					active = true;
-					((MainActivity) activity).refreshAccountList();
+					((MainFragmentActivity) activity).dataSetChanged();
 					//activity.startExpirationTimer();
 					return;
 				} else {
@@ -189,7 +196,6 @@ public class LoginManager {
 
 			}
 		});
-
 		alert.setNegativeButton(activity.getResources().getString(R.string.cancel),
 				new DialogInterface.OnClickListener() {
 
@@ -198,7 +204,9 @@ public class LoginManager {
 						return;
 					}
 				});
-		alert.create().show();
+		alert.show();
+
+
 		Button button = (Button) textEntryView
 				.findViewById(R.id.button_reset_password);
 		button.setOnClickListener(new OnClickListener() {

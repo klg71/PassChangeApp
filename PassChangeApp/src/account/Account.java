@@ -10,6 +10,8 @@ import java.util.Map;
 import com.passchange.passchangeapp.R;
 
 import ui.MainActivity;
+import android.app.Activity;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
@@ -42,7 +44,7 @@ public class Account {
 		return userName;
 	}
 
-	public void changePassword(final String newPass, final MainActivity activity) {
+	public void changePassword(final String newPass, final Activity activity) {
 		website.initialize(userName, actualPassword);
 		final Thread login = new Thread() {
 			@Override
@@ -82,8 +84,7 @@ public class Account {
 					activity.runOnUiThread(new Runnable() {
 						@Override
 						public void run() {
-
-							activity.refreshAccountList();
+							//TODO:Update viewPager;
 							Toast.makeText(
 									activity,
 									website.getName()
@@ -263,7 +264,7 @@ public class Account {
 		this.expire = expire;
 	}
 
-	public void testLogin(final MainActivity activity) {
+	public void testLogin(final Activity fragmentActivity) {
 		website.initialize(userName, actualPassword);
 		final Thread login = new Thread() {
 			@Override
@@ -287,21 +288,21 @@ public class Account {
 
 				if (website.isAuthenticated()) {
 
-					activity.runOnUiThread(new Runnable() {
+					fragmentActivity.runOnUiThread(new Runnable() {
 						@Override
 						public void run() {
-							Toast.makeText(activity,
+							Toast.makeText(fragmentActivity,
 									website.getName() + ": Login succesful",
 									Toast.LENGTH_LONG).show();
 
 						}
 					});
 				} else {
-					activity.runOnUiThread(new Runnable() {
+					fragmentActivity.runOnUiThread(new Runnable() {
 
 						@Override
 						public void run() {
-							Toast.makeText(activity,
+							Toast.makeText(fragmentActivity,
 									website.getName() + ": Login unsuccesful",
 									Toast.LENGTH_LONG).show();
 
