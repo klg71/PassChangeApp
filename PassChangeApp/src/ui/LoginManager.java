@@ -171,9 +171,10 @@ public class LoginManager {
 							return;
 						}
 					}
-					activity.setContentView(R.layout.activity_main);
+					//activity.setContentView(R.layout.activity_main);
 					accountListAdapter = new AccountListAdapter(accountManager);
 					active = true;
+					activity.onLoggedIn();
 					((MainFragmentActivity) activity).dataSetChanged();
 					//activity.startExpirationTimer();
 					return;
@@ -204,6 +205,7 @@ public class LoginManager {
 						return;
 					}
 				});
+		alert.create();
 		alert.show();
 
 
