@@ -130,23 +130,7 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		int id = item.getItemId();
-		if (id == R.id.add_account) {
-
-			childWindowActive = true;
-			setContentView(R.layout.addaccount);
-			new AddAccountWindow(loginManager.getAccountManager(), this);
-			return true;
-		}
-		if (id == R.id.settings) {
-			childWindowActive = true;
-			setContentView(R.layout.settings);
-			new SettingsWindow(this, loginManager.getAccountManager()
-					.getConfiguration(), loginManager.getAccountManager());
-		}
-		if (id == R.id.main_page) {
-
-			handleChildBackButton();
-		}
+		
 		return super.onOptionsItemSelected(item);
 	}
 
@@ -219,7 +203,6 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 		case R.id.action_change_account: {
 			childWindowActive = true;
 			setContentView(R.layout.changeaccount);
-			new ChangeAccountWindow(selectedAccount, this);
 			break;
 		}
 		case R.id.action_copy_password: {
