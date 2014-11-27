@@ -18,6 +18,7 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
@@ -28,6 +29,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.AdapterView;
@@ -41,18 +43,14 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 
 public class AccountOverviewFragment extends CustomFragment implements
-		OnItemLongClickListener,
-		android.content.DialogInterface.OnClickListener, OnItemClickListener,
-		AccountExpiredListener, AccountExportListener {
+		OnItemLongClickListener, OnItemClickListener, AccountExpiredListener,
+		AccountExportListener, OnLongClickListener, OnClickListener {
 	public final static boolean DEBUG_ACTIVATED = false;
 
+	private View mainView;
 	private LoginManager loginManager;
 	private AccountListAdapter accountListAdapter;
-	private PopupMenu popupMenu;
 	private Account selectedAccount;
-	private Timer expirationTimer;
-	private boolean childWindowActive;
-	private boolean webViewActive;
 	private boolean showInfoToast;
 	private boolean longClicked;
 	private boolean active;
@@ -75,8 +73,8 @@ public class AccountOverviewFragment extends CustomFragment implements
 	public void refreshAccountList() {
 		accountListAdapter = loginManager.getAccountListAdapter();
 		if (!accountListAdapter.isEmpty()) {
-			ListView listViewAccounts = (ListView) getActivity().findViewById(
-					R.id.listViewAccounts);
+			ListView listViewAccounts = (ListView) mainView
+					.findViewById(R.id.listViewAccounts);
 			listViewAccounts.setAdapter(accountListAdapter);
 			listViewAccounts.setOnItemLongClickListener(this);
 			listViewAccounts.setOnItemClickListener(this);
@@ -90,11 +88,23 @@ public class AccountOverviewFragment extends CustomFragment implements
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
-		if (accountListAdapter.getCount() > 0)
-			return getActivity().findViewById(R.layout.activity_main);
-		return getActivity().findViewById(R.layout.empty_activity_main);
+		mainView = inflater.inflate(R.layout.empty_activity_main, container,
+				false);
+		accountListAdapter = loginManager.getAccountListAdapter();
+		if (accountListAdapter.getCount() > 0) {
+			mainView = inflater.inflate(R.layout.activity_main, container,
+					false);
+			refreshAccountList();
+		}
+		mainView.setOnLongClickListener(this);
 
+		return mainView;
+
+	}
+
+	public AccountOverviewFragment(LoginManager loginManager) {
+		super();
+		this.loginManager = loginManager;
 	}
 
 	@Override
@@ -105,13 +115,6 @@ public class AccountOverviewFragment extends CustomFragment implements
 		((MainFragmentActivity) getActivity())
 				.accountInteraction(selectedAccount);
 		return false;
-	}
-
-	@Override
-	public void onClick(DialogInterface dialog, int which) {
-		childWindowActive = true;
-		((MainFragmentActivity) getActivity()).changePassword(selectedAccount);
-
 	}
 
 	@Override
@@ -348,5 +351,19 @@ public class AccountOverviewFragment extends CustomFragment implements
 	@Override
 	public CharSequence getTitle() {
 		return "Home";
+	}
+
+	@Override
+	public boolean onLongClick(View v) {
+		if(v.equals(mainView)){
+			((MainFragmentActivity) getActivity()).justAddAction();
+		}
+		return false;
+	}
+
+	@Override
+	public void onClick(DialogInterface dialog, int which) {
+		// TODO Auto-generated method stub
+		
 	}
 }
