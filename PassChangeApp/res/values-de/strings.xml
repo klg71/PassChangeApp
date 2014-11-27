@@ -22,7 +22,7 @@
 	<string name="timeTillRememberText">Zeit bis App zur Passwortänderung auffordert \n (in minutes)</string>
 	<string name="changeMasterPasswordText">Masterpasswort der Passwortdatei ändern</string>
     <string name="copy_password">Passwort kopieren</string>
-    <string name="edit_account">Acount ändern</string>
+    <string name="edit_account">Account ändern</string>
     <string name="are_you_sure">Bist du sicher?</string>
     <string name="account_expired">Passwort abgelaufen</string>
     <string name="there_are">Es gibt</string>
@@ -32,7 +32,7 @@
     <string name="pass_expire_sentence2">ist abgelaufen! Wollen sie es jetzt ändern?</string>
     <string name="yes">ja</string>
     <string name="no">nein</string>
-    <string name="about_change">Du änderst gerade das Passwort des Accounts </string>
+    <string name="about_change">Du änderst gerade das Passwort</string>
     <string name="error">Fehler</string>
     <string name="of_account">des Accounts</string>
     <string name="at">der Website</string>
