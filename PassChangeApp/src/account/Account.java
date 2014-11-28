@@ -84,7 +84,7 @@ public class Account {
 					activity.runOnUiThread(new Runnable() {
 						@Override
 						public void run() {
-							//TODO:Update viewPager;
+							// TODO:Update viewPager;
 							Toast.makeText(
 									activity,
 									website.getName()
@@ -99,7 +99,7 @@ public class Account {
 
 	}
 
-	public void openBrowser(final WebView webView, final MainActivity activity) {
+	public void openBrowser(final WebView webView, final Activity activity) {
 
 		CookieSyncManager.createInstance(webView.getContext());
 		final CookieManager cookieManager = CookieManager.getInstance();
@@ -110,11 +110,16 @@ public class Account {
 		final Thread login = new Thread() {
 			@Override
 			public void run() {
-				try {
-					website.authenticate();
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				boolean status = true;
+				while (status) {
+					try {
+						if (!website.isAuthenticated())
+							website.authenticate();
+						status = false;
+					} catch (Exception e) {
+						status = true;
+						e.printStackTrace();
+					}
 				}
 			}
 		};
@@ -123,65 +128,65 @@ public class Account {
 		final Thread openBrowser = new Thread() {
 			@Override
 			public void run() {
-				try {
-					while (login.isAlive())
-						;
-					if (website.isAuthenticated()) {
+				while (login.isAlive())
+					;
+				if (website.isAuthenticated()) {
 
-						Map<String, Map<String, Map<String, String>>> cookieStore = website
-								.getCookies();
+					Map<String, Map<String, Map<String, String>>> cookieStore = website
+							.getCookies();
 
-						for (Map.Entry<String, Map<String, Map<String, String>>> domainStore : cookieStore
-								.entrySet()) {
+					for (Map.Entry<String, Map<String, Map<String, String>>> domainStore : cookieStore
+							.entrySet()) {
 
-							if (domainStore == null)
-								continue;
+						if (domainStore == null)
+							continue;
 
-							StringBuffer cookieStringBuffer = new StringBuffer();
+						StringBuffer cookieStringBuffer = new StringBuffer();
 
-							Iterator<String> cookieNames = domainStore
-									.getValue().keySet().iterator();
-							while (cookieNames.hasNext()) {
-								String cookieName = (String) cookieNames.next();
-								Map<String, String> cookie = domainStore
-										.getValue().get(cookieName);
-								// check cookie to ensure path matches and
-								// cookie is
-								// not expired
-								// if all is cool, add cookie to header string
-								if (isNotExpired((String) cookie.get(EXPIRES))) {
-									cookieStringBuffer.append(cookieName);
-									cookieStringBuffer.append("=");
-									cookieStringBuffer.append((String) cookie
-											.get(cookieName));
-									cookieStringBuffer
-											.append(SET_COOKIE_SEPARATOR);
-									cookieStringBuffer.append(" domain=" + domainStore.getKey());
-								}
-								if(MainActivity.DEBUG_ACTIVATED)
-								Log.e("Cookie:", cookieStringBuffer.toString());
-								cookieManager.setCookie(domainStore.getKey(),
-										cookieStringBuffer.toString());
-								cookieStringBuffer = new StringBuffer();
+						Iterator<String> cookieNames = domainStore.getValue()
+								.keySet().iterator();
+						while (cookieNames.hasNext()) {
+							String cookieName = (String) cookieNames.next();
+							Map<String, String> cookie = domainStore.getValue()
+									.get(cookieName);
+							// check cookie to ensure path matches and
+							// cookie is
+							// not expired
+							// if all is cool, add cookie to header string
+							if (isNotExpired((String) cookie.get(EXPIRES))) {
+								cookieStringBuffer.append(cookieName);
+								cookieStringBuffer.append("=");
+								cookieStringBuffer.append((String) cookie
+										.get(cookieName));
+								cookieStringBuffer.append(SET_COOKIE_SEPARATOR);
+								cookieStringBuffer.append(" domain="
+										+ domainStore.getKey());
 							}
-							CookieSyncManager.getInstance().sync();
-							activity.runOnUiThread(new Runnable() {
-								@Override
-								public void run() {
-									webView.setWebViewClient(new WebViewClient());
-									webView.getSettings().setJavaScriptEnabled(true);
-									webView.getSettings().setBuiltInZoomControls(true);
-									webView.getSettings().setDisplayZoomControls(false);
-									webView.loadUrl(website.getWebsiteUrl());
-
-								}
-							});
+							if (MainActivity.DEBUG_ACTIVATED)
+								Log.e("Cookie:", cookieStringBuffer.toString());
+							cookieManager.setCookie(domainStore.getKey(),
+									cookieStringBuffer.toString());
+							cookieStringBuffer = new StringBuffer();
 						}
+						CookieSyncManager.getInstance().sync();
+						activity.runOnUiThread(new Runnable() {
+							@Override
+							public void run() {
+								webView.setWebViewClient(new WebViewClient());
+								webView.getSettings()
+										.setJavaScriptEnabled(true);
+								webView.getSettings().setBuiltInZoomControls(
+										true);
+								webView.getSettings().setDisplayZoomControls(
+										false);
+								webView.loadUrl(website.getWebsiteUrl());
 
+							}
+						});
 					}
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+
+				} else {
+
 				}
 			}
 		};
@@ -324,6 +329,5 @@ public class Account {
 			return false;
 		}
 	}
-	
-	
+
 }

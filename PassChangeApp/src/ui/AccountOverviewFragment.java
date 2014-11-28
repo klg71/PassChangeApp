@@ -366,4 +366,9 @@ public class AccountOverviewFragment extends CustomFragment implements
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void refresh() {
+		refreshAccountList();
+	}
 }

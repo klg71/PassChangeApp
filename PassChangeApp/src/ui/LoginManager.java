@@ -37,13 +37,13 @@ public class LoginManager {
 	protected AccountListAdapter accountListAdapter;
 
 	public LoginManager(MainActivity activity) {
-		//this.activity = activity;
+		// this.activity = activity;
 		active = false;
 	}
 
 	public LoginManager(MainFragmentActivity mainFragmentActivity) {
 		this.activity = mainFragmentActivity;
-		loggedIn=false;
+		loggedIn = false;
 		active = false;
 	}
 
@@ -51,9 +51,9 @@ public class LoginManager {
 		try {
 			active = false;
 			accountManager.writeToFile();
-			if (accountManager.getConfiguration().isLogoutWhenAppIsPaused())
+			if (accountManager.getConfiguration().isLogoutWhenAppIsPaused()) {
 				loggedIn = false;
-			else {
+			} else {
 				startLogoutTimer();
 			}
 		} catch (Exception e) {
@@ -71,9 +71,9 @@ public class LoginManager {
 		return accountListAdapter;
 	}
 
-	public void OnAppStopped(){
-		if(isLoggedIn()){
-			active=false;
+	public void OnAppStopped() {
+		if (isLoggedIn()) {
+			active = false;
 			try {
 				accountManager.writeToFile();
 			} catch (Exception e) {
@@ -82,10 +82,10 @@ public class LoginManager {
 			}
 		}
 	}
-	
+
 	public void OnAppStarted() {
 		if (isLoggedIn()) {
-
+			activity.onLoggedIn();
 		} else {
 			login();
 		}
@@ -116,7 +116,8 @@ public class LoginManager {
 		AlertDialog.Builder alert = new AlertDialog.Builder(activity);
 		alert.setTitle(activity.getResources().getString(R.string.login));
 		alert.setCancelable(false);
-		alert.setMessage(activity.getResources().getString(R.string.please_enter_master_password));
+		alert.setMessage(activity.getResources().getString(
+				R.string.please_enter_master_password));
 		alert.setView(textEntryView);
 		resetPassword = false;
 
@@ -140,7 +141,7 @@ public class LoginManager {
 					websites.put("Amazon", new Amazon(activity));
 					websites.put("Ebay", new Ebay(activity));
 					accountManager = new AccountManager("/sdcard/accounts.xml",
-							password, websites,activity);
+							password, websites, activity);
 					if (MainActivity.DEBUG_ACTIVATED)
 						Log.e("file", "/sdcard/accounts.xml");
 					File file = new File("/sdcard/accounts.xml");
@@ -156,7 +157,8 @@ public class LoginManager {
 									activity);
 							ad.setCancelable(false); // This blocks the 'BACK'
 														// button
-							ad.setMessage(activity.getResources().getString(R.string.error_wrong_pass));
+							ad.setMessage(activity.getResources().getString(
+									R.string.error_wrong_pass));
 							ad.setPositiveButton("OK",
 									new DialogInterface.OnClickListener() {
 										@Override
@@ -171,18 +173,19 @@ public class LoginManager {
 							return;
 						}
 					}
-					//activity.setContentView(R.layout.activity_main);
+					// activity.setContentView(R.layout.activity_main);
 					accountListAdapter = new AccountListAdapter(accountManager);
 					active = true;
 					activity.onLoggedIn();
 					((MainFragmentActivity) activity).dataSetChanged();
-					//activity.startExpirationTimer();
+					// activity.startExpirationTimer();
 					return;
 				} else {
 					AlertDialog.Builder ad = new AlertDialog.Builder(activity);
 					ad.setCancelable(false); // This blocks the 'BACK'
 												// button
-					ad.setMessage(activity.getResources().getString(R.string.error_wrong_pass));
+					ad.setMessage(activity.getResources().getString(
+							R.string.error_wrong_pass));
 					ad.setPositiveButton("OK",
 							new DialogInterface.OnClickListener() {
 								@Override
@@ -197,7 +200,8 @@ public class LoginManager {
 
 			}
 		});
-		alert.setNegativeButton(activity.getResources().getString(R.string.cancel),
+		alert.setNegativeButton(
+				activity.getResources().getString(R.string.cancel),
 				new DialogInterface.OnClickListener() {
 
 					public void onClick(DialogInterface dialog, int which) {
@@ -208,7 +212,6 @@ public class LoginManager {
 		alert.create();
 		alert.show();
 
-
 		Button button = (Button) textEntryView
 				.findViewById(R.id.button_reset_password);
 		button.setOnClickListener(new OnClickListener() {
@@ -217,8 +220,10 @@ public class LoginManager {
 			public void onClick(View v) {
 
 				AlertDialog.Builder ad = new AlertDialog.Builder(activity);
-				ad.setMessage(activity.getResources().getString(R.string.reset_password));
-				ad.setPositiveButton(activity.getResources().getString(R.string.yes),
+				ad.setMessage(activity.getResources().getString(
+						R.string.reset_password));
+				ad.setPositiveButton(
+						activity.getResources().getString(R.string.yes),
 						new DialogInterface.OnClickListener() {
 							@Override
 							public void onClick(DialogInterface dialog,
@@ -227,7 +232,8 @@ public class LoginManager {
 								resetPassword = true;
 							}
 						});
-				ad.setNegativeButton(activity.getResources().getString(R.string.cancel),
+				ad.setNegativeButton(
+						activity.getResources().getString(R.string.cancel),
 						new DialogInterface.OnClickListener() {
 
 							@Override

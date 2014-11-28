@@ -2,7 +2,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.passchange.passchangeapp.MainActivity" >
 
-    
-    
+    <item
+        android:id="@+id/settings"
+        android:icon="@drawable/edit_account_icon"
+        android:showAsAction="ifRoom"
+        android:title="Settings">
+    </item>
+    <item
+        android:id="@+id/close"
+        android:icon="@drawable/close_webview_icon"
+        android:showAsAction="ifRoom"
+        android:title="Close"
+        android:visible="false">
+    </item>
 
 </menu>

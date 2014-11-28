@@ -5,6 +5,7 @@
     android:orientation="vertical" >
 
     <LinearLayout
+        android:id="@+id/layoutInformation"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="20px"
@@ -119,7 +120,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/add_account_action"
+                android:id="@+id/open_browser_action"
                 android:layout_width="0px"
                 android:layout_height="wrap_content"
                 android:layout_gravity="fill"
@@ -133,12 +134,12 @@
                 <ImageView
                     android:layout_width="96px"
                     android:layout_height="96px"
-                    android:src="@drawable/add_account_icon" />
+                    android:src="@drawable/open_browser_icon" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/add_account" />
+                    android:text="@string/show_in_browser" />
             </LinearLayout>
         </LinearLayout>
 
@@ -204,7 +205,30 @@
             android:layout_margin="10px"
             android:gravity="center"
             android:orientation="horizontal" >
+			
 
+            <LinearLayout
+                android:id="@+id/add_account_action"
+                android:layout_width="0px"
+                android:layout_height="wrap_content"
+                android:layout_gravity="fill"
+                android:layout_margin="10px"
+                android:layout_weight="1"
+                android:background="@drawable/linear_background"
+                android:clickable="true"
+                android:gravity="center"
+                android:orientation="vertical" >
+
+                <ImageView
+                    android:layout_width="96px"
+                    android:layout_height="96px"
+                    android:src="@drawable/add_account_icon" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/add_account" />
+            </LinearLayout>
             <LinearLayout
                 android:id="@+id/delete_account_icon"
                 android:layout_width="0px"

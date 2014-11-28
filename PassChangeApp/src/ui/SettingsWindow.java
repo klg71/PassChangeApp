@@ -21,7 +21,7 @@ import core.Configuration;
 public class SettingsWindow implements OnCheckedChangeListener,
 		OnEditorActionListener, OnClickListener {
 
-	private MainActivity mainActivity;
+	private MainFragmentActivity mainActivity;
 	private Configuration configuration;
 	private CheckBox checkBox;
 	private Button buttonMasterPassSubmit;
@@ -29,25 +29,25 @@ public class SettingsWindow implements OnCheckedChangeListener,
 	private EditText rememberEditText;
 	private AccountManager accountManager;
 
-	public SettingsWindow(MainActivity mainActivity,
+	public SettingsWindow(MainFragmentActivity mainFragmentActivity,
 			Configuration configuration, AccountManager accountManager) {
-		this.mainActivity = mainActivity;
+		this.mainActivity = mainFragmentActivity;
 		this.configuration = configuration;
 		this.accountManager = accountManager;
 
-		buttonMasterPassSubmit = (Button) mainActivity
+		buttonMasterPassSubmit = (Button) mainFragmentActivity
 				.findViewById(R.id.buttonChangeMasterPassSubmit);
 		buttonMasterPassSubmit.setOnClickListener(this);
 
-		passwordEditText = (EditText) mainActivity
+		passwordEditText = (EditText) mainFragmentActivity
 				.findViewById(R.id.editTextChangeMasterPass);
 
-		checkBox = (CheckBox) mainActivity
+		checkBox = (CheckBox) mainFragmentActivity
 				.findViewById(R.id.checkBoxLogOutWhenAppIsPaused);
 		checkBox.setChecked(configuration.isLogoutWhenAppIsPaused());
 		checkBox.setOnCheckedChangeListener(this);
 
-		editText = (EditText) mainActivity
+		editText = (EditText) mainFragmentActivity
 				.findViewById(R.id.editTextTimeTillLogout);
 		editText.setText(Integer.toString(configuration.getLogoutTimeMinutes()));
 		if (configuration.isLogoutWhenAppIsPaused()) {
@@ -57,7 +57,7 @@ public class SettingsWindow implements OnCheckedChangeListener,
 		}
 		editText.setOnEditorActionListener(this);
 
-		rememberEditText = (EditText) mainActivity
+		rememberEditText = (EditText) mainFragmentActivity
 				.findViewById(R.id.editTextTimeTillRemember);
 		rememberEditText.setText(Integer.toString(configuration
 				.getRememberTimeMinmutes()));

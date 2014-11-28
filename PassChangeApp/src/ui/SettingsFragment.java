@@ -150,4 +150,10 @@ public class SettingsFragment extends CustomFragment implements
 		super.onStart();
 	}
 
+	@Override
+	public void refresh() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
