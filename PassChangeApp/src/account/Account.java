@@ -10,9 +10,11 @@ import java.util.Map;
 import com.passchange.passchangeapp.R;
 
 import ui.MainActivity;
+import ui.WebViewFragment;
 import android.app.Activity;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.view.View;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 import android.webkit.WebView;
@@ -27,6 +29,7 @@ public class Account {
 	private Calendar lastChangedCalendar;
 	private Website website;
 	private SimpleDateFormat simpleDateFormat;
+	private boolean threadRunnin;
 	private int expire;
 	private static final String SET_COOKIE = "Set-Cookie";
 	private static final String COOKIE_VALUE_DELIMITER = ";";
@@ -99,7 +102,7 @@ public class Account {
 
 	}
 
-	public void openBrowser(final WebView webView, final Activity activity) {
+	public void openBrowser(final WebView webView, final Activity activity, final WebViewFragment webViewFragment) {
 
 		CookieSyncManager.createInstance(webView.getContext());
 		final CookieManager cookieManager = CookieManager.getInstance();
@@ -107,6 +110,7 @@ public class Account {
 		cookieManager.removeSessionCookie();
 		cookieManager.removeAllCookie();
 		website.initialize(userName, actualPassword);
+		threadRunnin=true;
 		final Thread login = new Thread() {
 			@Override
 			public void run() {
@@ -172,6 +176,7 @@ public class Account {
 						activity.runOnUiThread(new Runnable() {
 							@Override
 							public void run() {
+								threadRunnin=false;
 								webView.setWebViewClient(new WebViewClient());
 								webView.getSettings()
 										.setJavaScriptEnabled(true);
@@ -179,7 +184,14 @@ public class Account {
 										true);
 								webView.getSettings().setDisplayZoomControls(
 										false);
+								//webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 								webView.loadUrl(website.getWebsiteUrl());
+								webView.setVisibility(View.VISIBLE);
+								webView.invalidate();
+								webView.loadUrl(website.getWebsiteUrl());
+								webView.invalidate();
+								webViewFragment.removeProgressBar();
+								
 
 							}
 						});
@@ -192,7 +204,7 @@ public class Account {
 		};
 		openBrowser.start();
 	}
-
+	
 	public void setUserName(String userName) {
 		this.userName = userName;
 	}

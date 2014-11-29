@@ -89,7 +89,7 @@
 
             <TextView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="fill_parent"
                 android:text="@string/expire_time" />
             
             <EditText
@@ -109,12 +109,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="" />
-            
-            <Button 
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+
+            <Button
                 android:id="@+id/buttonSubmit"
-                android:text="@string/submit"/>
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/submit" />
             
             </TableRow>
             

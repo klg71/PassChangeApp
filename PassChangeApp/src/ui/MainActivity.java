@@ -174,8 +174,8 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 			childWindowActive = true;
 			webViewActive = true;
 			setContentView(R.layout.webview);
-			selectedAccount.openBrowser((WebView) findViewById(R.id.webView1),
-					this);
+//			selectedAccount.openBrowser((WebView) findViewById(R.id.webView1),
+//					this);
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
 			break;
 		}

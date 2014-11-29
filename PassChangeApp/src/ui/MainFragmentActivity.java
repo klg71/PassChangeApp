@@ -103,7 +103,7 @@ public class MainFragmentActivity extends FragmentActivity implements
 	protected void onStart() {
 		active = true;
 		loginManager.OnAppStarted();
-
+		
 		super.onStart();
 	}
 
@@ -114,6 +114,7 @@ public class MainFragmentActivity extends FragmentActivity implements
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(pagerAdapter);
 		mViewPager.setOnPageChangeListener(this);
+
 
 	}
 
@@ -499,6 +500,7 @@ public class MainFragmentActivity extends FragmentActivity implements
 
 	@Override
 	public void onPageSelected(int arg0) {
+		pagerAdapter.getCustomItem(arg0).refresh();
 		if (arg0 != 0) {
 			optionsMenu.findItem(R.id.close).setVisible(true);
 		} else {
