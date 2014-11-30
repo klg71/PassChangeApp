@@ -405,6 +405,7 @@ public class MainFragmentActivity extends FragmentActivity implements
 				layout.setOrientation(LinearLayout.VERTICAL);
 				EditText editHash = new EditText(mainActivity);
 				editHash.setPadding(10, 10, 10,10);
+				layout.setPadding(10, 10, 10,10);
 				if (MainFragmentActivity.DEBUG_ACTIVATED)
 					Log.e("Hash", "hash:" + hash);
 				editHash.setText(hash);
@@ -415,7 +416,7 @@ public class MainFragmentActivity extends FragmentActivity implements
 				layout.addView(editHash);
 
 				AlertDialog.Builder builder = new AlertDialog.Builder(
-						mainActivity).setMessage("Account exported")
+						mainActivity).setMessage(getResources().getString(R.string.export_account))
 						.setPositiveButton("OK", null).setView(layout);
 				builder.create().show();
 
