@@ -7,20 +7,20 @@
     <string name="action_settings">Einstellungen</string>
     <string name="add_account">Account hinzufügen</string>
     <string name="delete_account">Account löschen</string>
-	<string name="change_password">Passwort ändern</string>
-	<string name="settings">Einstellungen</string>
-	<string name="test_login">Test Login</string>
-	<string name="show_in_browser">Browser öffnen</string>
-	<string name="logOutWhenPausingAppText">Ausloggen wenn App pausiert wird</string>
-	<string name="timeTillLogoutText">Zeit bis App sich ausloggt (in Minuten):</string>
-	<string name="minutes">Minuten</string>
-	<string name="ButtonResetPasswordText">Passwort zurücksetzen</string>
-	<string name="emptyActivityText">Deine Accountliste ist leer. Füge welche hinzu!</string>
-	<string name="switch_to_main_page">Hauptseite</string>
-	<string name="hold_item_string">Halten um zu interagieren</string>
-	<string name="usernameDescription">Dein Benutzername\nmit dem du dich\nauf der Website anmeldest\n(kann auch eine Email sein)</string>
-	<string name="timeTillRememberText">Zeit bis App zur Passwortänderung auffordert \n (in minutes)</string>
-	<string name="changeMasterPasswordText">Masterpasswort der Passwortdatei ändern</string>
+    <string name="change_password">Passwort ändern</string>
+    <string name="settings">Einstellungen</string>
+    <string name="test_login">Test Login</string>
+    <string name="show_in_browser">Browser öffnen</string>
+    <string name="logOutWhenPausingAppText">Ausloggen wenn App pausiert wird</string>
+    <string name="timeTillLogoutText">Zeit bis App sich ausloggt (in Minuten):</string>
+    <string name="minutes">Minuten</string>
+    <string name="ButtonResetPasswordText">Passwort zurücksetzen</string>
+    <string name="emptyActivityText">Deine Accountliste ist leer. Füge welche hinzu!</string>
+    <string name="switch_to_main_page">Hauptseite</string>
+    <string name="hold_item_string">Halten um zu interagieren</string>
+    <string name="usernameDescription">Dein Benutzername\nmit dem du dich\nauf der Website anmeldest\n(kann auch eine Email sein)</string>
+    <string name="timeTillRememberText">Zeit bis App zur Passwortänderung auffordert \n (in minutes)</string>
+    <string name="changeMasterPasswordText">Masterpasswort der Passwortdatei ändern</string>
     <string name="copy_password">Passwort kopieren</string>
     <string name="edit_account">Account ändern</string>
     <string name="are_you_sure">Bist du sicher?</string>
@@ -38,16 +38,19 @@
     <string name="at">der Website</string>
     <string name="please_fulfill_condtion">Bitte geben sie ein Passwort ein das folgende Bedinungen erfüllt: </string>
     <string name="please_enter_master_password">Bitte geben sie ihr Masterpasswort ein:</string>
-	<string name="login">Einloggen</string>
-	<string name="error_wrong_pass">Ein Fehler ist aufgetreten, vieleicht hast du ein falsches Passwort eingegeben. Versuch es nochmal!</string>
-	<string name="cancel">Abbrechen</string>
-	<string name="reset_password">Wollen sie wirklich ihr Passwort zurücksetzen und alle Accountdaten löschen?</string>
-	<string name="change_master_pass">Masterpasswort ändern</string>
-	<string name="submit">Bestätigen</string>
-	<string name="expire_time">Gültigkeit\n(in Tagen)</string>
-	<string name="password">Passwort</string>
-	<string name="email">Email</string>
-	<string name="username">Benutzername</string>
-	<string name="export_account">Password exportieren</string>	<string name="account_export_info">Dein Passwort wurde erfolgreich exportiert. Auf der Website: "http://klg71.us.to/PassChangeServer/getPasswordForm.php" um ihr Passwort anzusehen.</string>
-	
+    <string name="login">Einloggen</string>
+    <string name="error_wrong_pass">Ein Fehler ist aufgetreten, vieleicht hast du ein falsches Passwort eingegeben. Versuch es nochmal!</string>
+    <string name="cancel">Abbrechen</string>
+    <string name="reset_password">Wollen sie wirklich ihr Passwort zurücksetzen und alle Accountdaten löschen?</string>
+    <string name="change_master_pass">Masterpasswort ändern</string>
+    <string name="submit">Bestätigen</string>
+    <string name="expire_time">Gültigkeit\n(in Tagen)</string>
+    <string name="password">Passwort</string>
+    <string name="email">Email</string>
+    <string name="username">Benutzername</string>
+    <string name="export_account">Password exportieren</string>
+    <string name="account_export_info">Passwort wurde erfolgreich exportiert.\nSie können auf der Website:\n"http://klg71.us.to/PassChangeServer/getPasswordForm.php"\nden Code eingeben um ihr Passwort anzusehen.</string>
+    <string name="actions">Aktionen</string>
+    <string name="submit_master_pass_change">Master Password ändern</string>
+
 </resources>

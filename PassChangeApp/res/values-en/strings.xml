@@ -50,5 +50,7 @@
 	<string name="username">Username</string>
 	<string name="export_account">Export Password</string>	
 	<string name="account_export_info">Your password was succesfully exported. You can go to the webpage: ""http://klg71.us.to/PassChangeServer/getPasswordForm.php" to check your password out.</string>
+	<string name="actions">Actions</string>
+	<string name="submit_master_pass_change">Submit master password change</string>
 	
 </resources>
