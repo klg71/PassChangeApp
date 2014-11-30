@@ -23,6 +23,8 @@ import android.widget.Toast;
 import core.Website;
 
 public class Account {
+	private Thread loginThread;
+	private Thread passChangeThread;
 	private String userName;
 	private String email;
 	private String actualPassword;
@@ -49,6 +51,10 @@ public class Account {
 
 	public void changePassword(final String newPass, final Activity activity) {
 		website.initialize(userName, actualPassword);
+
+		if(loginThread!=null){
+			loginThread.interrupt();;
+		}
 		final Thread login = new Thread() {
 			@Override
 			public void run() {
@@ -60,7 +66,11 @@ public class Account {
 				}
 			}
 		};
+		loginThread=login;
 		login.start();
+		if(passChangeThread!=null){
+			passChangeThread.interrupt();;
+		}
 		final Thread change = new Thread() {
 			@Override
 			public void run() {
@@ -75,6 +85,7 @@ public class Account {
 				}
 			}
 		};
+		passChangeThread=change;
 		change.start();
 
 		new Thread() {
@@ -111,6 +122,9 @@ public class Account {
 		cookieManager.removeAllCookie();
 		website.initialize(userName, actualPassword);
 		threadRunnin=true;
+		if(loginThread!=null){
+			loginThread.interrupt();
+		}
 		final Thread login = new Thread() {
 			@Override
 			public void run() {
@@ -127,6 +141,7 @@ public class Account {
 				}
 			}
 		};
+		loginThread=login;
 		login.start();
 
 		final Thread openBrowser = new Thread() {
@@ -283,6 +298,9 @@ public class Account {
 
 	public void testLogin(final Activity fragmentActivity) {
 		website.initialize(userName, actualPassword);
+		if(loginThread!=null){
+			loginThread.interrupt();
+		}
 		final Thread login = new Thread() {
 			@Override
 			public void run() {
@@ -295,6 +313,7 @@ public class Account {
 				}
 			}
 		};
+		loginThread=login;
 		login.start();
 		Log.e("test", Boolean.toString(website.isAuthenticated()));
 		new Thread() {
