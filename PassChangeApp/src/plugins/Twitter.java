@@ -8,8 +8,10 @@ import java.util.regex.Pattern;
 import com.passchange.passchangeapp.R;
 
 import ui.MainActivity;
+import ui.MainFragmentActivity;
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import core.RequestType;
 import core.WebClient;
 import core.Website;
@@ -42,28 +44,40 @@ public class Twitter extends Website {
 	public void authenticate() throws Exception {
 		// webClient.sendRequest("https://twitter.com/", RequestType.GET, "",
 		// "home2", false);
-		body=webClient.sendRequest("https://twitter.com",RequestType.GET, "", "desktopVersion", false);
-		body = webClient.sendRequest("https://mobile.twitter.com/session/new",
-				RequestType.GET, "", "home3", false);
-		getToken();
 
-		if(MainActivity.DEBUG_ACTIVATED)
-		System.out.println(token);
-		String post = URLEncoder.encode("username", "UTF-8") + "="
+		if(MainFragmentActivity.DEBUG_ACTIVATED)
+			Log.e("debug","pregets");
+		body=webClient.sendRequest("https://twitter.com",RequestType.GET, "", "desktopVersion", false,"",true);
+		body=webClient.sendRequest("https://mobile.twitter.com",RequestType.GET, "", "desktopVersion", false,"" ,true);
+		body=webClient.sendRequest("https://mobile.twitter.com/session/new", RequestType.GET, "",
+				"home2", false,"",true);
+		if(MainFragmentActivity.DEBUG_ACTIVATED)
+			Log.e("debug","prelogin");
+		getToken();
+		String post=URLEncoder.encode("username", "UTF-8") + "="
 				+ URLEncoder.encode(username, "UTF-8") + "&"
 				+ URLEncoder.encode("password", "UTF-8") + "="
 				+ URLEncoder.encode(pass, "UTF-8")
-				+ "&submit=submit&authenticity_token="
-				+ URLEncoder.encode(token, "UTF-8");
-
-		if(MainActivity.DEBUG_ACTIVATED)
-		System.out.println(post);
-		body = webClient.sendRequest("https://mobile.twitter.com/session/",
-				RequestType.POST, post, "twitter1", false);
-		validateAuthentification();
+				+ "&authenticity_token="
+				+ URLEncoder.encode(token, "UTF-8")+"&wfa=1";
+		
+	
 		body = webClient.sendRequest(
-				"https://mobile.twitter.com/settings/password",
-				RequestType.GET, "", "home2", false);
+				"https://mobile.twitter.com/session",
+				RequestType.POST,post, "twitter1", false,"https://mobile.twitter.com/session/new",false);
+
+		if(MainFragmentActivity.DEBUG_ACTIVATED)
+			Log.e("debug","afterlogin");
+		body=webClient.sendRequest("https://mobile.twitter.com//signup/disablejs", RequestType.GET, "",
+				"home5", false,"",true);
+		body=webClient.sendRequest("https://mobile.twitter.com/home", RequestType.GET, "",
+				"home4", false,"",true);
+
+		if(MainFragmentActivity.DEBUG_ACTIVATED)
+			Log.e("debug","afterHome");
+		body=webClient.sendRequest("https://mobile.twitter.com/settings/password", RequestType.GET, "",
+				"home2", false,"",true);
+		validateAuthentification();
 
 	}
 
@@ -93,7 +107,7 @@ public class Twitter extends Website {
 
 	@Override
 	protected void validateAuthentification() throws Exception {
-		if (body.indexOf("signup-field") > 0) {
+		if (body.indexOf("redirected") > 0) {
 			displayErrorMessage("Twitter: Login unsuccessful please ckeck your username and password");
 			throw new Exception("Login unsuccessful please ckeck your username and password");
 		}
@@ -136,7 +150,7 @@ public class Twitter extends Website {
 	}
 
 	private void getToken() {
-		Pattern pattern = Pattern.compile("\"([a-f0-9]{20})\"");
+		Pattern pattern = Pattern.compile("\"([a-f0-9]{20,})\"");
 		Matcher m = pattern.matcher(body);
 		while (m.find()) {
 			token = m.group(1).substring(0, m.group(1).length());
