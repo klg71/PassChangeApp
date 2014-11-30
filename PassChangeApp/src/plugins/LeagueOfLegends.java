@@ -99,7 +99,7 @@ public class LeagueOfLegends extends Website {
 						post,
 						"lollogin",
 						false,
-						"https://account.leagueoflegends.com/pm.html?xdm_e=http%3A%2F%2Feuw.leagueoflegends.com&xdm_c=default3117&xdm_p=1");
+						"https://account.leagueoflegends.com/pm.html?xdm_e=http%3A%2F%2Feuw.leagueoflegends.com&xdm_c=default3117&xdm_p=1",false);
 		validateAuthentification();
 	}
 
@@ -115,7 +115,7 @@ public class LeagueOfLegends extends Website {
 						post,
 						"lolpasschange",
 						false,
-						"	https://account.leagueoflegends.com/pm.html?xdm_e=http%3A%2F%2Feuw.leagueoflegends.com&xdm_c=default1602&xdm_p=1");
+						"	https://account.leagueoflegends.com/pm.html?xdm_e=http%3A%2F%2Feuw.leagueoflegends.com&xdm_c=default1602&xdm_p=1",false);
 
 		if(MainActivity.DEBUG_ACTIVATED)
 		System.out.println(body);

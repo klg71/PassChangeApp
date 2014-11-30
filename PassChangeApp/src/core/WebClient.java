@@ -156,11 +156,11 @@ public class WebClient {
 
 	public String sendRequest(String url, RequestType type, String body,
 			String filename, Boolean ref) {
-		return sendRequest(url, type, body, filename, ref, "");
+		return sendRequest(url, type, body, filename, ref, "",false);
 	}
 
 	public String sendRequest(String url, RequestType type, String body,
-			String filename, Boolean ref, String referer) {
+			String filename, Boolean ref, String referer,boolean limited) {
 		if(MainActivity.DEBUG_ACTIVATED){
 			System.out.println("File"+filename);
 		}
@@ -272,7 +272,11 @@ public class WebClient {
 			try {
 				for (String line; (line = reader.readLine()) != null;) {
 					ret += line;
-
+					if(limited){
+						if(ret.length()>1000){
+							break;
+						}
+					}
 					if(MainActivity.DEBUG_ACTIVATED)
 					fileWriter.write(line
 							+ System.getProperty("line.separator"));
@@ -471,5 +475,7 @@ public class WebClient {
 	public String getLocation() {
 		return location;
 	}
+
+	
 
 }

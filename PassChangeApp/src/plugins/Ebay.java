@@ -60,7 +60,7 @@ public class Ebay extends Website {
 				.sendRequest(
 						"https://signin.ebay.de/ws/eBayISAPI.dll?co_partnerId=2&siteid=77&UsingSSL=1",
 						RequestType.POST, post, "ebayLogin", false,
-						"https://m.ebay.de/signin?redirectUrl=http%3A%2F%2Fm.ebay.de");
+						"https://m.ebay.de/signin?redirectUrl=http%3A%2F%2Fm.ebay.de",false);
 
 		validateAuthentification();
 	}
@@ -87,7 +87,7 @@ public class Ebay extends Website {
 		post = post.substring(0, post.length() - 1);
 		
 		body = webClient.sendRequest("https://scgi.ebay.de/ws/eBayISAPI.dll", RequestType.POST,
-				post, "ebayAfterChange", false,"https://scgi.ebay.de/ws/eBayISAPI.dll");
+				post, "ebayAfterChange", false,"https://scgi.ebay.de/ws/eBayISAPI.dll",false);
 		validatePasswordChange();
 	}
 

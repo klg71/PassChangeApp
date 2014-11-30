@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 import com.passchange.passchangeapp.R;
 
 import android.app.Activity;
+import android.util.Log;
 import core.RequestType;
 import core.WebClient;
 import core.Website;
@@ -44,6 +45,7 @@ public class Amazon extends Website {
 	public void authenticate() throws Exception {
 		authenticated=false;
 		succesful=false;
+		Log.e("DEBUG", "pre login ");
 		body = webClient
 				.sendRequest(
 						"https://www.amazon.com/ap/signin?_encoding=UTF8&openid.assoc_handle=anywhere_v2_us&openid.claimed_id=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select&openid.identity=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select&openid.mode=checkid_setup&openid.ns=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0&openid.ns.pape=http%3A%2F%2Fspecs.openid.net%2Fextensions%2Fpape%2F1.0&openid.pape.max_auth_age=0&openid.return_to=https%3A%2F%2Fwww.amazon.com%2Fgp%2Faw%2Fpsi.html%3Fie%3DUTF8%26cartID%3D175-7126040-9723105&pageId=avl_us",
@@ -61,10 +63,14 @@ public class Amazon extends Website {
 						"amazon.com",
 						"Referer",
 						"	https://www.amazon.com/ap/signin?_encoding=UTF8&openid.assoc_handle=anywhere_v2_us&openid.claimed_id=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select&openid.identity=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select&openid.mode=checkid_setup&openid.ns=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0&openid.ns.pape=http%3A%2F%2Fspecs.openid.net%2Fextensions%2Fpape%2F1.0&openid.pape.max_auth_age=0&openid.return_to=https%3A%2F%2Fwww.amazon.com%2Fgp%2Faw%2Fpsi.html%3Fie%3DUTF8%26cartID%3D175-7126040-9723105&pageId=avl_us");
+
+		Log.e("DEBUG", "login ");
 		body = webClient
 				.sendRequest(
 						"https://www.amazon.com/ap/signin?_encoding=UTF8&openid.assoc_handle=anywhere_v2_us&openid.claimed_id=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select&openid.identity=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select&openid.mode=checkid_setup&openid.ns=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0&openid.ns.pape=http%3A%2F%2Fspecs.openid.net%2Fextensions%2Fpape%2F1.0&openid.pape.max_auth_age=0&openid.return_to=https%3A%2F%2Fwww.amazon.com%2Fgp%2Faw%2Fpsi.html%3Fie%3DUTF8%26cartID%3D175-4935686-4928147&pageId=avl_us",
 						RequestType.POST, post, "amazonLogin", false);
+
+		Log.e("DEBUG", "validate");
 		validateAuthentification();
 	}
 
@@ -111,7 +117,7 @@ public class Amazon extends Website {
 
 	@Override
 	protected void validateAuthentification() throws Exception {
-		body=webClient.sendRequest("http://www.amazon.com", RequestType.GET, "","checkAmazonLogin", false);
+		body=webClient.sendRequest("http://www.amazon.com", RequestType.GET, "","checkAmazonLogin", false,"",true);
 		if(body.contains("<span id='nav-signin-text' class='nav-button-em'>Sign in</span>")){
 			throw new Exception("Login unsuccsessful please try again");
 		}
