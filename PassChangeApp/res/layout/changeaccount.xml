@@ -15,7 +15,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Username" />
+                android:text="@string/username" />
 
             <EditText
                 android:id="@+id/editChangeUserName"
@@ -48,7 +48,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Email" />
+                android:text="@string/email" />
 
             <EditText
                 android:id="@+id/editChangeEmail"
@@ -66,7 +66,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Password" />
+                android:text="@string/password" />
 
             <EditText
                 android:id="@+id/editChangePass"
@@ -82,8 +82,8 @@
 
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Expire (in days)" />
+                android:layout_height="fill_parent"
+                android:text="@string/expire_time" />
             
             <EditText
                 android:id="@+id/editChangeExpire"
@@ -105,7 +105,7 @@
             
             <Button 
                 android:id="@+id/buttonChangeSubmit"
-                android:text="submit"/>
+                android:text="@string/submit"/>
             
             </TableRow>
             
