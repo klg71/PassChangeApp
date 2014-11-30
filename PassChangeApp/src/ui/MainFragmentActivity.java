@@ -16,6 +16,7 @@ import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.app.ActionBar.TabListener;
 import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.app.FragmentTransaction;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -85,6 +86,7 @@ public class MainFragmentActivity extends FragmentActivity implements
 	private boolean active;
 	private boolean childWindowActive;
 	private Menu optionsMenu;
+	private AlertDialog alertAddAccount;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -327,7 +329,7 @@ public class MainFragmentActivity extends FragmentActivity implements
 			new ChangePasswordWindow(selectedAccount, this, alertView);
 		} else if (v.equals(editAccountLayout)) {
 			actionAlert.dismiss();
-			View alertView = createAlert(R.layout.changepassword);
+			View alertView = createAlert(R.layout.changeaccount);
 			new ChangeAccountWindow(selectedAccount, this, alertView);
 		} else if (v.equals(testLoginLayout)) {
 			actionAlert.dismiss();
@@ -346,7 +348,7 @@ public class MainFragmentActivity extends FragmentActivity implements
 			actionAlert.dismiss();
 			View alertView = createAlert(R.layout.addaccount);
 			new AddAccountWindow(loginManager.getAccountManager(), this,
-					alertView);
+					alertView,alertAddAccount);
 		} else if (v.equals(deleteAccountLayout)) {
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setTitle(getResources().getString(R.string.delete_account))
@@ -387,7 +389,8 @@ public class MainFragmentActivity extends FragmentActivity implements
 		AlertDialog.Builder alert = new AlertDialog.Builder(this);
 		alert.setTitle("Actions");
 		alert.setView(textEntryView);
-		alert.create().show();
+		alertAddAccount=alert.create();
+		alertAddAccount.show();
 		return textEntryView;
 	}
 
