@@ -128,6 +128,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="5sp"
-                    android:text="Submit Master Password Change" />
+                    android:text="@string/submit_master_pass_change" />
             </LinearLayout>
 </LinearLayout>
