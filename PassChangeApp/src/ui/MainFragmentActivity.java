@@ -105,7 +105,7 @@ public class MainFragmentActivity extends FragmentActivity implements
 	protected void onStart() {
 		active = true;
 		loginManager.OnAppStarted();
-		
+
 		super.onStart();
 	}
 
@@ -116,7 +116,6 @@ public class MainFragmentActivity extends FragmentActivity implements
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(pagerAdapter);
 		mViewPager.setOnPageChangeListener(this);
-
 
 	}
 
@@ -325,11 +324,13 @@ public class MainFragmentActivity extends FragmentActivity implements
 	public void onClick(View v) {
 		if (v.equals(changePasswordLayout)) {
 			actionAlert.dismiss();
-			View alertView = createAlert(R.layout.changepassword,R.string.change_password);
+			View alertView = createAlert(R.layout.changepassword,
+					R.string.change_password);
 			new ChangePasswordWindow(selectedAccount, this, alertView);
 		} else if (v.equals(editAccountLayout)) {
 			actionAlert.dismiss();
-			View alertView = createAlert(R.layout.changeaccount,R.string.edit_account);
+			View alertView = createAlert(R.layout.changeaccount,
+					R.string.edit_account);
 			new ChangeAccountWindow(selectedAccount, this, alertView);
 		} else if (v.equals(testLoginLayout)) {
 			actionAlert.dismiss();
@@ -346,9 +347,10 @@ public class MainFragmentActivity extends FragmentActivity implements
 					selectedAccount);
 		} else if (v.equals(addAccountLayout)) {
 			actionAlert.dismiss();
-			View alertView = createAlert(R.layout.addaccount,R.string.add_account);
+			View alertView = createAlert(R.layout.addaccount,
+					R.string.add_account);
 			new AddAccountWindow(loginManager.getAccountManager(), this,
-					alertView,alertAddAccount);
+					alertView, alertAddAccount);
 		} else if (v.equals(deleteAccountLayout)) {
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setTitle(getResources().getString(R.string.delete_account))
@@ -383,13 +385,13 @@ public class MainFragmentActivity extends FragmentActivity implements
 		pagerAdapter.notifyDataSetChanged();
 	}
 
-	private View createAlert(int layoutId,int stringID) {
+	private View createAlert(int layoutId, int stringID) {
 		LayoutInflater factory = LayoutInflater.from(this);
 		View textEntryView = factory.inflate(layoutId, null);
 		AlertDialog.Builder alert = new AlertDialog.Builder(this);
 		alert.setTitle(getResources().getString(stringID));
 		alert.setView(textEntryView);
-		alertAddAccount=alert.create();
+		alertAddAccount = alert.create();
 		alertAddAccount.show();
 		return textEntryView;
 	}
@@ -404,8 +406,8 @@ public class MainFragmentActivity extends FragmentActivity implements
 				LinearLayout layout = new LinearLayout(mainActivity);
 				layout.setOrientation(LinearLayout.VERTICAL);
 				EditText editHash = new EditText(mainActivity);
-				editHash.setPadding(10, 10, 10,10);
-				layout.setPadding(10, 10, 10,10);
+				editHash.setPadding(10, 10, 10, 10);
+				layout.setPadding(10, 10, 10, 10);
 				if (MainFragmentActivity.DEBUG_ACTIVATED)
 					Log.e("Hash", "hash:" + hash);
 				editHash.setText(hash);
@@ -416,7 +418,10 @@ public class MainFragmentActivity extends FragmentActivity implements
 				layout.addView(editHash);
 
 				AlertDialog.Builder builder = new AlertDialog.Builder(
-						mainActivity).setMessage(getResources().getString(R.string.export_account))
+						mainActivity)
+						.setMessage(
+								getResources().getString(
+										R.string.export_account))
 						.setPositiveButton("OK", null).setView(layout);
 				builder.create().show();
 
@@ -486,7 +491,8 @@ public class MainFragmentActivity extends FragmentActivity implements
 
 	@Override
 	public void onClick(DialogInterface dialog, int which) {
-		View alertView = createAlert(R.layout.changepassword,R.string.change_password);
+		View alertView = createAlert(R.layout.changepassword,
+				R.string.change_password);
 		new ChangePasswordWindow(selectedAccount, this, alertView);
 
 	}
@@ -510,6 +516,22 @@ public class MainFragmentActivity extends FragmentActivity implements
 			optionsMenu.findItem(R.id.close).setVisible(true);
 		} else {
 			optionsMenu.findItem(R.id.close).setVisible(false);
+		}
+
+	}
+
+	public void accountInteractionWebView(Account selectedAccount) {
+		if (loadedWebsites.containsKey(selectedAccount)) {
+			mViewPager
+					.setCurrentItem(pagerAdapter
+							.getCustomItemPosition(loadedWebsites
+									.get(selectedAccount)));
+		} else {
+			CustomFragment fragment = new WebViewFragment(selectedAccount);
+			fragments.add(fragment);
+			pagerAdapter.notifyDataSetChanged();
+			mViewPager.setCurrentItem(pagerAdapter.getCount());
+			loadedWebsites.put(selectedAccount, fragment);
 		}
 
 	}

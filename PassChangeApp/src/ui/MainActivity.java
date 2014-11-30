@@ -46,7 +46,7 @@ public class MainActivity extends Activity implements OnItemLongClickListener,
 		android.content.DialogInterface.OnClickListener, OnItemClickListener,
 		AccountExpiredListener, AccountExportListener {
 
-	public final static boolean DEBUG_ACTIVATED = true;
+	public final static boolean DEBUG_ACTIVATED = false;
 
 	private LoginManager loginManager;
 	private AccountListAdapter accountListAdapter;
