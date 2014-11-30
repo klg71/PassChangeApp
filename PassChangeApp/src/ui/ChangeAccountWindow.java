@@ -7,13 +7,14 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 public class ChangeAccountWindow implements OnClickListener, OnLongClickListener {
 
 	private Account selectedAccount;
 	private MainFragmentActivity mainActivity;
-	private TextView password,user,email,expire;
+	private EditText password,user,email,expire;
 	
 	public ChangeAccountWindow(Account selectedAccount,
 			MainFragmentActivity mainFragmentActivity,View mainView) {
@@ -21,11 +22,11 @@ public class ChangeAccountWindow implements OnClickListener, OnLongClickListener
 		this.mainActivity=mainFragmentActivity;
 		Button button=(Button)mainView.findViewById(R.id.buttonChangeSubmit);
 		button.setOnClickListener(this);
-		password=(TextView)mainView.findViewById(R.id.editChangePass);
+		password=(EditText)mainView.findViewById(R.id.editChangePass);
 		password.setOnLongClickListener(this);
-		user=(TextView)mainView.findViewById(R.id.editChangeUserName);
-		email=(TextView)mainView.findViewById(R.id.editChangeEmail);
-		expire=(TextView)mainView.findViewById(R.id.editChangeExpire);
+		user=(EditText)mainView.findViewById(R.id.editChangeUserName);
+		email=(EditText)mainView.findViewById(R.id.editChangeEmail);
+		expire=(EditText)mainView.findViewById(R.id.editChangeExpire);
 		user.setText(selectedAccount.getUserName());
 		email.setText(selectedAccount.getEmail());
 		password.setText(selectedAccount.getActualPassword());
