@@ -325,11 +325,11 @@ public class MainFragmentActivity extends FragmentActivity implements
 	public void onClick(View v) {
 		if (v.equals(changePasswordLayout)) {
 			actionAlert.dismiss();
-			View alertView = createAlert(R.layout.changepassword);
+			View alertView = createAlert(R.layout.changepassword,R.string.change_password);
 			new ChangePasswordWindow(selectedAccount, this, alertView);
 		} else if (v.equals(editAccountLayout)) {
 			actionAlert.dismiss();
-			View alertView = createAlert(R.layout.changeaccount);
+			View alertView = createAlert(R.layout.changeaccount,R.string.edit_account);
 			new ChangeAccountWindow(selectedAccount, this, alertView);
 		} else if (v.equals(testLoginLayout)) {
 			actionAlert.dismiss();
@@ -346,7 +346,7 @@ public class MainFragmentActivity extends FragmentActivity implements
 					selectedAccount);
 		} else if (v.equals(addAccountLayout)) {
 			actionAlert.dismiss();
-			View alertView = createAlert(R.layout.addaccount);
+			View alertView = createAlert(R.layout.addaccount,R.string.add_account);
 			new AddAccountWindow(loginManager.getAccountManager(), this,
 					alertView,alertAddAccount);
 		} else if (v.equals(deleteAccountLayout)) {
@@ -383,11 +383,11 @@ public class MainFragmentActivity extends FragmentActivity implements
 		pagerAdapter.notifyDataSetChanged();
 	}
 
-	private View createAlert(int layoutId) {
+	private View createAlert(int layoutId,int stringID) {
 		LayoutInflater factory = LayoutInflater.from(this);
 		View textEntryView = factory.inflate(layoutId, null);
 		AlertDialog.Builder alert = new AlertDialog.Builder(this);
-		alert.setTitle("Actions");
+		alert.setTitle(getResources().getString(stringID));
 		alert.setView(textEntryView);
 		alertAddAccount=alert.create();
 		alertAddAccount.show();
@@ -404,6 +404,7 @@ public class MainFragmentActivity extends FragmentActivity implements
 				LinearLayout layout = new LinearLayout(mainActivity);
 				layout.setOrientation(LinearLayout.VERTICAL);
 				EditText editHash = new EditText(mainActivity);
+				editHash.setPadding(10, 10, 10,10);
 				if (MainFragmentActivity.DEBUG_ACTIVATED)
 					Log.e("Hash", "hash:" + hash);
 				editHash.setText(hash);
@@ -484,7 +485,7 @@ public class MainFragmentActivity extends FragmentActivity implements
 
 	@Override
 	public void onClick(DialogInterface dialog, int which) {
-		View alertView = createAlert(R.layout.changepassword);
+		View alertView = createAlert(R.layout.changepassword,R.string.change_password);
 		new ChangePasswordWindow(selectedAccount, this, alertView);
 
 	}
