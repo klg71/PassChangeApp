@@ -44,7 +44,7 @@ import android.widget.AdapterView.OnItemLongClickListener;
 
 public class AccountOverviewFragment extends CustomFragment implements
 		OnItemLongClickListener, OnItemClickListener, AccountExpiredListener,
-		AccountExportListener, OnLongClickListener, OnClickListener {
+		AccountExportListener, OnLongClickListener, OnClickListener, android.view.View.OnClickListener {
 	public final static boolean DEBUG_ACTIVATED = false;
 
 	private View mainView;
@@ -96,7 +96,7 @@ public class AccountOverviewFragment extends CustomFragment implements
 					false);
 			refreshAccountList();
 		}
-		mainView.setOnLongClickListener(this);
+		mainView.setOnClickListener(this);
 
 		return mainView;
 
@@ -110,33 +110,19 @@ public class AccountOverviewFragment extends CustomFragment implements
 	@Override
 	public boolean onItemLongClick(AdapterView<?> parent, View view,
 			int position, long id) {
-		longClicked = true;
 		selectedAccount = loginManager.getAccountManager().getAccount(position);
 		((MainFragmentActivity) getActivity())
-				.accountInteraction(selectedAccount);
+				.accountInteractionWebView(selectedAccount);
 		return false;
 	}
 
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
-		if (showInfoToast && !longClicked) {
-
-			Toast.makeText(getActivity(),
-					getResources().getString(R.string.hold_item_string),
-					Toast.LENGTH_SHORT).show();
-			showInfoToast = false;
-			Timer timer = new Timer();
-			final AccountOverviewFragment activity = this;
-			timer.schedule(new TimerTask() {
-
-				@Override
-				public void run() {
-					activity.setShowInfoToast(true);
-				}
-			}, 5000);
-		}
-		longClicked = false;
+	
+		selectedAccount = loginManager.getAccountManager().getAccount(position);
+		((MainFragmentActivity) getActivity())
+				.accountInteraction(selectedAccount);
 
 	}
 
@@ -370,5 +356,13 @@ public class AccountOverviewFragment extends CustomFragment implements
 	@Override
 	public void refresh() {
 		refreshAccountList();
+	}
+
+	@Override
+	public void onClick(View v) {
+		if(v.equals(mainView)){
+			((MainFragmentActivity) getActivity()).justAddAction();
+		}
+		
 	}
 }
