@@ -9,6 +9,7 @@ import com.passchange.passchangeapp.R;
 import core.Website;
 import account.Account;
 import account.AccountManager;
+import android.app.AlertDialog;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
@@ -23,10 +24,12 @@ public class AddAccountWindow implements OnClickListener {
 	private MainFragmentActivity mainActivity;
 	private ArrayList<Website> websites;
 	private View mainView;
+	private AlertDialog dialog;
 
 	public AddAccountWindow(AccountManager accountManager,
-			MainFragmentActivity mainFragmentActivity, View mainView) {
+			MainFragmentActivity mainFragmentActivity, View mainView,AlertDialog dialog) {
 		this.accountManager = accountManager;
+		this.dialog=dialog;
 		this.mainView=mainView;
 		this.mainActivity = mainFragmentActivity;
 		Button submit = (Button)  mainView.findViewById(R.id.buttonSubmit);
@@ -69,6 +72,7 @@ public class AddAccountWindow implements OnClickListener {
 						MainActivity.INPUT_METHOD_SERVICE);
 		im.hideSoftInputFromWindow(mainActivity.getWindow().getDecorView()
 				.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-		mainActivity.setContentView(R.layout.activity_main);
+		mainActivity.dataSetChanged();
+		dialog.dismiss();
 	}
 }
