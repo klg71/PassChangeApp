@@ -12,11 +12,12 @@ import ui.MainFragmentActivity;
 import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
+import core.PassChangeWebsite;
 import core.RequestType;
 import core.WebClient;
 import core.Website;
 
-public class Twitter extends Website {
+public class Twitter extends PassChangeWebsite {
 
 	private String token;
 	private String body;

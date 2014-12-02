@@ -10,11 +10,12 @@ import com.passchange.passchangeapp.R;
 
 import android.app.Activity;
 import android.util.Log;
+import core.PassChangeWebsite;
 import core.RequestType;
 import core.WebClient;
 import core.Website;
 
-public class Amazon extends Website {
+public class Amazon extends PassChangeWebsite {
 
 	private String body,pwLink;
 	private HashMap<String, String> formData;
@@ -27,7 +28,6 @@ public class Amazon extends Website {
 
 	public void initialize(String username, String password) {
 		super.initialize(username, password);
-		webClient = new WebClient();
 		body = "";
 		pwLink="";
 		passwordNew="";

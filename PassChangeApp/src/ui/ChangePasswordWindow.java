@@ -4,6 +4,7 @@ import generator.CompleteRandomContextGenerator;
 
 import com.passchange.passchangeapp.R;
 
+import core.PassChangeWebsite;
 import account.Account;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -75,7 +76,7 @@ public class ChangePasswordWindow implements OnClickListener,
 	@Override
 	public void onClick(View v) {
 		if (v.equals(submit)) {
-			if (account.getWebsite()
+			if (((PassChangeWebsite) account.getWebsite())
 					.validatePassword(pass.getText().toString())) {
 				account.changePassword(pass.getText().toString(), mainActivity);
 

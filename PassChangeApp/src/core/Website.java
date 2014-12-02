@@ -1,7 +1,9 @@
 package core;
 
+import java.util.HashMap;
 import java.util.Map;
 
+import ui.MainFragmentActivity;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -17,6 +19,7 @@ public abstract class Website {
 	protected Activity activity;
 	protected boolean succesful;
 	protected boolean authenticated;
+	protected HashMap<String, Map<String, Map<String, String>>> safeCookieStore;
 
 
 	public boolean isAuthenticated() {
@@ -30,6 +33,21 @@ public abstract class Website {
 	public void initialize(String username, String pass) {
 		this.username = username;
 		this.pass = pass;
+		webClient = new WebClient();
+		safeCookieStore=new HashMap<String, Map<String, Map<String, String>>>();
+		
+	}
+	
+	public void initialize(String username,String pass,HashMap<String, Map<String, Map<String, String>>> cookies){
+		initialize(username, pass);
+		this.safeCookieStore=cookies;
+		for(Map.Entry<String,  Map<String, Map<String, String>>> entryWebSite:cookies.entrySet()){
+			for(Map.Entry<String,  Map<String, String>> entryCookie:entryWebSite.getValue().entrySet()){
+				webClient.setCookie(entryWebSite.getKey(),entryCookie.getKey(), entryCookie.getValue().get(entryCookie.getKey()));
+			}
+		}
+		if(MainFragmentActivity.DEBUG_ACTIVATED)
+			System.out.println("Preset Cookies: "+webClient.getCookies().toString());
 	}
 	
 	public boolean isSuccesful(){
@@ -38,12 +56,14 @@ public abstract class Website {
 	
 	public abstract void authenticate() throws Exception;
 
-	public abstract void changePassword(String newPass) throws Exception;
 	
 	protected abstract void validateAuthentification() throws Exception;
 	
-	protected abstract void validatePasswordChange() throws Exception;
-
+	public Map<String, Map<String, Map<String, String>>> getSaveCookies(){
+		return safeCookieStore;
+	}
+	
+	
 	public abstract String getName() ;
 	
 	public abstract String getTopic();
@@ -52,7 +72,6 @@ public abstract class Website {
 	
 	public abstract Integer getId();
 
-	public abstract boolean validatePassword(String pass);
 	
 	public void displayErrorMessage(String error){
 		final LinearLayout layout = new LinearLayout(activity);	

@@ -32,11 +32,12 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import core.PassChangeWebsite;
 import core.RequestType;
 import core.WebClient;
 import core.Website;
 
-public class LeagueOfLegends extends Website {
+public class LeagueOfLegends extends PassChangeWebsite {
 	private String body;
 	private ImageView captchaImage;
 	private String solvedTask;
@@ -60,7 +61,6 @@ public class LeagueOfLegends extends Website {
 
 	public LeagueOfLegends(Activity activity) {
 		super(activity);
-		this.captchaHandler = captchaHandler;
 	}
 
 	@Override
@@ -77,7 +77,7 @@ public class LeagueOfLegends extends Website {
 						"https://www.google.com/recaptcha/api/challenge?k=6LcwdeESAAAAAJg_ltVGdjrqlf7Bmbg449SyUcSW&ajax=1&lang=de",
 						RequestType.GET, "", "lolCaptcha", false);
 		getImage();
-
+		
 		if(MainActivity.DEBUG_ACTIVATED)
 		System.out.println(solvedTask);
 

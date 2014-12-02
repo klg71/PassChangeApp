@@ -11,11 +11,12 @@ import com.passchange.passchangeapp.R;
 import ui.MainActivity;
 import android.app.Activity;
 import android.content.Context;
+import core.PassChangeWebsite;
 import core.RequestType;
 import core.WebClient;
 import core.Website;
 
-public class Google extends Website {
+public class Google extends PassChangeWebsite {
 
 	private String body;
 	private String token; // GALX

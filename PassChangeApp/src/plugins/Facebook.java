@@ -8,11 +8,12 @@ import com.passchange.passchangeapp.R;
 import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
+import core.PassChangeWebsite;
 import core.RequestType;
 import core.WebClient;
 import core.Website;
 
-public class Facebook extends Website {
+public class Facebook extends PassChangeWebsite {
 	private String passwordNew;
 	private String fb_dtsg;
 	private String charset_test;

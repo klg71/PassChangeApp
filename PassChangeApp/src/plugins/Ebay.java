@@ -11,11 +11,12 @@ import android.app.Activity;
 import com.passchange.passchangeapp.R;
 
 import ui.MainActivity;
+import core.PassChangeWebsite;
 import core.RequestType;
 import core.WebClient;
 import core.Website;
 
-public class Ebay extends Website {
+public class Ebay extends PassChangeWebsite {
 
 	private String body;
 	private HashMap<String, String> formData;

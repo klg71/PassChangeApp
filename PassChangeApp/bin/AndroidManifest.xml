@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.passchange.passchangeapp"
-    android:versionCode="19"
-    android:versionName="1.5.3" >
+    android:versionCode="22"
+    android:versionName="1.6.1" >
 
     <uses-sdk
-        android:minSdkVersion="19"
+        android:minSdkVersion="16"
         android:targetSdkVersion="19" />
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />

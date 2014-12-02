@@ -20,6 +20,7 @@ import android.webkit.CookieSyncManager;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
+import core.PassChangeWebsite;
 import core.Website;
 
 public class Account {
@@ -78,7 +79,7 @@ public class Account {
 					while (login.isAlive())
 						;
 					if (website.isAuthenticated())
-						website.changePassword(newPass);
+						((PassChangeWebsite) website).changePassword(newPass);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
