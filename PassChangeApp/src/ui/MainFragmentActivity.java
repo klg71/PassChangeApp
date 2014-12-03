@@ -355,12 +355,12 @@ public class MainFragmentActivity extends FragmentActivity implements
 			actionAlert.dismiss();
 			View alertView = createAlert(R.layout.changepassword,
 					R.string.change_password);
-			new ChangePasswordWindow(selectedAccount, this, alertView);
+			new ChangePasswordWindow(selectedAccount, this, alertView,alertAddAccount);
 		} else if (v.equals(editAccountLayout)) {
 			actionAlert.dismiss();
 			View alertView = createAlert(R.layout.changeaccount,
 					R.string.edit_account);
-			new ChangeAccountWindow(selectedAccount, this, alertView);
+			new ChangeAccountWindow(selectedAccount, this, alertView,alertAddAccount);
 		} else if (v.equals(testLoginLayout)) {
 			actionAlert.dismiss();
 			selectedAccount.testLogin(this);
@@ -522,7 +522,7 @@ public class MainFragmentActivity extends FragmentActivity implements
 	public void onClick(DialogInterface dialog, int which) {
 		View alertView = createAlert(R.layout.changepassword,
 				R.string.change_password);
-		new ChangePasswordWindow(selectedAccount, this, alertView);
+		new ChangePasswordWindow(selectedAccount, this, alertView,alertAddAccount);
 
 	}
 
