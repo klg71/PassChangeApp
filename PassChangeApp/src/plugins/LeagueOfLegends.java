@@ -248,8 +248,7 @@ public class LeagueOfLegends extends PassChangeWebsite {
 			}
 
 		});
-		while (solvedTask.length() == 0)
-			;
+		while (solvedTask.length() == 0);
 	}
 
 	@Override

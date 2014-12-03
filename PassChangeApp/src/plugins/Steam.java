@@ -1,19 +1,20 @@
 package plugins;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigInteger;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
-import java.security.spec.RSAKeyGenParameterSpec;
 import java.security.spec.RSAPublicKeySpec;
-import java.security.spec.X509EncodedKeySpec;
+import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Map;
 import java.util.Scanner;
@@ -25,15 +26,24 @@ import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
+import ui.MainFragmentActivity;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Base64;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import core.RequestType;
 import core.WebClient;
 import core.Website;
 
 public class Steam extends Website {
 
-	private final String base64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
 	private String body;
 	private WebClient webClient;
 	private String rsaPubKey;
@@ -42,6 +52,7 @@ public class Steam extends Website {
 	private String imageSolved;
 	private String emailId;
 	private String transferParameter;
+	private String emailAuth;
 
 	public Steam(String username, String pass,Activity activity) {
 		super(activity);
@@ -49,6 +60,7 @@ public class Steam extends Website {
 		webClient = new WebClient();
 		imageSolved = "";
 		imageId = "";
+		emailAuth="";
 	}
 
 	public Steam(Activity activity) {
@@ -88,15 +100,15 @@ public class Steam extends Website {
 				"https://store.steampowered.com/login/dologin/",
 				RequestType.POST, post, "loginFirst", false,
 				"https://store.steampowered.com/login/",false);
+		if(MainFragmentActivity.DEBUG_ACTIVATED)
 		System.out.println(body);
 		if (body.contains("SteamGuard")) {
 			getEmailID();
-			Scanner scanner = new Scanner(System.in);
-			String auth = scanner.nextLine();
+			getEmailAuth();
 			post = "username=" + username + "&password="
 					+ URLEncoder.encode(key, "UTF-8")
 					+ "&remember_login=false&rsatimestamp=" + rsaTimeStamp
-					+ "&twofactorcode=&emailauth=" + auth
+					+ "&twofactorcode=&emailauth=" + emailAuth
 					+ "&loginfriendlyname=&captchagid=" + imageId
 					+ "&captcha_text="
 					+ URLEncoder.encode(imageSolved, "UTF-8")
@@ -107,6 +119,7 @@ public class Steam extends Website {
 					RequestType.POST, post, "loginFirst", false,
 					"https://store.steampowered.com/login/",false);
 		}
+		if(MainFragmentActivity.DEBUG_ACTIVATED)
 		System.out.println(body);
 		validateAuthentification();
 		getTransferParameters();
@@ -117,10 +130,18 @@ public class Steam extends Website {
 		body = webClient.sendRequest(
 				"http://store.steampowered.com/", RequestType.GET,
 				transferParameter, "storePage", false);
-		
+		//Steam Safe Email Authentification
+		HashMap<String, Map<String, Map<String, String>>> cookiesToSafe=new HashMap<String, Map<String, Map<String, String>>>();
 		for(Entry<String, Map<String, Map<String, String>>> entryWebSite:webClient.getCookies().entrySet()){
-			
+			for(Entry<String,Map<String,String>> entryCookie:entryWebSite.getValue().entrySet()){
+				if(entryCookie.getKey().contains("machine")){
+					HashMap<String,Map<String,String>> tempCookie=new HashMap<String,Map<String,String>>();
+					tempCookie.put(entryCookie.getKey(), entryCookie.getValue());
+					cookiesToSafe.put(entryWebSite.getKey(),tempCookie);
+				}
+			}
 		}
+		setCookies(cookiesToSafe);
 		
 
 	}
@@ -181,33 +202,93 @@ public class Steam extends Website {
 
 	private void getImage() {
 
-//		Pattern urlPattern = Pattern.compile("('|\\\")([0-9]){18,18}('|\\\")",
-//				Pattern.MULTILINE | Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
-//
-//		Matcher m = urlPattern.matcher(body);
-//		m.find();
-//		imageId = m.group().substring(1, m.group().length() - 1);
-//
-//		try {
-//			BufferedImage captchaImage = ImageIO.read(new URL(
-//					"https://store.steampowered.com/public/captcha.php?gid="
-//							+ imageId));
-//
-//			JLabel picLabel = new JLabel(new ImageIcon(captchaImage));
-//			JTextField captchaField = new JTextField();
-//			JPanel dialogPanel = new JPanel();
-//			dialogPanel.setLayout(new BoxLayout(dialogPanel, BoxLayout.Y_AXIS));
-//			dialogPanel.add(picLabel);
-//			dialogPanel.add(captchaField);
-//			JOptionPane.showMessageDialog(null, dialogPanel, "About",
-//					JOptionPane.PLAIN_MESSAGE, null);
-//			imageSolved = captchaField.getText();
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+		Pattern urlPattern = Pattern.compile("('|\\\")([0-9]){18,18}('|\\\")",
+				Pattern.MULTILINE | Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
+
+		Matcher m = urlPattern.matcher(body);
+		m.find();
+		imageId = m.group().substring(1, m.group().length() - 1);
+		InputStream in = null;
+		try {
+			URL url = new URL("https://store.steampowered.com/public/captcha.php?gid="+ imageId);
+			URLConnection urlConn = url.openConnection();
+			HttpURLConnection httpConn = (HttpURLConnection) urlConn;
+			httpConn.connect();
+			in = httpConn.getInputStream();
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		final Context context = activity.getApplicationContext();
+		final LinearLayout layout = new LinearLayout(context);
+		layout.setOrientation(LinearLayout.VERTICAL);
+		Bitmap bmpimg = BitmapFactory.decodeStream(in);
+		ImageView iv = new ImageView(context);
+		LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+				700, 200);
+		iv.setLayoutParams(layoutParams);
+
+		iv.setImageBitmap(bmpimg);
+		layout.addView(iv);
+		final EditText captchaEnter = new EditText(activity);
+		layout.addView(captchaEnter);
+		activity.runOnUiThread(new Runnable() {
+
+			@Override
+			public void run() {
+
+				AlertDialog.Builder builder = new AlertDialog.Builder(activity)
+						.setMessage("Enter Captcha")
+						.setPositiveButton("OK", new OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+								imageSolved = captchaEnter.getText().toString();
+							}
+						}).setView(layout);
+				builder.create().show();
+
+			}
+
+		});
+		while (imageSolved.length() == 0)
+			;
+		
 	}
 
+	private void getEmailAuth(){
+		final Context context = activity.getApplicationContext();
+		final LinearLayout layout = new LinearLayout(context);
+		layout.setOrientation(LinearLayout.VERTICAL);
+		ImageView iv = new ImageView(context);
+		LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+				700, 200);
+		final EditText authEnter = new EditText(activity);
+		layout.addView(authEnter);
+		activity.runOnUiThread(new Runnable() {
+
+			@Override
+			public void run() {
+
+				AlertDialog.Builder builder = new AlertDialog.Builder(activity)
+						.setMessage("Enter You Email Authentification")
+						.setPositiveButton("OK", new OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+								emailAuth = authEnter.getText().toString();
+							}
+						}).setView(layout);
+				builder.create().show();
+
+			}
+
+		});
+		while (emailAuth.length() == 0);
+	}
+	
 	private void getRsaKey() {
 		Pattern pattern = Pattern.compile("([A-Z])\\w{50,}");
 		Matcher m = pattern.matcher(body);
