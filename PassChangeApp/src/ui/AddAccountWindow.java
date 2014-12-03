@@ -4,8 +4,16 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Map;
 
+import plugins.Amazon;
+import plugins.Ebay;
+import plugins.Facebook;
+import plugins.Google;
+import plugins.LeagueOfLegends;
+import plugins.Twitter;
+
 import com.passchange.passchangeapp.R;
 
+import core.WebSiteFactory;
 import core.Website;
 import account.Account;
 import account.AccountManager;
@@ -28,6 +36,9 @@ public class AddAccountWindow implements OnClickListener {
 
 	public AddAccountWindow(AccountManager accountManager,
 			MainFragmentActivity mainFragmentActivity, View mainView,AlertDialog dialog) {
+		
+
+		
 		this.accountManager = accountManager;
 		this.dialog=dialog;
 		this.mainView=mainView;
@@ -35,10 +46,14 @@ public class AddAccountWindow implements OnClickListener {
 		Button submit = (Button)  mainView.findViewById(R.id.buttonSubmit);
 		submit.setOnClickListener(this);
 		websites = new ArrayList<Website>();
-		for (Map.Entry<String, Website> entry : accountManager.getWebsites()
-				.entrySet()) {
-			websites.add(entry.getValue());
-		}
+		websites.add(new Facebook(mainFragmentActivity));
+		websites.add(new Twitter(mainFragmentActivity));
+		websites.add( new Google(mainFragmentActivity));
+		websites.add(new LeagueOfLegends(mainFragmentActivity));
+		websites.add(new Amazon(mainFragmentActivity));
+		websites.add(new Ebay(mainFragmentActivity));
+		
+		
 		Spinner website = (Spinner)  mainView.findViewById(R.id.spinner1);
 		WebsiteSpinnerAdapter dataAdapter = new WebsiteSpinnerAdapter(
 				mainActivity, android.R.layout.simple_spinner_item, websites);
@@ -64,7 +79,7 @@ public class AddAccountWindow implements OnClickListener {
 		Calendar temp = Calendar.getInstance();
 		Account tempAcc=accountManager.addAccount(new Account(user.getText().toString(), email
 				.getText().toString(), pass.getText().toString(), temp,
-				websites.get((int) website.getSelectedItemId()), Integer.parseInt(expire.getText().toString())));
+				WebSiteFactory.createWebsite(websites.get((int)website.getSelectedItemId()).getName(),mainActivity), Integer.parseInt(expire.getText().toString())));
 		tempAcc.testLogin(mainActivity);
 		// Hide Keyboard
 		InputMethodManager im = (InputMethodManager) mainActivity
