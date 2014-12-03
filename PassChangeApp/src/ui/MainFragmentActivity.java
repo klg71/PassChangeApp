@@ -9,6 +9,7 @@ import java.util.Map;
 import com.passchange.passchangeapp.R;
 
 import core.Configuration;
+import core.PassChangeWebsite;
 import account.Account;
 import account.AccountExpiredListener;
 import account.AccountExportListener;
@@ -26,6 +27,7 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.opengl.Visibility;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -188,54 +190,81 @@ public class MainFragmentActivity extends FragmentActivity implements
 	public void accountInteraction(Account selectedAccount) {
 
 		this.selectedAccount = selectedAccount;
-		LayoutInflater factory = LayoutInflater.from(this);
-		View textEntryView = factory.inflate(R.layout.action_view, null);
-		AlertDialog.Builder alert = new AlertDialog.Builder(this);
-		alert.setTitle("Actions");
-		alert.setView(textEntryView);
-		ImageView imageView = (ImageView) textEntryView
-				.findViewById(R.id.imageViewIcon);
-		imageView.setImageResource(selectedAccount.getWebsite()
-				.getImageSource());
+			LayoutInflater factory = LayoutInflater.from(this);
+			View textEntryView = factory.inflate(R.layout.action_view, null);
+			AlertDialog.Builder alert = new AlertDialog.Builder(this);
+			alert.setTitle("Actions");
+			alert.setView(textEntryView);
+			ImageView imageView = (ImageView) textEntryView
+					.findViewById(R.id.imageViewIcon);
+			imageView.setImageResource(selectedAccount.getWebsite()
+					.getImageSource());
 
-		SimpleDateFormat format = (SimpleDateFormat) new SimpleDateFormat()
-				.getDateInstance(SimpleDateFormat.MEDIUM);
-		Calendar tempCal = (Calendar) selectedAccount.getLastChangedCalendar()
-				.clone();
-		tempCal.add(Calendar.DAY_OF_YEAR, selectedAccount.getExpire());
-		TextView view = (TextView) textEntryView
-				.findViewById(R.id.textViewInformation);
-		view.setText(selectedAccount.getUserName() + " - "
-				+ selectedAccount.getWebsite()
-				+ System.getProperty("line.separator") + "Expires: "
-				+ format.format(tempCal.getTime()));
-		actionAlert = alert.create();
+			SimpleDateFormat format = (SimpleDateFormat) new SimpleDateFormat()
+					.getDateInstance(SimpleDateFormat.MEDIUM);
+			Calendar tempCal = (Calendar) selectedAccount
+					.getLastChangedCalendar().clone();
+			tempCal.add(Calendar.DAY_OF_YEAR, selectedAccount.getExpire());
+			TextView view = (TextView) textEntryView
+					.findViewById(R.id.textViewInformation);
+			view.setText(selectedAccount.getUserName() + " - "
+					+ selectedAccount.getWebsite()
+					+ System.getProperty("line.separator") + "Expires: "
+					+ format.format(tempCal.getTime()));
+			actionAlert = alert.create();
+
+			if (selectedAccount.getWebsite().getClass()==PassChangeWebsite.class) {
+			changePasswordLayout = (LinearLayout) textEntryView
+					.findViewById(R.id.change_password_action);
+			changePasswordLayout.setOnClickListener(this);
+			editAccountLayout = (LinearLayout) textEntryView
+					.findViewById(R.id.edit_account_action);
+			editAccountLayout.setOnClickListener(this);
+			testLoginLayout = (LinearLayout) textEntryView
+					.findViewById(R.id.test_login_action);
+			testLoginLayout.setOnClickListener(this);
+			copyPasswordLayout = (LinearLayout) textEntryView
+					.findViewById(R.id.copy_password_action);
+			copyPasswordLayout.setOnClickListener(this);
+			exportAccountLayout = (LinearLayout) textEntryView
+					.findViewById(R.id.export_account_icon);
+			exportAccountLayout.setOnClickListener(this);
+			addAccountLayout = (LinearLayout) textEntryView
+					.findViewById(R.id.add_account_action);
+			addAccountLayout.setOnClickListener(this);
+			deleteAccountLayout = (LinearLayout) textEntryView
+					.findViewById(R.id.delete_account_icon);
+			deleteAccountLayout.setOnClickListener(this);
+			webViewLayout = (LinearLayout) textEntryView
+					.findViewById(R.id.open_browser_action);
+			webViewLayout.setOnClickListener(this);
+		} else {
+			changePasswordLayout = (LinearLayout) textEntryView
+					.findViewById(R.id.change_password_action);
+			changePasswordLayout.setVisibility(View.GONE);
+			editAccountLayout = (LinearLayout) textEntryView
+					.findViewById(R.id.edit_account_action);
+			editAccountLayout.setOnClickListener(this);
+			testLoginLayout = (LinearLayout) textEntryView
+					.findViewById(R.id.test_login_action);
+			testLoginLayout.setOnClickListener(this);
+			copyPasswordLayout = (LinearLayout) textEntryView
+					.findViewById(R.id.copy_password_action);
+			copyPasswordLayout.setOnClickListener(this);
+			exportAccountLayout = (LinearLayout) textEntryView
+					.findViewById(R.id.export_account_icon);
+			exportAccountLayout.setOnClickListener(this);
+			addAccountLayout = (LinearLayout) textEntryView
+					.findViewById(R.id.add_account_action);
+			addAccountLayout.setOnClickListener(this);
+			deleteAccountLayout = (LinearLayout) textEntryView
+					.findViewById(R.id.delete_account_icon);
+			deleteAccountLayout.setOnClickListener(this);
+			webViewLayout = (LinearLayout) textEntryView
+					.findViewById(R.id.open_browser_action);
+			webViewLayout.setOnClickListener(this);
+		}
 		actionAlert.show();
-
-		changePasswordLayout = (LinearLayout) textEntryView
-				.findViewById(R.id.change_password_action);
-		changePasswordLayout.setOnClickListener(this);
-		editAccountLayout = (LinearLayout) textEntryView
-				.findViewById(R.id.edit_account_action);
-		editAccountLayout.setOnClickListener(this);
-		testLoginLayout = (LinearLayout) textEntryView
-				.findViewById(R.id.test_login_action);
-		testLoginLayout.setOnClickListener(this);
-		copyPasswordLayout = (LinearLayout) textEntryView
-				.findViewById(R.id.copy_password_action);
-		copyPasswordLayout.setOnClickListener(this);
-		exportAccountLayout = (LinearLayout) textEntryView
-				.findViewById(R.id.export_account_icon);
-		exportAccountLayout.setOnClickListener(this);
-		addAccountLayout = (LinearLayout) textEntryView
-				.findViewById(R.id.add_account_action);
-		addAccountLayout.setOnClickListener(this);
-		deleteAccountLayout = (LinearLayout) textEntryView
-				.findViewById(R.id.delete_account_icon);
-		deleteAccountLayout.setOnClickListener(this);
-		webViewLayout = (LinearLayout) textEntryView
-				.findViewById(R.id.open_browser_action);
-		webViewLayout.setOnClickListener(this);
 	}
 
 	@Override
