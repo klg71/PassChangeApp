@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -88,7 +89,12 @@ public class XmlParser {
 						if (MainActivity.DEBUG_ACTIVATED)
 							System.out.println(nodeList.item(i).getAttributes()
 									.getNamedItem("name").getNodeValue());
-
+						
+						NodeList cookieList = nodeList.item(i).getChildNodes();
+						for (int cookieCount = 0; cookieCount < cookieList.getLength(); cookieCount++) {
+							
+						}
+						
 						accounts.add(new Account(accountList.item(k)
 								.getAttributes().getNamedItem("name")
 								.getNodeValue(), accountList.item(k)
@@ -139,6 +145,18 @@ public class XmlParser {
 						simpleDateFormat.format(tempDate));
 				accountElement.setAttribute("expire",
 						Integer.toString(account.getExpire()));
+				for (Entry<String, Map<String, Map<String, String>>> entryCookieSite : account
+						.getWebsite().getSaveCookies().entrySet()) {
+					for (Entry<String, Map<String, String>> entryCookie : entryCookieSite
+							.getValue().entrySet()) {
+						Element cookieElement=doc.createElement("cookie");
+						cookieElement.setAttribute("domain", entryCookieSite.getKey());
+						cookieElement.setAttribute("key",entryCookie.getKey());
+						cookieElement.setAttribute("value",entryCookie.getValue().get(entryCookie.getValue()));
+						accountElement.appendChild(cookieElement);
+					}
+				}
+
 				website.appendChild(accountElement);
 			}
 			rootElement.appendChild(website);
@@ -196,8 +214,8 @@ public class XmlParser {
 		String content = null;
 		content = new String(Crypt.decode(new FileInputStream(
 				new File(filename)), Crypt.generateKey(password, salt)));
-		if(MainActivity.DEBUG_ACTIVATED)
-		System.out.println(content);
+		if (MainActivity.DEBUG_ACTIVATED)
+			System.out.println(content);
 		Document document = null;
 		document = builder.parse(new ByteArrayInputStream(content.getBytes()));
 		NodeList nodeList = document.getFirstChild().getChildNodes();
@@ -205,7 +223,7 @@ public class XmlParser {
 			if (nodeList.item(i).getNodeName().equals("config")) {
 				NodeList configList = nodeList.item(i).getChildNodes();
 				for (int k = 0; k < configList.getLength(); k++) {
-					
+
 					if (configList.item(k).getNodeName().equals("attribute")) {
 
 						if (MainActivity.DEBUG_ACTIVATED)
