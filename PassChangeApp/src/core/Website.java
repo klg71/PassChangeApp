@@ -30,18 +30,20 @@ public abstract class Website {
 		this.activity=activity;
 	}
 	
-	public void initialize(String username, String pass) {
+	
+	
+	public void setCookies(HashMap<String, Map<String, Map<String, String>>> cookies){
+		this.safeCookieStore=cookies;
+	}
+	
+	public void initialize(String username,String pass){
 		this.username = username;
 		this.pass = pass;
 		webClient = new WebClient();
-		safeCookieStore=new HashMap<String, Map<String, Map<String, String>>>();
-		
-	}
-	
-	public void initialize(String username,String pass,HashMap<String, Map<String, Map<String, String>>> cookies){
-		initialize(username, pass);
-		this.safeCookieStore=cookies;
-		for(Map.Entry<String,  Map<String, Map<String, String>>> entryWebSite:cookies.entrySet()){
+		if(safeCookieStore==null){
+			safeCookieStore=new HashMap<String, Map<String, Map<String, String>>>();
+		}
+		for(Map.Entry<String,  Map<String, Map<String, String>>> entryWebSite:safeCookieStore.entrySet()){
 			for(Map.Entry<String,  Map<String, String>> entryCookie:entryWebSite.getValue().entrySet()){
 				webClient.setCookie(entryWebSite.getKey(),entryCookie.getKey(), entryCookie.getValue().get(entryCookie.getKey()));
 			}
