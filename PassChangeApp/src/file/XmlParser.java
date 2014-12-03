@@ -36,20 +36,23 @@ import org.xml.sax.SAXException;
 import ui.MainActivity;
 import account.Account;
 import account.AccountManager;
+import android.app.Activity;
 import android.util.Log;
 import core.Configuration;
+import core.WebSiteFactory;
 import core.Website;
 
 public class XmlParser {
-	private HashMap<String, Website> websites;
 	private DateFormat simpleDateFormat;
 	private String salt;
+	private Activity activity;
 
-	public XmlParser(HashMap<String, Website> websites) {
-		this.websites = websites;
+	public XmlParser(Activity activity) {
+		this.activity = activity;
 		simpleDateFormat = SimpleDateFormat.getDateTimeInstance(
 				SimpleDateFormat.MEDIUM, SimpleDateFormat.MEDIUM);
 		salt = "1234567890ABCDEFGHIJKLMONPQRSTUVWXYZ";
+
 	}
 
 	public ArrayList<Account> loadAccountsFromFile(String filename,
@@ -89,24 +92,47 @@ public class XmlParser {
 						if (MainActivity.DEBUG_ACTIVATED)
 							System.out.println(nodeList.item(i).getAttributes()
 									.getNamedItem("name").getNodeValue());
-						
+						HashMap<String, Map<String, Map<String, String>>> cookies = new HashMap<String, Map<String, Map<String, String>>>();
 						NodeList cookieList = nodeList.item(i).getChildNodes();
-						for (int cookieCount = 0; cookieCount < cookieList.getLength(); cookieCount++) {
-							
+						for (int cookieCount = 0; cookieCount < cookieList
+								.getLength(); cookieCount++) {
+
+							if (nodeList.item(i).getNodeName().equals("cookie")) {
+								String domain = cookieList.item(cookieCount)
+										.getAttributes().getNamedItem("domain")
+										.getNodeValue();
+								String key = cookieList.item(cookieCount)
+										.getAttributes().getNamedItem("key")
+										.getNodeValue();
+								String value = cookieList.item(cookieCount)
+										.getAttributes().getNamedItem("value")
+										.getNodeValue();
+								if (cookies.containsKey(domain)) {
+									HashMap<String, String> temp = new HashMap<String, String>();
+									temp.put(key, value);
+									cookies.get(domain).put(key, temp);
+								} else {
+									HashMap<String, Map<String, String>> tempCookie = new HashMap<String, Map<String, String>>();
+									HashMap<String, String> temp = new HashMap<String, String>();
+									temp.put(key, value);
+									tempCookie.put(key, temp);
+									cookies.put(domain, tempCookie);
+								}
+							}
 						}
-						
+
 						accounts.add(new Account(accountList.item(k)
 								.getAttributes().getNamedItem("name")
 								.getNodeValue(), accountList.item(k)
 								.getAttributes().getNamedItem("email")
 								.getNodeValue(), accountList.item(k)
 								.getAttributes().getNamedItem("pass")
-								.getNodeValue(), tempCalendar, websites
-								.get(nodeList.item(i).getAttributes()
-										.getNamedItem("name").getNodeValue()),
-								Integer.parseInt(accountList.item(k)
-										.getAttributes().getNamedItem("expire")
-										.getNodeValue())));
+								.getNodeValue(), tempCalendar, WebSiteFactory
+								.createWebsite(nodeList.item(i).getAttributes()
+										.getNamedItem("name").getNodeValue(),
+										activity, cookies), Integer
+								.parseInt(accountList.item(k).getAttributes()
+										.getNamedItem("expire").getNodeValue())));
 					}
 				}
 			}
@@ -149,10 +175,12 @@ public class XmlParser {
 						.getWebsite().getSaveCookies().entrySet()) {
 					for (Entry<String, Map<String, String>> entryCookie : entryCookieSite
 							.getValue().entrySet()) {
-						Element cookieElement=doc.createElement("cookie");
-						cookieElement.setAttribute("domain", entryCookieSite.getKey());
-						cookieElement.setAttribute("key",entryCookie.getKey());
-						cookieElement.setAttribute("value",entryCookie.getValue().get(entryCookie.getValue()));
+						Element cookieElement = doc.createElement("cookie");
+						cookieElement.setAttribute("domain",
+								entryCookieSite.getKey());
+						cookieElement.setAttribute("key", entryCookie.getKey());
+						cookieElement.setAttribute("value", entryCookie
+								.getValue().get(entryCookie.getValue()));
 						accountElement.appendChild(cookieElement);
 					}
 				}
