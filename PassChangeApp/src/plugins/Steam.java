@@ -2,11 +2,13 @@ package plugins;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
@@ -14,6 +16,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.RSAPublicKeySpec;
+import java.security.spec.X509EncodedKeySpec;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Map;
@@ -26,6 +29,8 @@ import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
+import com.passchange.passchangeapp.R;
+
 import ui.MainFragmentActivity;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -35,6 +40,7 @@ import android.content.DialogInterface.OnClickListener;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
+import android.util.Log;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -45,7 +51,6 @@ import core.Website;
 public class Steam extends Website {
 
 	private String body;
-	private WebClient webClient;
 	private String rsaPubKey;
 	private String rsaTimeStamp;
 	private String imageId;
@@ -53,14 +58,14 @@ public class Steam extends Website {
 	private String emailId;
 	private String transferParameter;
 	private String emailAuth;
+	private boolean emailAuthBool;
 
-	public Steam(String username, String pass,Activity activity) {
+	public Steam(String username, String pass, Activity activity) {
 		super(activity);
 		initialize(username, pass);
-		webClient = new WebClient();
 		imageSolved = "";
 		imageId = "";
-		emailAuth="";
+		emailAuth = "";
 	}
 
 	public Steam(Activity activity) {
@@ -69,42 +74,60 @@ public class Steam extends Website {
 
 	public void initialize(String username, String password) {
 		super.initialize(username, password);
-		webClient = new WebClient();
+		authenticated=false;
 	}
 
 	@Override
 	public void authenticate() throws Exception {
-		webClient.setCookie("steampowered.com", "steamMachineAuth76561198141740116", "D402F133A7F98C6717AC776C6310372195C39825");
+		authenticated=false;
+		String post = "";
+		String key = "";
 		body = webClient.sendRequest("https://store.steampowered.com/login/",
-				RequestType.GET, "", "steamPreLogin", false);
-		try {
-			getImage();
-		} catch (Exception e) {
-
-			imageSolved = "";
-			imageId = "";
-		}
+				RequestType.GET, "", "steamPreLogin", false,"",true);
 		body = webClient.sendRequest(
 				"https://store.steampowered.com/login/getrsakey/",
 				RequestType.POST, "username=" + username, "getRsaKey", false);
+		if (MainFragmentActivity.DEBUG_ACTIVATED)
+			System.out.println(body);
 		getRsaKey();
-		
-		String key = encryptRsa1(pass, rsaPubKey);
-		String post = "username=" + username + "&password="
-				+ URLEncoder.encode(key, "UTF-8")
-				+ "&remember_login=false&rsatimestamp=" + rsaTimeStamp
-				+ "&twofactorcode=&emailauth=&loginfriendlyname=&captchagid="
-				+ imageId + "&captcha_text="
-				+ URLEncoder.encode(imageSolved, "UTF-8") + "&emailsteamid=";
-		body = webClient.sendRequest(
-				"https://store.steampowered.com/login/dologin/",
-				RequestType.POST, post, "loginFirst", false,
-				"https://store.steampowered.com/login/",false);
-		if(MainFragmentActivity.DEBUG_ACTIVATED)
-		System.out.println(body);
+		key = encryptRsa1(pass, rsaPubKey);
+		do {
+			imageSolved = "";
+			try {
+				getImage();
+			} catch (Exception e) {
+
+				imageSolved = "";
+				imageId = "";
+			}
+			while ((imageId != "") && imageSolved.length() == 0)
+				;
+
+			post = "username="
+					+ username
+					+ "&password="
+					+ URLEncoder.encode(key, "UTF-8")
+					+ "&remember_login=false&rsatimestamp="
+					+ rsaTimeStamp
+					+ "&twofactorcode=&emailauth=&loginfriendlyname=&captchagid="
+					+ imageId + "&captcha_text="
+					+ URLEncoder.encode(imageSolved, "UTF-8")
+					+ "&emailsteamid=";
+			if (MainFragmentActivity.DEBUG_ACTIVATED)
+				System.out.println(post);
+			body = webClient.sendRequest(
+					"https://store.steampowered.com/login/dologin/",
+					RequestType.POST, post, "loginFirst", false,
+					"https://store.steampowered.com/login/", false);
+			if (MainFragmentActivity.DEBUG_ACTIVATED)
+				System.out.println(body);
+		} while (body.contains("success\":false") && !body.contains("SteamGuard"));
 		if (body.contains("SteamGuard")) {
+			emailAuthBool=false;
 			getEmailID();
 			getEmailAuth();
+			while(!emailAuthBool){
+			}
 			post = "username=" + username + "&password="
 					+ URLEncoder.encode(key, "UTF-8")
 					+ "&remember_login=false&rsatimestamp=" + rsaTimeStamp
@@ -117,33 +140,35 @@ public class Steam extends Website {
 			body = webClient.sendRequest(
 					"https://store.steampowered.com/login/dologin/",
 					RequestType.POST, post, "loginFirst", false,
-					"https://store.steampowered.com/login/",false);
+					"https://store.steampowered.com/login/", false);
 		}
-		if(MainFragmentActivity.DEBUG_ACTIVATED)
-		System.out.println(body);
+		if (MainFragmentActivity.DEBUG_ACTIVATED)
+			System.out.println(body);
 		validateAuthentification();
 		getTransferParameters();
 		body = webClient.sendRequest(
 				"https://steamcommunity.com/login/transfer/", RequestType.POST,
 				transferParameter, "transfer", false,
-				"https://store.steampowered.com/login/",false);
-		body = webClient.sendRequest(
-				"http://store.steampowered.com/", RequestType.GET,
-				transferParameter, "storePage", false);
-		//Steam Safe Email Authentification
-		HashMap<String, Map<String, Map<String, String>>> cookiesToSafe=new HashMap<String, Map<String, Map<String, String>>>();
-		for(Entry<String, Map<String, Map<String, String>>> entryWebSite:webClient.getCookies().entrySet()){
-			for(Entry<String,Map<String,String>> entryCookie:entryWebSite.getValue().entrySet()){
-				if(entryCookie.getKey().contains("machine")){
-					HashMap<String,Map<String,String>> tempCookie=new HashMap<String,Map<String,String>>();
-					tempCookie.put(entryCookie.getKey(), entryCookie.getValue());
-					cookiesToSafe.put(entryWebSite.getKey(),tempCookie);
+				"https://store.steampowered.com/login/", false);
+		body = webClient.sendRequest("http://store.steampowered.com/",
+				RequestType.GET, transferParameter, "storePage", false,"",true);
+		// Steam Safe Email Authentification
+		HashMap<String, Map<String, Map<String, String>>> cookiesToSafe = new HashMap<String, Map<String, Map<String, String>>>();
+		for (Entry<String, Map<String, Map<String, String>>> entryWebSite : webClient
+				.getCookies().entrySet()) {
+			System.out.println(entryWebSite.getKey());
+			for (Entry<String, Map<String, String>> entryCookie : entryWebSite
+					.getValue().entrySet()) {
+				System.out.println(entryCookie.getKey());
+				if (entryCookie.getKey().contains("Machine")) {
+					HashMap<String, Map<String, String>> tempCookie = new HashMap<String, Map<String, String>>();
+					tempCookie
+							.put(entryCookie.getKey(), entryCookie.getValue());
+					cookiesToSafe.put(entryWebSite.getKey(), tempCookie);
 				}
 			}
 		}
 		setCookies(cookiesToSafe);
-		
-
 	}
 
 	private void getTransferParameters() {
@@ -188,6 +213,7 @@ public class Steam extends Website {
 					transferString = transferString + "&token_secure="
 							+ m.group().toString();
 		transferParameter = transferString;
+		if(MainFragmentActivity.DEBUG_ACTIVATED)
 		System.out.println(transferString);
 
 	}
@@ -202,7 +228,7 @@ public class Steam extends Website {
 
 	private void getImage() {
 
-		Pattern urlPattern = Pattern.compile("('|\\\")([0-9]){18,18}('|\\\")",
+		Pattern urlPattern = Pattern.compile("('|\")([0-9]){18,18}('|\")",
 				Pattern.MULTILINE | Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
 
 		Matcher m = urlPattern.matcher(body);
@@ -210,7 +236,9 @@ public class Steam extends Website {
 		imageId = m.group().substring(1, m.group().length() - 1);
 		InputStream in = null;
 		try {
-			URL url = new URL("https://store.steampowered.com/public/captcha.php?gid="+ imageId);
+			URL url = new URL(
+					"https://store.steampowered.com/public/captcha.php?gid="
+							+ imageId);
 			URLConnection urlConn = url.openConnection();
 			HttpURLConnection httpConn = (HttpURLConnection) urlConn;
 			httpConn.connect();
@@ -220,7 +248,7 @@ public class Steam extends Website {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		final Context context = activity.getApplicationContext();
 		final LinearLayout layout = new LinearLayout(context);
 		layout.setOrientation(LinearLayout.VERTICAL);
@@ -255,10 +283,10 @@ public class Steam extends Website {
 		});
 		while (imageSolved.length() == 0)
 			;
-		
+
 	}
 
-	private void getEmailAuth(){
+	private void getEmailAuth() {
 		final Context context = activity.getApplicationContext();
 		final LinearLayout layout = new LinearLayout(context);
 		layout.setOrientation(LinearLayout.VERTICAL);
@@ -279,6 +307,7 @@ public class Steam extends Website {
 							public void onClick(DialogInterface dialog,
 									int which) {
 								emailAuth = authEnter.getText().toString();
+								emailAuthBool=true;
 							}
 						}).setView(layout);
 				builder.create().show();
@@ -286,16 +315,16 @@ public class Steam extends Website {
 			}
 
 		});
-		while (emailAuth.length() == 0);
+		while (emailAuth=="");
 	}
-	
+	//TODO: Remove fixed timestamp length
 	private void getRsaKey() {
 		Pattern pattern = Pattern.compile("([A-Z])\\w{50,}");
 		Matcher m = pattern.matcher(body);
 		while (m.find()) {
 			rsaPubKey = m.group().toString();
 		}
-		pattern = Pattern.compile("\"([0-9]){12,12}\"");
+		pattern = Pattern.compile("\"([0-9]){8,12}\"");
 		m = pattern.matcher(body);
 		while (m.find()) {
 			rsaTimeStamp = m.group().substring(1, m.group().length() - 1);
@@ -305,8 +334,8 @@ public class Steam extends Website {
 
 	private String encryptRsa1(String data, String pubkey) {
 		BigInteger modulus = new BigInteger(pubkey, 16);
-		System.out.println("Modulus: " + modulus);
 		BigInteger encryptionExponent = new BigInteger("010001", 16);
+		
 		PublicKey key = null;
 
 		try {
@@ -316,11 +345,12 @@ public class Steam extends Website {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
 		Cipher cipher = null;
 		try {
 			cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
 		} catch (NoSuchAlgorithmException | NoSuchPaddingException e1) {
-			// TODO Auto-generated catch block
+			Log.e("DEBUG",e1.getMessage());
 			e1.printStackTrace();
 		}
 		try {
@@ -330,24 +360,24 @@ public class Steam extends Website {
 			e.printStackTrace();
 		}
 		try {
-			return new String(Base64.encode(
-					cipher.doFinal(data.getBytes()),Base64.DEFAULT));
-		} catch (IllegalBlockSizeException | BadPaddingException e) {
+			return new String(Base64.encode(cipher.doFinal(data.getBytes("UTF-8")),
+					Base64.NO_WRAP));
+		} catch (IllegalBlockSizeException | BadPaddingException | UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return "";
 	}
 
-
 	@Override
 	protected void validateAuthentification() throws Exception {
-		if(!body.contains("success\":true"))
-			throw new Exception("Login unsuccesful check password,username and typed captcha!");
-
+		if (!body.contains("success\":true")){
+			Log.e("DEBUG","not authenticated");
+			throw new Exception(
+					"Login unsuccesful check password,username and typed captcha!");
+		}
+		authenticated=true;
 	}
-
-	
 
 	@Override
 	public String getName() {
@@ -369,23 +399,14 @@ public class Steam extends Website {
 		return 8;
 	}
 
-
-	@Override
-	public String getPasswordCondition() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	@Override
 	public String getWebsiteUrl() {
-		// TODO Auto-generated method stub
-		return null;
+		return "http://store.steampowered.com/";
 	}
 
 	@Override
 	public int getImageSource() {
-		// TODO Auto-generated method stub
-		return 0;
+		return R.drawable.steam_icon;
 	}
 
 }
