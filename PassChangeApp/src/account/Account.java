@@ -148,10 +148,8 @@ public class Account {
 		final Thread openBrowser = new Thread() {
 			@Override
 			public void run() {
-				while (login.isAlive())
-					;
+				while (login.isAlive());
 				if (website.isAuthenticated()) {
-
 					Map<String, Map<String, Map<String, String>>> cookieStore = website
 							.getCookies();
 
