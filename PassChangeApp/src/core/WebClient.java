@@ -72,7 +72,7 @@ public class WebClient {
 		cookieStore = cookieManager.getCookieStore();
 
 		store = new HashMap<String, Map<String, Map<String, String>>>();
-		dateFormat = new SimpleDateFormat(DATE_FORMAT,Locale.ENGLISH);
+		dateFormat = new SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH);
 
 	}
 
@@ -104,21 +104,20 @@ public class WebClient {
 				"de-de,de;q=0.8,en-us;q=0.5,en;q=0.3");
 		connection
 				.setRequestProperty("User-Agent",
-						"Mozilla/5.0 (Windows NT 6.1; WOW64; rv:20.0) Gecko/20100101 Firefox/20.0");
+						"Mozilla/5.0 (Windows NT 6.1; WOW64; rv:34.0) Gecko/20100101 Firefox/34.0");
 		connection
 				.setRequestProperty(
 						"Accept",
 						"application/json,text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
-		connection.setRequestProperty("Accept-Encoding", "gzip, deflate");
-
 		try {
 			setCookies();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		if(MainActivity.DEBUG_ACTIVATED)
-		System.out.println("cookies: " + connection.getRequestProperty(COOKIE));
+		if (MainActivity.DEBUG_ACTIVATED)
+			System.out.println("cookies: "
+					+ connection.getRequestProperty(COOKIE));
 		if (type == RequestType.GET) {
 			try {
 				((HttpURLConnection) connection).setRequestMethod("GET");
@@ -156,20 +155,20 @@ public class WebClient {
 
 	public String sendRequest(String url, RequestType type, String body,
 			String filename, Boolean ref) {
-		return sendRequest(url, type, body, filename, ref, "",false);
+		return sendRequest(url, type, body, filename, ref, "", false);
 	}
 
 	public String sendRequest(String url, RequestType type, String body,
-			String filename, Boolean ref, String referer,boolean limited) {
-		if(MainActivity.DEBUG_ACTIVATED){
-			System.out.println("File"+filename);
+			String filename, Boolean ref, String referer, boolean limited) {
+		if (MainActivity.DEBUG_ACTIVATED) {
+			System.out.println("File" + filename);
 		}
 		this.referer = referer;
 		String ret = "";
 		FileWriter fileWriter = null;
 		try {
-			if(MainActivity.DEBUG_ACTIVATED)
-			fileWriter = new FileWriter("/sdcard/" + filename + ".html");
+			if (MainActivity.DEBUG_ACTIVATED)
+				fileWriter = new FileWriter("/sdcard/" + filename + ".html");
 		} catch (IOException e2) {
 			// TODO Auto-generated catch block
 			e2.printStackTrace();
@@ -189,7 +188,7 @@ public class WebClient {
 
 		try {
 			if (type == RequestType.POST) {
-				writer = new OutputStreamWriter( connection.getOutputStream());
+				writer = new OutputStreamWriter(connection.getOutputStream());
 				writer.write(body);
 				writer.flush();
 			}
@@ -204,15 +203,16 @@ public class WebClient {
 			e2.printStackTrace();
 		}
 		try {
-			location=((HttpURLConnection) connection).getHeaderField("Location");
-		} catch(Exception e){
+			location = ((HttpURLConnection) connection)
+					.getHeaderField("Location");
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		try {
 
-			if(MainActivity.DEBUG_ACTIVATED)
-			System.out.println(((HttpURLConnection) connection)
-					.getResponseCode());
+			if (MainActivity.DEBUG_ACTIVATED)
+				System.out.println(((HttpURLConnection) connection)
+						.getResponseCode());
 		} catch (IOException e2) {
 			// TODO Auto-generated catch block
 			e2.printStackTrace();
@@ -226,8 +226,8 @@ public class WebClient {
 										.getErrorStream())));
 				for (String line; (line = reader.readLine()) != null;) {
 
-					if(MainActivity.DEBUG_ACTIVATED)
-					System.out.println(line);
+					if (MainActivity.DEBUG_ACTIVATED)
+						System.out.println(line);
 				}
 			}
 		} catch (IOException e2) {
@@ -247,8 +247,8 @@ public class WebClient {
 		// }
 		// }
 
-		if(MainActivity.DEBUG_ACTIVATED)
-		System.out.println(store);
+		if (MainActivity.DEBUG_ACTIVATED)
+			System.out.println(store);
 		BufferedReader reader = null;
 		if (!ref) {
 			if (connection.getHeaderField("Content-Encoding") != null) {
@@ -272,14 +272,14 @@ public class WebClient {
 			try {
 				for (String line; (line = reader.readLine()) != null;) {
 					ret += line;
-					if(limited){
-						if(ret.length()>1000){
+					if (limited) {
+						if (ret.length() > 1000) {
 							break;
 						}
 					}
-					if(MainActivity.DEBUG_ACTIVATED)
-					fileWriter.write(line
-							+ System.getProperty("line.separator"));
+					if (MainActivity.DEBUG_ACTIVATED)
+						fileWriter.write(line
+								+ System.getProperty("line.separator"));
 				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -292,8 +292,8 @@ public class WebClient {
 			if (writer != null)
 				writer.close();
 
-			if(MainActivity.DEBUG_ACTIVATED)
-			fileWriter.close();
+			if (MainActivity.DEBUG_ACTIVATED)
+				fileWriter.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -458,8 +458,8 @@ public class WebClient {
 		return (String) ((Map<String, String>) ((Map<String, Map<String, String>>) store
 				.get(domain)).get(name)).get(name);
 	}
-	
-	public Map<String, Map<String, Map<String, String>>> getCookies(){
+
+	public Map<String, Map<String, Map<String, String>>> getCookies() {
 		return store;
 	}
 
@@ -476,7 +476,5 @@ public class WebClient {
 	public String getLocation() {
 		return location;
 	}
-
-	
 
 }

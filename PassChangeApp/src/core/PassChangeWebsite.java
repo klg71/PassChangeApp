@@ -19,6 +19,8 @@ public abstract class PassChangeWebsite extends Website {
 	public abstract void changePassword(String newPass) throws Exception;
 	protected abstract void validatePasswordChange() throws Exception;
 	public abstract boolean validatePassword(String pass);
+	
+	public abstract String getPasswordCondition();
 
 	
 	

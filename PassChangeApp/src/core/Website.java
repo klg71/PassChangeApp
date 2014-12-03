@@ -110,8 +110,6 @@ public abstract class Website {
 	}
 	
 	public abstract String getWebsiteUrl();
-	
-	public abstract String getPasswordCondition();
 
 	public abstract int getImageSource();
 }
