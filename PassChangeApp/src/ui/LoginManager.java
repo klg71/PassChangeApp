@@ -132,16 +132,8 @@ public class LoginManager {
 
 					loggedIn = true;
 
-					HashMap<String, Website> websites = new HashMap<String, Website>();
-					websites.put("Facebook", new Facebook(activity));
-					websites.put("Twitter", new Twitter(activity));
-					websites.put("Google", new Google(activity));
-					websites.put("League of Legends", new LeagueOfLegends(
-							activity));
-					websites.put("Amazon", new Amazon(activity));
-					websites.put("Ebay", new Ebay(activity));
 					accountManager = new AccountManager("/sdcard/accounts.xml",
-							password, websites, activity);
+							password, activity, activity);
 					if (MainActivity.DEBUG_ACTIVATED)
 						Log.e("file", "/sdcard/accounts.xml");
 					File file = new File("/sdcard/accounts.xml");
