@@ -34,9 +34,11 @@ public class ChangePasswordWindow implements OnClickListener,
 	private Button generatorButton, submit;
 	private CompleteRandomContextGenerator generator;
 	private EditText lengthEditText, pass;
+	private AlertDialog alertDialog;
 
-	public ChangePasswordWindow(Account account, MainFragmentActivity mainActivity,View mainView) {
+	public ChangePasswordWindow(Account account, MainFragmentActivity mainActivity,View mainView,AlertDialog alertDialog) {
 		this.account = account;
+		this.alertDialog=alertDialog;
 		this.mainActivity = mainActivity;
 
 		pass = (EditText) mainView.findViewById(R.id.editNewPass);
@@ -89,11 +91,12 @@ public class ChangePasswordWindow implements OnClickListener,
 						InputMethodManager.HIDE_NOT_ALWAYS);
 				mainActivity.setContentView(R.layout.activity_main);
 				mainActivity.dataSetChanged();
+				alertDialog.dismiss();
 			} else {
 				new AlertDialog.Builder(mainActivity)
 						.setMessage(
 								mainActivity.getResources().getString(R.string.please_fulfill_condtion)
-										+ account.getWebsite()
+										+ ((PassChangeWebsite) account.getWebsite())
 												.getPasswordCondition())
 						.setTitle(mainActivity.getResources().getString(R.string.error))
 						.setCancelable(true)

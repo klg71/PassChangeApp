@@ -3,6 +3,7 @@ package ui;
 import com.passchange.passchangeapp.R;
 
 import account.Account;
+import android.app.AlertDialog;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
@@ -15,11 +16,13 @@ public class ChangeAccountWindow implements OnClickListener, OnLongClickListener
 	private Account selectedAccount;
 	private MainFragmentActivity mainActivity;
 	private EditText password,user,email,expire;
+	private AlertDialog dialog;
 	
 	public ChangeAccountWindow(Account selectedAccount,
-			MainFragmentActivity mainFragmentActivity,View mainView) {
+			MainFragmentActivity mainFragmentActivity,View mainView,AlertDialog dialog) {
 		this.selectedAccount=selectedAccount;
 		this.mainActivity=mainFragmentActivity;
+		this.dialog=dialog;
 		Button button=(Button)mainView.findViewById(R.id.buttonChangeSubmit);
 		button.setOnClickListener(this);
 		password=(EditText)mainView.findViewById(R.id.editChangePass);
@@ -42,7 +45,7 @@ public class ChangeAccountWindow implements OnClickListener, OnLongClickListener
 		selectedAccount.setActualPassword(password.getText().toString());	
 		selectedAccount.setEmail(email.getText().toString());
 		selectedAccount.setExpire(Integer.parseInt(expire.getText().toString()));
-		mainActivity.setContentView(R.layout.activity_main);
+		dialog.dismiss();
 	}
 
 

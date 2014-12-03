@@ -9,6 +9,7 @@ import plugins.Ebay;
 import plugins.Facebook;
 import plugins.Google;
 import plugins.LeagueOfLegends;
+import plugins.Steam;
 import plugins.Twitter;
 
 import com.passchange.passchangeapp.R;
@@ -52,7 +53,7 @@ public class AddAccountWindow implements OnClickListener {
 		websites.add(new LeagueOfLegends(mainFragmentActivity));
 		websites.add(new Amazon(mainFragmentActivity));
 		websites.add(new Ebay(mainFragmentActivity));
-		
+		websites.add(new Steam(mainFragmentActivity));
 		
 		Spinner website = (Spinner)  mainView.findViewById(R.id.spinner1);
 		WebsiteSpinnerAdapter dataAdapter = new WebsiteSpinnerAdapter(
