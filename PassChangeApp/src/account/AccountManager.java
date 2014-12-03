@@ -12,6 +12,7 @@ import javax.xml.transform.TransformerException;
 import com.passchange.passchangeapp.R;
 
 import ui.MainActivity;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -29,10 +30,10 @@ public class AccountManager {
 	private String accountFile;
 	private String masterPass;
 	private XmlParser xmlParser;
-	private HashMap<String, Website> websites;
 	private Configuration configuration;
 	private AccountExpiredListener accountExpiredListener;
 	private Timer expirationTimer;
+	private Activity activity;
 
 	public void setMasterPass(String masterPass) {
 		this.masterPass = masterPass;
@@ -41,15 +42,14 @@ public class AccountManager {
 	// private MysqlManager mysqlManager;
 
 	public AccountManager(String accountFile, String masterPass,
-			HashMap<String, Website> websites,
+			Activity activity,
 			AccountExpiredListener accountExpiredListener) {
 		accounts = new ArrayList<Account>();
 		this.accountExpiredListener = accountExpiredListener;
 		this.accountFile = accountFile;
 		this.masterPass = masterPass;
-		this.websites = websites;
 		// mysqlManager=new MysqlManager("", "", websites);
-		xmlParser = new XmlParser(websites);
+		xmlParser = new XmlParser(activity);
 		configuration = new Configuration(true, 0, 10);
 
 	}
@@ -72,18 +72,16 @@ public class AccountManager {
 		
 	}
 
-	public AccountManager(String masterPass, HashMap<String, Website> websites) {
+	public AccountManager(String masterPass, Activity activity) {
+		this.activity=activity;
 		accounts = new ArrayList<Account>();
 		this.masterPass = masterPass;
-		this.websites = websites;
 		// mysqlManager=new MysqlManager("", "", websites);
-		xmlParser = new XmlParser(websites);
+		xmlParser = new XmlParser(activity);
 
 	}
 
-	public HashMap<String, Website> getWebsites() {
-		return websites;
-	}
+	
 
 	public void loadFromFile() throws Exception {
 		accounts = xmlParser.loadAccountsFromFile(accountFile, masterPass);
