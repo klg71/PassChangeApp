@@ -93,11 +93,12 @@ public class XmlParser {
 							System.out.println(nodeList.item(i).getAttributes()
 									.getNamedItem("name").getNodeValue());
 						HashMap<String, Map<String, Map<String, String>>> cookies = new HashMap<String, Map<String, Map<String, String>>>();
-						NodeList cookieList = nodeList.item(i).getChildNodes();
+						NodeList cookieList = accountList.item(k).getChildNodes();
 						for (int cookieCount = 0; cookieCount < cookieList
 								.getLength(); cookieCount++) {
 
-							if (nodeList.item(i).getNodeName().equals("cookie")) {
+							Log.e("Cookies",cookieList.item(cookieCount).getNodeName());
+							if (cookieList.item(cookieCount).getNodeName().equals("cookie")) {
 								String domain = cookieList.item(cookieCount)
 										.getAttributes().getNamedItem("domain")
 										.getNodeValue();
@@ -175,12 +176,16 @@ public class XmlParser {
 						.getWebsite().getSaveCookies().entrySet()) {
 					for (Entry<String, Map<String, String>> entryCookie : entryCookieSite
 							.getValue().entrySet()) {
+						Log.e("Debug",entryCookie.getKey());
 						Element cookieElement = doc.createElement("cookie");
 						cookieElement.setAttribute("domain",
 								entryCookieSite.getKey());
+						Log.e("Debug",entryCookieSite.getKey());
 						cookieElement.setAttribute("key", entryCookie.getKey());
 						cookieElement.setAttribute("value", entryCookie
-								.getValue().get(entryCookie.getValue()));
+								.getValue().get(entryCookie.getKey()));
+						Log.e("Debug",entryCookie
+								.getValue().get(entryCookie.getKey()));
 						accountElement.appendChild(cookieElement);
 					}
 				}
