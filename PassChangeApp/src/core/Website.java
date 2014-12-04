@@ -112,4 +112,5 @@ public abstract class Website {
 	public abstract String getWebsiteUrl();
 
 	public abstract int getImageSource();
+
 }
