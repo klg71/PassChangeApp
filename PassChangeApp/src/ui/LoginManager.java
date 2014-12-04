@@ -34,6 +34,7 @@ public class LoginManager {
 	private boolean resetPassword;
 	private boolean active;
 	protected AccountManager accountManager;
+	private boolean loginActive;
 	protected AccountListAdapter accountListAdapter;
 
 	public LoginManager(MainActivity activity) {
@@ -45,6 +46,7 @@ public class LoginManager {
 		this.activity = mainFragmentActivity;
 		loggedIn = false;
 		active = false;
+		loginActive=false;
 	}
 
 	public void OnAppPaused() {
@@ -86,7 +88,8 @@ public class LoginManager {
 	public void OnAppStarted() {
 		if (isLoggedIn()) {
 			activity.onLoggedIn();
-		} else {
+		} else if(!loginActive) {
+			loginActive=true;
 			login();
 		}
 	}
@@ -121,7 +124,6 @@ public class LoginManager {
 		alert.setView(textEntryView);
 		resetPassword = false;
 
-		System.out.println("Debug2");
 		alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int whichButton) {
 				// String value = input.getText().toString();
@@ -168,6 +170,7 @@ public class LoginManager {
 					// activity.setContentView(R.layout.activity_main);
 					accountListAdapter = new AccountListAdapter(accountManager);
 					active = true;
+					loginActive=false;
 					activity.onLoggedIn();
 					((MainFragmentActivity) activity).dataSetChanged();
 					// activity.startExpirationTimer();
