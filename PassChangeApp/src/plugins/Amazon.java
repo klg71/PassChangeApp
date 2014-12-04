@@ -14,6 +14,7 @@ import core.PassChangeWebsite;
 import core.RequestType;
 import core.WebClient;
 import core.Website;
+import exceptions.AccountCredentialWrongException;
 
 public class Amazon extends PassChangeWebsite {
 
@@ -119,7 +120,8 @@ public class Amazon extends PassChangeWebsite {
 	protected void validateAuthentification() throws Exception {
 		body=webClient.sendRequest("http://www.amazon.com", RequestType.GET, "","checkAmazonLogin", false,"",true);
 		if(body.contains("<span id='nav-signin-text' class='nav-button-em'>Sign in</span>")){
-			throw new Exception("Login unsuccsessful please try again");
+			displayErrorMessage("Amazon: Login unsuccessful please check your username and password");
+			throw new AccountCredentialWrongException();
 		}
 		authenticated=true;
 		

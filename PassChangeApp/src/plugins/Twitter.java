@@ -16,6 +16,7 @@ import core.PassChangeWebsite;
 import core.RequestType;
 import core.WebClient;
 import core.Website;
+import exceptions.AccountCredentialWrongException;
 
 public class Twitter extends PassChangeWebsite {
 
@@ -109,8 +110,8 @@ public class Twitter extends PassChangeWebsite {
 	@Override
 	protected void validateAuthentification() throws Exception {
 		if (body.indexOf("redirected") > 0) {
-			displayErrorMessage("Twitter: Login unsuccessful please ckeck your username and password");
-			throw new Exception("Login unsuccessful please ckeck your username and password");
+			displayErrorMessage("Twitter: Login unsuccessful please check your username and password");
+			throw new AccountCredentialWrongException();
 		}
 
 		authenticated=true;

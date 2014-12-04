@@ -36,6 +36,7 @@ import core.PassChangeWebsite;
 import core.RequestType;
 import core.WebClient;
 import core.Website;
+import exceptions.AccountCredentialWrongException;
 
 public class LeagueOfLegends extends PassChangeWebsite {
 	private String body;
@@ -146,8 +147,7 @@ public class LeagueOfLegends extends PassChangeWebsite {
 	protected void validateAuthentification() throws Exception {
 		if (!body.contains("\"success\":true")) {
 			displayErrorMessage("League of Legends: Login unsuccesful! Maybe you entered a wrong captcha or wrong username/password!");
-			throw new Exception(
-					"Login unsuccesful! Maybe you entered a wrong captcha or wrong username/password!");
+			throw new AccountCredentialWrongException();
 		}
 
 		authenticated = true;

@@ -12,6 +12,7 @@ import core.PassChangeWebsite;
 import core.RequestType;
 import core.WebClient;
 import core.Website;
+import exceptions.AccountCredentialWrongException;
 
 public class Facebook extends PassChangeWebsite {
 	private String passwordNew;
@@ -106,7 +107,7 @@ public class Facebook extends PassChangeWebsite {
 	protected void validateAuthentification() throws Exception {
 		if(Login.indexOf("login_form")>0 || Login.length()==0){
 			displayErrorMessage("Facebook: Login unsuccsessful please check username and password");
-			throw new Exception("Login unsuccsessful please check username and password");
+			throw new AccountCredentialWrongException();
 		}
 
 		authenticated=true;

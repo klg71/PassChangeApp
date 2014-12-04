@@ -47,6 +47,7 @@ import android.widget.LinearLayout;
 import core.RequestType;
 import core.WebClient;
 import core.Website;
+import exceptions.AccountCredentialWrongException;
 
 public class Steam extends Website {
 
@@ -74,16 +75,16 @@ public class Steam extends Website {
 
 	public void initialize(String username, String password) {
 		super.initialize(username, password);
-		authenticated=false;
+		authenticated = false;
 	}
 
 	@Override
 	public void authenticate() throws Exception {
-		authenticated=false;
+		authenticated = false;
 		String post = "";
 		String key = "";
 		body = webClient.sendRequest("https://store.steampowered.com/login/",
-				RequestType.GET, "", "steamPreLogin", false,"",true);
+				RequestType.GET, "", "steamPreLogin", false, "", true);
 		body = webClient.sendRequest(
 				"https://store.steampowered.com/login/getrsakey/",
 				RequestType.POST, "username=" + username, "getRsaKey", false);
@@ -121,12 +122,17 @@ public class Steam extends Website {
 					"https://store.steampowered.com/login/", false);
 			if (MainFragmentActivity.DEBUG_ACTIVATED)
 				System.out.println(body);
-		} while (body.contains("success\":false") && !body.contains("SteamGuard"));
+			if (body.contains("Login")) {
+				displayErrorMessage("Steam: Login unsuccessful please check your username and password");
+				throw new AccountCredentialWrongException();
+			}
+		} while (body.contains("success\":false")
+				&& !body.contains("SteamGuard"));
 		if (body.contains("SteamGuard")) {
-			emailAuthBool=false;
+			emailAuthBool = false;
 			getEmailID();
 			getEmailAuth();
-			while(!emailAuthBool){
+			while (!emailAuthBool) {
 			}
 			post = "username=" + username + "&password="
 					+ URLEncoder.encode(key, "UTF-8")
@@ -151,7 +157,8 @@ public class Steam extends Website {
 				transferParameter, "transfer", false,
 				"https://store.steampowered.com/login/", false);
 		body = webClient.sendRequest("http://store.steampowered.com/",
-				RequestType.GET, transferParameter, "storePage", false,"",true);
+				RequestType.GET, transferParameter, "storePage", false, "",
+				true);
 		// Steam Safe Email Authentification
 		HashMap<String, Map<String, Map<String, String>>> cookiesToSafe = new HashMap<String, Map<String, Map<String, String>>>();
 		for (Entry<String, Map<String, Map<String, String>>> entryWebSite : webClient
@@ -212,8 +219,8 @@ public class Steam extends Website {
 					transferString = transferString + "&token_secure="
 							+ m.group().toString();
 		transferParameter = transferString;
-		if(MainFragmentActivity.DEBUG_ACTIVATED)
-		System.out.println(transferString);
+		if (MainFragmentActivity.DEBUG_ACTIVATED)
+			System.out.println(transferString);
 
 	}
 
@@ -306,7 +313,7 @@ public class Steam extends Website {
 							public void onClick(DialogInterface dialog,
 									int which) {
 								emailAuth = authEnter.getText().toString();
-								emailAuthBool=true;
+								emailAuthBool = true;
 							}
 						}).setView(layout);
 				builder.create().show();
@@ -314,9 +321,11 @@ public class Steam extends Website {
 			}
 
 		});
-		while (emailAuth=="");
+		while (emailAuth == "")
+			;
 	}
-	//TODO: Remove fixed timestamp length
+
+	// TODO: Remove fixed timestamp length
 	private void getRsaKey() {
 		Pattern pattern = Pattern.compile("([A-Z])\\w{50,}");
 		Matcher m = pattern.matcher(body);
@@ -334,7 +343,7 @@ public class Steam extends Website {
 	private String encryptRsa1(String data, String pubkey) {
 		BigInteger modulus = new BigInteger(pubkey, 16);
 		BigInteger encryptionExponent = new BigInteger("010001", 16);
-		
+
 		PublicKey key = null;
 
 		try {
@@ -349,7 +358,7 @@ public class Steam extends Website {
 		try {
 			cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
 		} catch (NoSuchAlgorithmException | NoSuchPaddingException e1) {
-			Log.e("DEBUG",e1.getMessage());
+			Log.e("DEBUG", e1.getMessage());
 			e1.printStackTrace();
 		}
 		try {
@@ -359,9 +368,10 @@ public class Steam extends Website {
 			e.printStackTrace();
 		}
 		try {
-			return new String(Base64.encode(cipher.doFinal(data.getBytes("UTF-8")),
-					Base64.NO_WRAP));
-		} catch (IllegalBlockSizeException | BadPaddingException | UnsupportedEncodingException e) {
+			return new String(Base64.encode(
+					cipher.doFinal(data.getBytes("UTF-8")), Base64.NO_WRAP));
+		} catch (IllegalBlockSizeException | BadPaddingException
+				| UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -370,12 +380,11 @@ public class Steam extends Website {
 
 	@Override
 	protected void validateAuthentification() throws Exception {
-		if (!body.contains("success\":true")){
-			Log.e("DEBUG","not authenticated");
-			throw new Exception(
-					"Login unsuccesful check password,username and typed captcha!");
+		if (!body.contains("success\":true")) {
+			displayErrorMessage("Steam: Login unsuccessful please check your username and password");
+			throw new AccountCredentialWrongException();
 		}
-		authenticated=true;
+		authenticated = true;
 	}
 
 	@Override

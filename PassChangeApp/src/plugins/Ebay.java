@@ -15,6 +15,7 @@ import core.PassChangeWebsite;
 import core.RequestType;
 import core.WebClient;
 import core.Website;
+import exceptions.AccountCredentialWrongException;
 
 public class Ebay extends PassChangeWebsite {
 
@@ -97,8 +98,8 @@ public class Ebay extends PassChangeWebsite {
 		if (body.length() > 0) {
 			authenticated = true;
 		} else {
-			throw new Exception(
-					"Ebay: Login Failed check username and password.");
+			displayErrorMessage("Ebay: Login unsuccessful please check your username and password");
+			throw new AccountCredentialWrongException();
 		}
 
 	}

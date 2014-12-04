@@ -15,6 +15,7 @@ import core.PassChangeWebsite;
 import core.RequestType;
 import core.WebClient;
 import core.Website;
+import exceptions.AccountCredentialWrongException;
 
 public class Google extends PassChangeWebsite {
 
@@ -103,8 +104,8 @@ public class Google extends PassChangeWebsite {
 	@Override
 	protected void validateAuthentification() throws Exception {
 		if(body.contains("errormsg_0_Passwd")){
-			displayErrorMessage("Google: Login unsuccsessful please try again");
-			throw new Exception("Login unsuccsessful please try again");
+			displayErrorMessage("Google: Login unsuccessful please check your username and password");
+			throw new AccountCredentialWrongException();
 		}
 		authenticated=true;
 	}
