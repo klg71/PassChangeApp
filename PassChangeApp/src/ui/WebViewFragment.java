@@ -66,20 +66,21 @@ public class WebViewFragment extends CustomFragment {
 	public CharSequence getTitle() {
 		return account.getUserName() + " @ " + account.getWebsite().getName();
 	}
-	
-	public boolean canGoBack(){
-		return webView.canGoBack();
+
+	public boolean canGoBack() {
+		if (webView != null) {
+			return webView.canGoBack();
+		} else
+			return false;
 	}
+
 	@Override
 	public void refresh() {
 		if (webView != null) {
 			webView.setWebViewClient(new WebViewClient());
-			webView.getSettings()
-					.setJavaScriptEnabled(true);
-			webView.getSettings().setBuiltInZoomControls(
-					true);
-			webView.getSettings().setDisplayZoomControls(
-					false);
+			webView.getSettings().setJavaScriptEnabled(true);
+			webView.getSettings().setBuiltInZoomControls(true);
+			webView.getSettings().setDisplayZoomControls(false);
 			webView.invalidate();
 			webView.refreshDrawableState();
 			webView.loadUrl(account.getWebsite().getWebsiteUrl());
@@ -87,9 +88,23 @@ public class WebViewFragment extends CustomFragment {
 
 	}
 
+	@Override
+	public void stopAllThreads() {
+		account.stopAllThreads();
+		super.stopAllThreads();
+	}
+
+	public WebView getWebView() {
+		return webView;
+	}
+
 	public void removeProgressBar() {
 		spinner.setVisibility(View.GONE);
 
+	}
+
+	public void loginUnsuccesful() {
+		((MainFragmentActivity) getActivity()).removeFragment(this);
 	}
 
 }

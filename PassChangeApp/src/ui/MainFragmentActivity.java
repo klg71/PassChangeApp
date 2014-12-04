@@ -72,6 +72,15 @@ public class MainFragmentActivity extends FragmentActivity implements
 			pagerAdapter.notifyDataSetChanged();
 		} else if (item.getItemId() == R.id.refresh) {
 			pagerAdapter.getCustomItem(mViewPager.getCurrentItem()).refresh();
+		} else if(item.getItemId()==android.R.id.home){
+
+			if (childWindowActive) {
+				childWindowActive = false;
+				setContentView(R.layout.activity_collection);
+				onLoggedIn();
+				dataSetChanged();
+			}
+			mViewPager.setCurrentItem(0);
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -79,7 +88,7 @@ public class MainFragmentActivity extends FragmentActivity implements
 	private HashMap<Account, CustomFragment> loadedWebsites;
 	private ArrayList<CustomFragment> fragments;
 	private MainFragmentStatePager pagerAdapter;
-	private ViewPager mViewPager;
+	private CustomViewPager mViewPager;
 	public final static boolean DEBUG_ACTIVATED = false;
 	private Account selectedAccount;
 	private LinearLayout changePasswordLayout, editAccountLayout,
@@ -109,6 +118,7 @@ public class MainFragmentActivity extends FragmentActivity implements
 	protected void onStart() {
 		active = true;
 		loginManager.OnAppStarted();
+		getActionBar().setDisplayHomeAsUpEnabled(true);
 		if (DEBUG_ACTIVATED)
 			Log.e("Debug", "OnAppStarted called");
 		super.onStart();
@@ -118,7 +128,8 @@ public class MainFragmentActivity extends FragmentActivity implements
 
 		pagerAdapter = new MainFragmentStatePager(getSupportFragmentManager(),
 				fragments, this);
-		mViewPager = (ViewPager) findViewById(R.id.pager);
+		mViewPager = (CustomViewPager) findViewById(R.id.pager);
+		//mViewPager=new CustomViewPager(this);
 		mViewPager.setAdapter(pagerAdapter);
 		mViewPager.setOnPageChangeListener(this);
 
@@ -141,21 +152,14 @@ public class MainFragmentActivity extends FragmentActivity implements
 			onLoggedIn();
 			dataSetChanged();
 		} else {
+			if (mViewPager.getCurrentItem() == 0) {
+				super.onBackPressed();
+			}
 			if (pagerAdapter.getCustomItem(mViewPager.getCurrentItem())
 					.getClass() == WebViewFragment.class) {
 				if (!((WebViewFragment) pagerAdapter.getCustomItem(mViewPager
 						.getCurrentItem())).canGoBack()) {
-					Account account = null;
-					for (Map.Entry<Account, CustomFragment> entry : loadedWebsites
-							.entrySet()) {
-						if (entry.getValue().equals(
-								pagerAdapter.getItem(mViewPager
-										.getCurrentItem()))) {
-							account = entry.getKey();
-						}
-					}
-					loadedWebsites.remove(account);
-					fragments.remove(mViewPager.getCurrentItem());
+					mViewPager.setCurrentItem(0);
 					pagerAdapter.notifyDataSetChanged();
 				} else {
 					pagerAdapter.getCustomItem(mViewPager.getCurrentItem())
@@ -164,9 +168,6 @@ public class MainFragmentActivity extends FragmentActivity implements
 			} else {
 				pagerAdapter.getCustomItem(mViewPager.getCurrentItem())
 						.onBackPressed();
-			}
-			if (mViewPager.getCurrentItem() == 0) {
-				super.onBackPressed();
 			}
 		}
 	}
@@ -594,6 +595,27 @@ public class MainFragmentActivity extends FragmentActivity implements
 			loadedWebsites.put(selectedAccount, fragment);
 		}
 
+	}
+
+	public void removeFragment(final CustomFragment fragment) {
+		runOnUiThread(new Runnable() {
+			
+			@Override
+			public void run() {
+				Account account = null;
+				for (Map.Entry<Account, CustomFragment> entry : loadedWebsites
+						.entrySet()) {
+					if (entry.getValue().equals(
+							pagerAdapter.getItem(mViewPager.getCurrentItem()))) {
+						account = entry.getKey();
+					}
+				}
+				loadedWebsites.remove(account);
+				fragments.remove(pagerAdapter.getCustomItemPosition(fragment));
+				pagerAdapter.notifyDataSetChanged();
+				
+			}
+		});
 	}
 
 }
