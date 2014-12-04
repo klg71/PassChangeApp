@@ -70,7 +70,7 @@ public class MainFragmentActivity extends FragmentActivity implements
 			loadedWebsites.remove(account);
 			fragments.remove(mViewPager.getCurrentItem());
 			pagerAdapter.notifyDataSetChanged();
-		} else if(item.getItemId()==R.id.refresh){
+		} else if (item.getItemId() == R.id.refresh) {
 			pagerAdapter.getCustomItem(mViewPager.getCurrentItem()).refresh();
 		}
 		return super.onOptionsItemSelected(item);
@@ -109,8 +109,8 @@ public class MainFragmentActivity extends FragmentActivity implements
 	protected void onStart() {
 		active = true;
 		loginManager.OnAppStarted();
-		if(DEBUG_ACTIVATED)
-			Log.e("Debug","OnAppStarted called");
+		if (DEBUG_ACTIVATED)
+			Log.e("Debug", "OnAppStarted called");
 		super.onStart();
 	}
 
@@ -141,8 +141,30 @@ public class MainFragmentActivity extends FragmentActivity implements
 			onLoggedIn();
 			dataSetChanged();
 		} else {
-			pagerAdapter.getCustomItem(mViewPager.getCurrentItem())
-					.onBackPressed();
+			if (pagerAdapter.getCustomItem(mViewPager.getCurrentItem())
+					.getClass() == WebViewFragment.class) {
+				if (!((WebViewFragment) pagerAdapter.getCustomItem(mViewPager
+						.getCurrentItem())).canGoBack()) {
+					Account account = null;
+					for (Map.Entry<Account, CustomFragment> entry : loadedWebsites
+							.entrySet()) {
+						if (entry.getValue().equals(
+								pagerAdapter.getItem(mViewPager
+										.getCurrentItem()))) {
+							account = entry.getKey();
+						}
+					}
+					loadedWebsites.remove(account);
+					fragments.remove(mViewPager.getCurrentItem());
+					pagerAdapter.notifyDataSetChanged();
+				} else {
+					pagerAdapter.getCustomItem(mViewPager.getCurrentItem())
+							.onBackPressed();
+				}
+			} else {
+				pagerAdapter.getCustomItem(mViewPager.getCurrentItem())
+						.onBackPressed();
+			}
 			if (mViewPager.getCurrentItem() == 0) {
 				super.onBackPressed();
 			}
@@ -193,30 +215,30 @@ public class MainFragmentActivity extends FragmentActivity implements
 	public void accountInteraction(Account selectedAccount) {
 
 		this.selectedAccount = selectedAccount;
-			LayoutInflater factory = LayoutInflater.from(this);
-			View textEntryView = factory.inflate(R.layout.action_view, null);
-			AlertDialog.Builder alert = new AlertDialog.Builder(this);
-			alert.setTitle("Actions");
-			alert.setView(textEntryView);
-			ImageView imageView = (ImageView) textEntryView
-					.findViewById(R.id.imageViewIcon);
-			imageView.setImageResource(selectedAccount.getWebsite()
-					.getImageSource());
+		LayoutInflater factory = LayoutInflater.from(this);
+		View textEntryView = factory.inflate(R.layout.action_view, null);
+		AlertDialog.Builder alert = new AlertDialog.Builder(this);
+		alert.setTitle("Actions");
+		alert.setView(textEntryView);
+		ImageView imageView = (ImageView) textEntryView
+				.findViewById(R.id.imageViewIcon);
+		imageView.setImageResource(selectedAccount.getWebsite()
+				.getImageSource());
 
-			SimpleDateFormat format = (SimpleDateFormat) new SimpleDateFormat()
-					.getDateInstance(SimpleDateFormat.MEDIUM);
-			Calendar tempCal = (Calendar) selectedAccount
-					.getLastChangedCalendar().clone();
-			tempCal.add(Calendar.DAY_OF_YEAR, selectedAccount.getExpire());
-			TextView view = (TextView) textEntryView
-					.findViewById(R.id.textViewInformation);
-			view.setText(selectedAccount.getUserName() + " - "
-					+ selectedAccount.getWebsite()
-					+ System.getProperty("line.separator") + "Expires: "
-					+ format.format(tempCal.getTime()));
-			actionAlert = alert.create();
+		SimpleDateFormat format = (SimpleDateFormat) new SimpleDateFormat()
+				.getDateInstance(SimpleDateFormat.MEDIUM);
+		Calendar tempCal = (Calendar) selectedAccount.getLastChangedCalendar()
+				.clone();
+		tempCal.add(Calendar.DAY_OF_YEAR, selectedAccount.getExpire());
+		TextView view = (TextView) textEntryView
+				.findViewById(R.id.textViewInformation);
+		view.setText(selectedAccount.getUserName() + " - "
+				+ selectedAccount.getWebsite()
+				+ System.getProperty("line.separator") + "Expires: "
+				+ format.format(tempCal.getTime()));
+		actionAlert = alert.create();
 
-			if (selectedAccount.getWebsite().getClass()==PassChangeWebsite.class) {
+		if (selectedAccount.getWebsite().getClass() == PassChangeWebsite.class) {
 			changePasswordLayout = (LinearLayout) textEntryView
 					.findViewById(R.id.change_password_action);
 			changePasswordLayout.setOnClickListener(this);
@@ -358,12 +380,14 @@ public class MainFragmentActivity extends FragmentActivity implements
 			actionAlert.dismiss();
 			View alertView = createAlert(R.layout.changepassword,
 					R.string.change_password);
-			new ChangePasswordWindow(selectedAccount, this, alertView,alertAddAccount);
+			new ChangePasswordWindow(selectedAccount, this, alertView,
+					alertAddAccount);
 		} else if (v.equals(editAccountLayout)) {
 			actionAlert.dismiss();
 			View alertView = createAlert(R.layout.changeaccount,
 					R.string.edit_account);
-			new ChangeAccountWindow(selectedAccount, this, alertView,alertAddAccount);
+			new ChangeAccountWindow(selectedAccount, this, alertView,
+					alertAddAccount);
 		} else if (v.equals(testLoginLayout)) {
 			actionAlert.dismiss();
 			selectedAccount.testLogin(this);
@@ -525,7 +549,8 @@ public class MainFragmentActivity extends FragmentActivity implements
 	public void onClick(DialogInterface dialog, int which) {
 		View alertView = createAlert(R.layout.changepassword,
 				R.string.change_password);
-		new ChangePasswordWindow(selectedAccount, this, alertView,alertAddAccount);
+		new ChangePasswordWindow(selectedAccount, this, alertView,
+				alertAddAccount);
 
 	}
 
@@ -547,8 +572,7 @@ public class MainFragmentActivity extends FragmentActivity implements
 		if (arg0 != 0) {
 			optionsMenu.findItem(R.id.close).setVisible(true);
 			optionsMenu.findItem(R.id.refresh).setVisible(true);
-			
-			
+
 		} else {
 			optionsMenu.findItem(R.id.close).setVisible(false);
 			optionsMenu.findItem(R.id.refresh).setVisible(false);

@@ -66,7 +66,10 @@ public class WebViewFragment extends CustomFragment {
 	public CharSequence getTitle() {
 		return account.getUserName() + " @ " + account.getWebsite().getName();
 	}
-
+	
+	public boolean canGoBack(){
+		return webView.canGoBack();
+	}
 	@Override
 	public void refresh() {
 		if (webView != null) {
