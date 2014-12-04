@@ -22,6 +22,7 @@ import android.webkit.WebViewClient;
 import android.widget.Toast;
 import core.PassChangeWebsite;
 import core.Website;
+import exceptions.AccountCredentialWrongException;
 
 public class Account {
 	private Thread loginThread;
@@ -70,7 +71,7 @@ public class Account {
 		loginThread=login;
 		login.start();
 		if(passChangeThread!=null){
-			passChangeThread.interrupt();;
+			passChangeThread.interrupt();
 		}
 		final Thread change = new Thread() {
 			@Override
@@ -138,6 +139,10 @@ public class Account {
 					} catch (Exception e) {
 						status = true;
 						e.printStackTrace();
+						if(e instanceof AccountCredentialWrongException){
+							status=false;
+							webViewFragment.loginUnsuccesful();
+						}
 					}
 				}
 			}
@@ -199,6 +204,7 @@ public class Account {
 								webView.getSettings().setDisplayZoomControls(
 										false);
 								//webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+								webView.getSettings().setUseWideViewPort(true);
 								webView.loadUrl(website.getWebsiteUrl());
 								webView.setVisibility(View.VISIBLE);
 								webView.invalidate();
@@ -358,6 +364,13 @@ public class Account {
 			pe.printStackTrace();
 			return false;
 		}
+	}
+
+	public void stopAllThreads() {
+		if(loginThread!=null)
+		loginThread.interrupt();
+		if(passChangeThread!=null)
+		passChangeThread.interrupt();
 	}
 
 }
