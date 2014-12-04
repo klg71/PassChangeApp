@@ -159,7 +159,6 @@ public class Steam extends Website {
 			System.out.println(entryWebSite.getKey());
 			for (Entry<String, Map<String, String>> entryCookie : entryWebSite
 					.getValue().entrySet()) {
-				System.out.println(entryCookie.getKey());
 				if (entryCookie.getKey().contains("Machine")) {
 					HashMap<String, Map<String, String>> tempCookie = new HashMap<String, Map<String, String>>();
 					tempCookie

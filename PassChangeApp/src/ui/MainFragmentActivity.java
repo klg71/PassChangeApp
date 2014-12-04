@@ -70,6 +70,8 @@ public class MainFragmentActivity extends FragmentActivity implements
 			loadedWebsites.remove(account);
 			fragments.remove(mViewPager.getCurrentItem());
 			pagerAdapter.notifyDataSetChanged();
+		} else if(item.getItemId()==R.id.refresh){
+			pagerAdapter.getCustomItem(mViewPager.getCurrentItem()).refresh();
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -543,8 +545,12 @@ public class MainFragmentActivity extends FragmentActivity implements
 		pagerAdapter.getCustomItem(arg0).refresh();
 		if (arg0 != 0) {
 			optionsMenu.findItem(R.id.close).setVisible(true);
+			optionsMenu.findItem(R.id.refresh).setVisible(true);
+			
+			
 		} else {
 			optionsMenu.findItem(R.id.close).setVisible(false);
+			optionsMenu.findItem(R.id.refresh).setVisible(false);
 		}
 
 	}

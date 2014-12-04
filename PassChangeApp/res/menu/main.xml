@@ -15,5 +15,12 @@
         android:title="Close"
         android:visible="false">
     </item>
+    <item
+        android:id="@+id/refresh"
+        android:icon="@drawable/refresh_icon"
+        android:showAsAction="ifRoom"
+        android:title="Refresh"
+        android:visible="false">
+    </item>
 
 </menu>

@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.View.OnSystemUiVisibilityChangeListener;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
@@ -29,26 +30,23 @@ public class WebViewFragment extends CustomFragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// webView=new WebView(getActivity());
-		mainView=new LinearLayout(getActivity());
-		mainView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+		mainView = new LinearLayout(getActivity());
+		mainView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
+				LayoutParams.MATCH_PARENT));
 		mainView.setOrientation(LinearLayout.VERTICAL);
-		//mainView = inflater.inflate(R.layout.webview, container, false);
-		//spinner = (ProgressBar) mainView.findViewById(R.id.progressBar1);
-		spinner=new ProgressBar(getActivity());
+		// mainView = inflater.inflate(R.layout.webview, container, false);
+		// spinner = (ProgressBar) mainView.findViewById(R.id.progressBar1);
+		spinner = new ProgressBar(getActivity());
 		spinner.setVisibility(View.VISIBLE);
-		//LayoutParams params=new LayoutParams(Gravity.CENTER);
-		//spinner.setLayoutParams(params);
-		
-		//webView = (WebView) mainView.findViewById(R.id.webView1);
-		webView=new WebView(getActivity());
+		// LayoutParams params=new LayoutParams(Gravity.CENTER);
+		// spinner.setLayoutParams(params);
+
+		// webView = (WebView) mainView.findViewById(R.id.webView1);
+		webView = new WebView(getActivity());
 		webView.setVisibility(View.GONE);
 		mainView.addView(spinner);
 		mainView.addView(webView);
-		if (firstLoad) {
-			Log.e("DEBUG", "onCreateView");
-			account.openBrowser(webView, getActivity(), this);
-		}
-		firstLoad = false;
+		account.openBrowser(webView, getActivity(), this);
 		// refresh();
 		return mainView;
 	}
@@ -72,9 +70,16 @@ public class WebViewFragment extends CustomFragment {
 	@Override
 	public void refresh() {
 		if (webView != null) {
+			webView.setWebViewClient(new WebViewClient());
+			webView.getSettings()
+					.setJavaScriptEnabled(true);
+			webView.getSettings().setBuiltInZoomControls(
+					true);
+			webView.getSettings().setDisplayZoomControls(
+					false);
 			webView.invalidate();
 			webView.refreshDrawableState();
-			webView.reload();
+			webView.loadUrl(account.getWebsite().getWebsiteUrl());
 		}
 
 	}
