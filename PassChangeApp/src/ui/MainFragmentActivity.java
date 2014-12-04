@@ -109,7 +109,8 @@ public class MainFragmentActivity extends FragmentActivity implements
 	protected void onStart() {
 		active = true;
 		loginManager.OnAppStarted();
-
+		if(DEBUG_ACTIVATED)
+			Log.e("Debug","OnAppStarted called");
 		super.onStart();
 	}
 
