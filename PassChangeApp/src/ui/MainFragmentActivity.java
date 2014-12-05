@@ -67,6 +67,7 @@ public class MainFragmentActivity extends FragmentActivity implements
 					account = entry.getKey();
 				}
 			}
+			pagerAdapter.getCustomItem(mViewPager.getCurrentItem()).stopAllThreads();
 			loadedWebsites.remove(account);
 			fragments.remove(mViewPager.getCurrentItem());
 			pagerAdapter.notifyDataSetChanged();
