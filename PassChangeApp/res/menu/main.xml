@@ -4,7 +4,7 @@
 
     <item
         android:id="@+id/settings"
-        android:icon="@drawable/edit_account_icon"
+        android:icon="@drawable/settings_white"
         android:showAsAction="ifRoom"
         android:title="Settings">
     </item>
