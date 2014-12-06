@@ -10,14 +10,14 @@
     </item>
     <item
         android:id="@+id/close"
-        android:icon="@drawable/close_webview_icon"
+        android:icon="@drawable/close_webview_white"
         android:showAsAction="ifRoom"
         android:title="Close"
         android:visible="false">
     </item>
     <item
         android:id="@+id/refresh"
-        android:icon="@drawable/refresh_icon"
+        android:icon="@drawable/refresh_webview_white"
         android:showAsAction="ifRoom"
         android:title="Refresh"
         android:visible="false">
