@@ -27,6 +27,8 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.PorterDuff.Mode;
+import android.graphics.drawable.Drawable;
 import android.opengl.Visibility;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -101,6 +103,7 @@ public class MainFragmentActivity extends FragmentActivity implements
 	private boolean childWindowActive;
 	private Menu optionsMenu;
 	private AlertDialog alertAddAccount;
+	private AccountOverviewFragment accountOverviewFragment;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -112,11 +115,15 @@ public class MainFragmentActivity extends FragmentActivity implements
 		// fragments.add(new SettingsFragment(this, loginManager
 		// .getAccountManager().getConfiguration(), loginManager
 		// .getAccountManager()));
-		fragments.add(new AccountOverviewFragment(loginManager));
+		if(accountOverviewFragment==null){
+			accountOverviewFragment=new AccountOverviewFragment(loginManager);
+			fragments.add(accountOverviewFragment);
+		}
 	}
 
 	@Override
 	protected void onStart() {
+		getResources().getDrawable(R.drawable.edit_account_icon).setColorFilter(0xFFFF0000,Mode.MULTIPLY);
 		active = true;
 		loginManager.OnAppStarted();
 		getActionBar().setDisplayHomeAsUpEnabled(true);
