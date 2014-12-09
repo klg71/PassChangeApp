@@ -22,7 +22,7 @@
                 android:background="@drawable/backgroundsettings"
                 android:orientation="vertical" >
 
-                <CheckBox
+                <!-- <CheckBox
                     android:id="@+id/checkBoxLogOutWhenAppIsPaused"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
@@ -59,10 +59,10 @@
                         android:layout_height="match_parent"
                         android:text="@string/minutes"
                         android:textSize="16sp" />
-                </LinearLayout>
+                </LinearLayout> -->
             </LinearLayout>
 
-            <LinearLayout
+<!--             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="8sp"
@@ -99,7 +99,7 @@
                         android:text="@string/minutes"
                         android:textSize="16sp" />
                 </LinearLayout>
-            </LinearLayout>
+            </LinearLayout> -->
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
