@@ -145,7 +145,7 @@ public class SettingsFragment extends CustomFragment implements
 		rememberEditText = (EditText)  mainView
 				.findViewById(R.id.editTextTimeTillRemember);
 		rememberEditText.setText(Integer.toString(configuration
-				.getRememberTimeMinmutes()));
+				.getRememberTimeMinutes()));
 		rememberEditText.setOnEditorActionListener(this);
 		super.onStart();
 	}

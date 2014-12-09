@@ -53,12 +53,31 @@ import android.widget.TextView;
 public class MainFragmentActivity extends FragmentActivity implements
 		AccountExpiredListener, OnClickListener, AccountExportListener,
 		android.content.DialogInterface.OnClickListener, OnPageChangeListener {
+
+	private HashMap<Account, CustomFragment> loadedWebsites;
+	private ArrayList<CustomFragment> fragments;
+	private MainFragmentStatePager pagerAdapter;
+	private CustomViewPager mViewPager;
+	public final static boolean DEBUG_ACTIVATED = false;
+	private Account selectedAccount;
+	private LinearLayout changePasswordLayout, editAccountLayout,
+			testLoginLayout, copyPasswordLayout, exportAccountLayout,
+			addAccountLayout, deleteAccountLayout, webViewLayout;
+	private LoginManager loginManager;
+	private AlertDialog actionAlert;
+	private boolean active;
+	private boolean childWindowActive;
+	private Menu optionsMenu;
+	private AlertDialog alertAddAccount;
+	private AccountOverviewFragment accountOverviewFragment;
+	private SettingsWindowNew settingsWindowNew;
+	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		if (item.getItemId() == R.id.settings) {
-			setContentView(R.layout.settings);
+			setContentView(R.layout.settings_new);
 			childWindowActive = true;
-			new SettingsWindow(this, loginManager.getAccountManager()
+			settingsWindowNew=new SettingsWindowNew(this, loginManager.getAccountManager()
 					.getConfiguration(), loginManager.getAccountManager());
 		} else if (item.getItemId() == R.id.close) {
 			Account account = null;
@@ -87,23 +106,6 @@ public class MainFragmentActivity extends FragmentActivity implements
 		}
 		return super.onOptionsItemSelected(item);
 	}
-
-	private HashMap<Account, CustomFragment> loadedWebsites;
-	private ArrayList<CustomFragment> fragments;
-	private MainFragmentStatePager pagerAdapter;
-	private CustomViewPager mViewPager;
-	public final static boolean DEBUG_ACTIVATED = false;
-	private Account selectedAccount;
-	private LinearLayout changePasswordLayout, editAccountLayout,
-			testLoginLayout, copyPasswordLayout, exportAccountLayout,
-			addAccountLayout, deleteAccountLayout, webViewLayout;
-	private LoginManager loginManager;
-	private AlertDialog actionAlert;
-	private boolean active;
-	private boolean childWindowActive;
-	private Menu optionsMenu;
-	private AlertDialog alertAddAccount;
-	private AccountOverviewFragment accountOverviewFragment;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -154,11 +156,14 @@ public class MainFragmentActivity extends FragmentActivity implements
 	@Override
 	public void onBackPressed() {
 		if (childWindowActive) {
-			childWindowActive = false;
-			setContentView(R.layout.activity_collection);
-			onLoggedIn();
-			dataSetChanged();
-		} else {
+			if(settingsWindowNew.goBack()){
+				childWindowActive = false;
+				setContentView(R.layout.activity_collection);
+				onLoggedIn();
+				dataSetChanged();
+			}
+		} 
+		else {
 			if (mViewPager.getCurrentItem() == 0) {
 				super.onBackPressed();
 			}

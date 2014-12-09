@@ -195,8 +195,8 @@ public class AccountManager {
 				}
 
 			}
-		}, 60000 * getConfiguration().getRememberTimeMinmutes(),
-				60000 * getConfiguration().getRememberTimeMinmutes());
+		}, 60000 * getConfiguration().getRememberTimeMinutes(),
+				60000 * getConfiguration().getRememberTimeMinutes());
 	}
 
 	private void checkExpired() {

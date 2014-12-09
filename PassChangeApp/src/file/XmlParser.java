@@ -207,7 +207,7 @@ public class XmlParser {
 		Element rememberTimeElement = doc.createElement("attribute");
 		rememberTimeElement.setAttribute("name", "rememberTime");
 		rememberTimeElement.setAttribute("value",
-				Integer.toString(configuration.getRememberTimeMinmutes()));
+				Integer.toString(configuration.getRememberTimeMinutes()));
 		rootElement2.appendChild(rememberTimeElement);
 
 		// write the content into xml file

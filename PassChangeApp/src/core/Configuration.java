@@ -11,7 +11,7 @@ public class Configuration {
 		this.logoutTimeMinutes = logoutTimeMinutes;
 		this.rememberTimeMinmutes = rememberTimeMinmutes;
 	}
-	public int getRememberTimeMinmutes() {
+	public int getRememberTimeMinutes() {
 		return rememberTimeMinmutes;
 	}
 	public void setRememberTimeMinmutes(int rememberTimeMinmutes) {
