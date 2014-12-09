@@ -8,6 +8,7 @@ import android.app.Activity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class SettingsListAdapter extends BaseAdapter {
@@ -41,10 +42,15 @@ public class SettingsListAdapter extends BaseAdapter {
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
+		LinearLayout layout=new LinearLayout(parent.getContext());
+		//layout.setBackgroundResource(R.drawable.backgroundsettings);
 		TextView view = new TextView(parent.getContext());
 		view.setTextSize(23);
+		view.setPadding(10, 10, 10, 10);
 		view.setText(settings.get(position));
-		return view;
+		layout.addView(view);
+		//view.setClickable(true);
+		return layout;
 	}
 
 }

@@ -43,6 +43,7 @@ public class SettingsWindowNew implements OnItemClickListener {
 					.findViewById(R.id.listViewSettings);
 			listViewSettings.setAdapter(new SettingsListAdapter(activity));
 			listViewSettings.setOnItemClickListener(this);
+			childActive=false;
 			return false;
 		} else {
 			return true;

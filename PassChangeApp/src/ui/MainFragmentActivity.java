@@ -77,6 +77,7 @@ public class MainFragmentActivity extends FragmentActivity implements
 		if (item.getItemId() == R.id.settings) {
 			setContentView(R.layout.settings_new);
 			childWindowActive = true;
+			getActionBar().setDisplayHomeAsUpEnabled(true);
 			settingsWindowNew=new SettingsWindowNew(this, loginManager.getAccountManager()
 					.getConfiguration(), loginManager.getAccountManager());
 		} else if (item.getItemId() == R.id.close) {
@@ -157,6 +158,8 @@ public class MainFragmentActivity extends FragmentActivity implements
 	public void onBackPressed() {
 		if (childWindowActive) {
 			if(settingsWindowNew.goBack()){
+
+				getActionBar().setDisplayHomeAsUpEnabled(false);
 				childWindowActive = false;
 				setContentView(R.layout.activity_collection);
 				onLoggedIn();
