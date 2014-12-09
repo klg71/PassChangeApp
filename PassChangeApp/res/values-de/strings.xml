@@ -52,5 +52,8 @@
     <string name="account_export_info">Passwort wurde erfolgreich exportiert.\nSie können auf der Website:\n"http://klg71.us.to/PassChangeServer/getPasswordForm.php"\nden Code eingeben um ihr Passwort anzusehen.</string>
     <string name="actions">Aktionen</string>
     <string name="submit_master_pass_change">Master Password ändern</string>
+	<string name="setting_logout">Logout Verhalten</string>
+	<string name="setting_password_remind">Passwortänderung</string>
+	<string name="setting_change_masterpass">Masterpasswort ändern</string>
 
 </resources>
