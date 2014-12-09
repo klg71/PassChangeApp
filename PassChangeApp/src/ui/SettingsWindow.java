@@ -60,7 +60,7 @@ public class SettingsWindow implements OnCheckedChangeListener,
 		rememberEditText = (EditText) mainFragmentActivity
 				.findViewById(R.id.editTextTimeTillRemember);
 		rememberEditText.setText(Integer.toString(configuration
-				.getRememberTimeMinmutes()));
+				.getRememberTimeMinutes()));
 		rememberEditText.setOnEditorActionListener(this);
 	}
 

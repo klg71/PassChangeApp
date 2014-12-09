@@ -3,6 +3,7 @@ package ui.settings;
 import com.passchange.passchangeapp.R;
 
 import android.app.Activity;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
@@ -18,10 +19,11 @@ public class ConfigurationSettingPasswordRemember extends ConfigurationSetting
 	public ConfigurationSettingPasswordRemember(Configuration configuration,
 			Activity activity) {
 		super(configuration, activity);
+		activity.setContentView(R.layout.settings_password_remember);
 		rememberEditText = (EditText) activity
 				.findViewById(R.id.editTextTimeTillRemember);
 		rememberEditText.setText(Integer.toString(configuration
-				.getRememberTimeMinmutes()));
+				.getRememberTimeMinutes()));
 		rememberEditText.setOnEditorActionListener(this);
 		
 	}

@@ -42,6 +42,7 @@ public class SettingsListAdapter extends BaseAdapter {
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		TextView view = new TextView(parent.getContext());
+		view.setTextSize(23);
 		view.setText(settings.get(position));
 		return view;
 	}

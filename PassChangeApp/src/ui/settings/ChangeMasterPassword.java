@@ -20,6 +20,7 @@ public class ChangeMasterPassword implements OnClickListener {
 	public ChangeMasterPassword(Activity activity, AccountManager accountManager) {
 		this.mainActivity=activity;
 		this.accountManager=accountManager;
+		activity.setContentView(R.layout.);
 		buttonMasterPassSubmit = (Button) activity
 				.findViewById(R.id.buttonChangeMasterPassSubmit);
 		buttonMasterPassSubmit.setOnClickListener(this);

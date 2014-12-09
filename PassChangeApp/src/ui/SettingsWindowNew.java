@@ -39,6 +39,10 @@ public class SettingsWindowNew implements OnItemClickListener {
 	public boolean goBack() {
 		if (childActive) {
 			activity.setContentView(R.layout.settings_new);
+			listViewSettings = (ListView) activity
+					.findViewById(R.id.listViewSettings);
+			listViewSettings.setAdapter(new SettingsListAdapter(activity));
+			listViewSettings.setOnItemClickListener(this);
 			return false;
 		} else {
 			return true;
