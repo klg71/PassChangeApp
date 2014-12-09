@@ -42,13 +42,13 @@ public class SettingsWindow implements OnCheckedChangeListener,
 		passwordEditText = (EditText) mainFragmentActivity
 				.findViewById(R.id.editTextChangeMasterPass);
 
-		checkBox = (CheckBox) mainFragmentActivity
-				.findViewById(R.id.checkBoxLogOutWhenAppIsPaused);
+//		checkBox = (CheckBox) mainFragmentActivity
+//				.findViewById(R.id.checkBoxLogOutWhenAppIsPaused);
 		checkBox.setChecked(configuration.isLogoutWhenAppIsPaused());
 		checkBox.setOnCheckedChangeListener(this);
 
-		editText = (EditText) mainFragmentActivity
-				.findViewById(R.id.editTextTimeTillLogout);
+//		editText = (EditText) mainFragmentActivity
+//				.findViewById(R.id.editTextTimeTillLogout);
 		editText.setText(Integer.toString(configuration.getLogoutTimeMinutes()));
 		if (configuration.isLogoutWhenAppIsPaused()) {
 			editText.setEnabled(false);

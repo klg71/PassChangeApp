@@ -101,6 +101,10 @@ public class AccountOverviewFragment extends CustomFragment implements
 		return mainView;
 
 	}
+	
+	public AccountOverviewFragment(){
+		super();
+	}
 
 	public AccountOverviewFragment(LoginManager loginManager) {
 		super();

@@ -126,7 +126,6 @@ public class MainFragmentActivity extends FragmentActivity implements
 		getResources().getDrawable(R.drawable.edit_account_icon).setColorFilter(0xFFFF0000,Mode.MULTIPLY);
 		active = true;
 		loginManager.OnAppStarted();
-		getActionBar().setDisplayHomeAsUpEnabled(true);
 		if (DEBUG_ACTIVATED)
 			Log.e("Debug", "OnAppStarted called");
 		super.onStart();
@@ -579,10 +578,14 @@ public class MainFragmentActivity extends FragmentActivity implements
 	public void onPageSelected(int arg0) {
 		pagerAdapter.getCustomItem(arg0).refresh();
 		if (arg0 != 0) {
+
+			getActionBar().setDisplayHomeAsUpEnabled(true);
 			optionsMenu.findItem(R.id.close).setVisible(true);
 			optionsMenu.findItem(R.id.refresh).setVisible(true);
 
 		} else {
+
+			getActionBar().setDisplayHomeAsUpEnabled(false);
 			optionsMenu.findItem(R.id.close).setVisible(false);
 			optionsMenu.findItem(R.id.refresh).setVisible(false);
 		}
