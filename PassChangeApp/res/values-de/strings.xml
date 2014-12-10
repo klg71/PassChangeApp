@@ -19,7 +19,7 @@
     <string name="switch_to_main_page">Hauptseite</string>
     <string name="hold_item_string">Halten um zu interagieren</string>
     <string name="usernameDescription">Dein Benutzername\nmit dem du dich\nauf der Website anmeldest\n(kann auch eine Email sein)</string>
-    <string name="timeTillRememberText">Zeit bis App zur Passwortänderung auffordert \n (in minutes)</string>
+    <string name="timeTillRememberText">Zeit bis App zur Passwortänderung auffordert</string>
     <string name="changeMasterPasswordText">Masterpasswort der Passwortdatei ändern</string>
     <string name="copy_password">Passwort kopieren</string>
     <string name="edit_account">Account ändern</string>
