@@ -107,7 +107,7 @@
                 android:background="@drawable/backgroundsettings"
                 android:orientation="vertical" >
 
-                <TextView
+               <!--  <TextView
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:padding="5sp"
@@ -128,6 +128,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="5sp"
-                    android:text="@string/submit_master_pass_change" />
+                    android:text="@string/submit_master_pass_change" /> -->
             </LinearLayout>
 </LinearLayout>
