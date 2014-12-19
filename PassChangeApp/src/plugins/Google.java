@@ -36,7 +36,6 @@ public class Google extends PassChangeWebsite {
 	@Override
 	public void initialize(String username, String pass) {
 		super.initialize(username,pass);
-		webClient = new WebClient();
 		token = "";
 		formData=new HashMap<String,String>();
 		passwordNew="";;

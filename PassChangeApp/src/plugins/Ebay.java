@@ -30,7 +30,6 @@ public class Ebay extends PassChangeWebsite {
 
 	public void initialize(String username, String password) {
 		super.initialize(username, password);
-		webClient = new WebClient();
 		formData = new HashMap<String, String>();
 	}
 

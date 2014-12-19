@@ -35,7 +35,6 @@ public class Twitter extends PassChangeWebsite {
 	@Override
 	public void initialize(String username, String pass) {
 		super.initialize(username,pass);
-		webClient = new WebClient();
 		token = "";
 		passwordNew = "";
 		succesful=false;

@@ -28,7 +28,6 @@ public class Facebook extends PassChangeWebsite {
 	@Override
 	public void initialize(String username, String pass) {
 		super.initialize(username,pass);
-		webClient = new WebClient();
 		fb_dtsg = "";
 		charset_test = "";
 		succesful=false;
