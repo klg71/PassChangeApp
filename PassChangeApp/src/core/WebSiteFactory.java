@@ -6,6 +6,7 @@ import java.util.Map;
 import plugins.Amazon;
 import plugins.Ebay;
 import plugins.Facebook;
+import plugins.Gmx;
 import plugins.Google;
 import plugins.LeagueOfLegends;
 import plugins.Steam;
@@ -29,33 +30,39 @@ public class WebSiteFactory {
 			return new Steam(activity);
 		case "Twitter":
 			return new Twitter(activity);
+		case "Gmx":
+			return new Gmx(activity);
 		}
 		return null;
 	}
-	public static Website createWebsite(String website, Activity activity,HashMap<String, Map<String, Map<String, String>>> cookies) {
-		Website websiteInstance=null;
+
+	public static Website createWebsite(String website, Activity activity,
+			HashMap<String, Map<String, Map<String, String>>> cookies) {
+		Website websiteInstance = null;
 		switch (website) {
 		case "Amazon":
-			websiteInstance=new Amazon(activity);
+			websiteInstance = new Amazon(activity);
 			break;
 		case "Ebay":
-			websiteInstance=new Ebay(activity);
+			websiteInstance = new Ebay(activity);
 			break;
 		case "Facebook":
-			websiteInstance=new Facebook(activity);
+			websiteInstance = new Facebook(activity);
 			break;
 		case "Google":
-			websiteInstance=new Google(activity);
+			websiteInstance = new Google(activity);
 			break;
 		case "LeagueOfLegends":
-			websiteInstance=new LeagueOfLegends(activity);
+			websiteInstance = new LeagueOfLegends(activity);
 			break;
 		case "Steam":
-			websiteInstance=new Steam(activity);
+			websiteInstance = new Steam(activity);
 			break;
 		case "Twitter":
-			websiteInstance=new Twitter(activity);
+			websiteInstance = new Twitter(activity);
 			break;
+		case "Gmx":
+			websiteInstance = new Gmx(activity);
 		}
 		websiteInstance.setCookies(cookies);
 		return websiteInstance;

@@ -85,6 +85,11 @@ public class Gmx extends PassChangeWebsite {
 		System.out.println(url);
 		body = webClient.sendRequest(url, RequestType.GET, "", "afterLogin1",
 				false);
+		webClient.setCookie("navigator.gmx.net","vpheight","500");
+		webClient.setCookie("navigator.gmx.net","vpwidth","500");
+		webClient.setCookie("navigator.gmx.net","sheight","500");
+		webClient.setCookie("navigator.gmx.net","swidth","500");
+		
 	}
 
 	@Override
