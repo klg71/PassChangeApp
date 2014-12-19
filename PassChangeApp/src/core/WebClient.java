@@ -1,6 +1,7 @@
 package core;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -36,6 +37,7 @@ import java.util.zip.GZIPInputStream;
 import javax.net.ssl.HttpsURLConnection;
 
 import ui.MainActivity;
+import ui.MainFragmentActivity;
 
 public class WebClient {
 	private RequestType type;
@@ -47,6 +49,11 @@ public class WebClient {
 	boolean ref;
 	private String referer;
 	private String location;
+	private ByteArrayOutputStream byteArrayOutputStream;
+
+	public ByteArrayOutputStream getByteArrayOutputStream() {
+		return byteArrayOutputStream;
+	}
 
 	private Map<String, Map<String, Map<String, String>>> store;
 
@@ -153,21 +160,32 @@ public class WebClient {
 
 	}
 
-	public String sendRequest(String url, RequestType type, String body,
-			String filename, Boolean ref) {
-		return sendRequest(url, type, body, filename, ref, "", false);
+	public String getPicture(String url, RequestType type,
+			String body, String filename, Boolean ref,String referer) {
+		return sendRequest(url, type, body, filename, ref, referer,false,true);
+
 	}
 
 	public String sendRequest(String url, RequestType type, String body,
-			String filename, Boolean ref, String referer, boolean limited) {
-		if (MainActivity.DEBUG_ACTIVATED) {
+			String filename, Boolean ref) {
+		return sendRequest(url, type, body, filename, ref, "", false,false);
+	}
+	
+	public String sendRequest(String url, RequestType type, String body,
+			String filename, Boolean ref,String referer,boolean limited) {
+		return sendRequest(url, type, body, filename, ref, referer, limited,false);
+	}
+
+	public String sendRequest(String url, RequestType type, String body,
+			String filename, Boolean ref, String referer, boolean limited, boolean bytesReturn) {
+		if (MainFragmentActivity.DEBUG_ACTIVATED) {
 			System.out.println("File" + filename);
 		}
 		this.referer = referer;
 		String ret = "";
 		FileWriter fileWriter = null;
 		try {
-			if (MainActivity.DEBUG_ACTIVATED)
+			if (MainFragmentActivity.DEBUG_ACTIVATED)
 				fileWriter = new FileWriter("/sdcard/" + filename + ".html");
 		} catch (IOException e2) {
 			// TODO Auto-generated catch block
@@ -210,7 +228,7 @@ public class WebClient {
 		}
 		try {
 
-			if (MainActivity.DEBUG_ACTIVATED)
+			if (MainFragmentActivity.DEBUG_ACTIVATED)
 				System.out.println(((HttpURLConnection) connection)
 						.getResponseCode());
 		} catch (IOException e2) {
@@ -226,8 +244,6 @@ public class WebClient {
 										.getErrorStream())));
 				for (String line; (line = reader.readLine()) != null;) {
 
-					if (MainActivity.DEBUG_ACTIVATED)
-						System.out.println(line);
 				}
 			}
 		} catch (IOException e2) {
@@ -247,7 +263,7 @@ public class WebClient {
 		// }
 		// }
 
-		if (MainActivity.DEBUG_ACTIVATED)
+		if (MainFragmentActivity.DEBUG_ACTIVATED)
 			System.out.println(store);
 		BufferedReader reader = null;
 		if (!ref) {
@@ -269,18 +285,33 @@ public class WebClient {
 				}
 			}
 
+			if (bytesReturn) {
+				byte[] buff = new byte[1024];
+				int read = 0;
+				byteArrayOutputStream = new ByteArrayOutputStream();
+				try {
+					while ((read = connection.getInputStream().read(buff)) != -1) {
+						byteArrayOutputStream.write(buff, 0, read);
+					}
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 			try {
+				StringBuilder stringBuilder= new StringBuilder();
 				for (String line; (line = reader.readLine()) != null;) {
-					ret += line;
+					stringBuilder.append(line);
 					if (limited) {
-						if (ret.length() > 1000) {
+						if (stringBuilder.length() > 200000) {
 							break;
 						}
 					}
-					if (MainActivity.DEBUG_ACTIVATED)
+					if (MainFragmentActivity.DEBUG_ACTIVATED)
 						fileWriter.write(line
 								+ System.getProperty("line.separator"));
 				}
+				ret=stringBuilder.toString();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -292,7 +323,7 @@ public class WebClient {
 			if (writer != null)
 				writer.close();
 
-			if (MainActivity.DEBUG_ACTIVATED)
+			if (MainFragmentActivity.DEBUG_ACTIVATED)
 				fileWriter.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
