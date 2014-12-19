@@ -7,6 +7,7 @@ import java.util.Map;
 import plugins.Amazon;
 import plugins.Ebay;
 import plugins.Facebook;
+import plugins.Gmx;
 import plugins.Google;
 import plugins.LeagueOfLegends;
 import plugins.Steam;
@@ -54,6 +55,7 @@ public class AddAccountWindow implements OnClickListener {
 		websites.add(new Amazon(mainFragmentActivity));
 		websites.add(new Ebay(mainFragmentActivity));
 		websites.add(new Steam(mainFragmentActivity));
+		websites.add(new Gmx(mainFragmentActivity));
 		
 		Spinner website = (Spinner)  mainView.findViewById(R.id.spinner1);
 		WebsiteSpinnerAdapter dataAdapter = new WebsiteSpinnerAdapter(
