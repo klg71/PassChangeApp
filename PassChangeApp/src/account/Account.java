@@ -10,6 +10,8 @@ import java.util.Map;
 import com.passchange.passchangeapp.R;
 
 import ui.MainActivity;
+import ui.MainFragmentActivity;
+import ui.MainFragmentStatePager;
 import ui.WebViewFragment;
 import android.app.Activity;
 import android.support.v4.app.FragmentActivity;
@@ -19,6 +21,7 @@ import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.Toast;
 import core.PassChangeWebsite;
 import core.Website;
@@ -185,7 +188,7 @@ public class Account {
 								cookieStringBuffer.append(" domain="
 										+ domainStore.getKey());
 							}
-							if (MainActivity.DEBUG_ACTIVATED)
+							if (MainFragmentActivity.DEBUG_ACTIVATED)
 								Log.e("Cookie:", cookieStringBuffer.toString());
 							cookieManager.setCookie(domainStore.getKey(),
 									cookieStringBuffer.toString());
@@ -210,6 +213,8 @@ public class Account {
 								webView.invalidate();
 								webView.loadUrl(website.getWebsiteUrl());
 								webView.invalidate();
+								LayoutParams params=new LayoutParams(LayoutParams.FILL_PARENT,LayoutParams.FILL_PARENT);
+								webView.setLayoutParams(params);
 								webViewFragment.removeProgressBar();
 								
 
