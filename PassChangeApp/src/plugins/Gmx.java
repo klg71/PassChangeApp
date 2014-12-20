@@ -67,8 +67,7 @@ public class Gmx extends PassChangeWebsite {
 				+ "&successURL"
 				+ URLEncoder.encode("https://navigator.gmx.net/login", "UTF-8")
 				+ "&username="
-				+ URLEncoder.encode("MeisegeierLukas@gmx.de", "UTF-8");
-		System.out.println(post);
+				+ URLEncoder.encode(username, "UTF-8");
 		body = webClient.sendRequest(
 				"https://service.gmx.net/de/cgi/login?hal=true",
 				RequestType.POST, post, "login", false);
@@ -86,7 +85,6 @@ public class Gmx extends PassChangeWebsite {
 		getUrl("navigator\\/show");
 		webSiteUrl = url;
 		url = url + "#myaccount";
-		System.out.println(url);
 		body = webClient.sendRequest(url, RequestType.GET, "", "afterLogin1",
 				false);
 	}
@@ -96,7 +94,6 @@ public class Gmx extends PassChangeWebsite {
 		this.newPass = newPass;
 		getMyAccountUrl();
 		url = url.replace("\\", "");
-		System.out.println(url);
 		body = webClient.sendRequest(url, RequestType.GET, "", "myAccount",
 				false);
 		body = webClient.sendRequest(webClient.getLocation(), RequestType.GET,
@@ -120,7 +117,6 @@ public class Gmx extends PassChangeWebsite {
 				+ "&password_new_confirmation="
 				+ URLEncoder.encode(newPass, "UTF-8") + "&password_old="
 				+ URLEncoder.encode(pass, "UTF-8");
-		System.out.println(post);
 		body = webClient.sendRequest(
 				"https://service.gmx.net/de/cgi/g.fcgi/config/password/change?sid="
 						+ token, RequestType.POST, post, "afterPassChange",
