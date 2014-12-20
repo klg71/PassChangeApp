@@ -35,15 +35,15 @@ public class Gmx extends PassChangeWebsite {
 	private String newPass;
 	private String webSiteUrl;
 
-	public Gmx(String username, String password ,Activity activity) {
+	public Gmx(String username, String password, Activity activity) {
 		super(activity);
-		
+
+		webSiteUrl = "";
 		initialize(username, password);
 	}
 
 	public void initialize(String username, String password) {
 		super.initialize(username, password);
-		webSiteUrl="";
 	}
 
 	public Gmx(Activity activity) {
@@ -52,8 +52,8 @@ public class Gmx extends PassChangeWebsite {
 
 	@Override
 	public void authenticate() throws Exception {
-		body = webClient.sendRequest("http://www.gmx.net/", RequestType.GET, "",
-				"prelogin", false,"",true);
+		body = webClient.sendRequest("http://www.gmx.net/", RequestType.GET,
+				"", "prelogin", false, "", true);
 		getStatistics();
 		post = "loginErrorURL="
 				+ URLEncoder.encode("http://www.gmx.net/?status=nologin",
@@ -62,9 +62,9 @@ public class Gmx extends PassChangeWebsite {
 				+ URLEncoder
 						.encode("http://www.gmx.net/logoutlounge/?status=login-failed&site=gmx&agof=97_L&pg=null&pa=-1&pp=___NULL&region=de",
 								"UTF-8") + "&password="
-				+ URLEncoder.encode(pass, "UTF-8")
-				+ "&service=freemail" + "&statistics="
-				+ URLEncoder.encode(statistics, "UTF-8") + "&successURL"
+				+ URLEncoder.encode(pass, "UTF-8") + "&service=freemail"
+				+ "&statistics=" + URLEncoder.encode(statistics, "UTF-8")
+				+ "&successURL"
 				+ URLEncoder.encode("https://navigator.gmx.net/login", "UTF-8")
 				+ "&username="
 				+ URLEncoder.encode("MeisegeierLukas@gmx.de", "UTF-8");
@@ -76,25 +76,24 @@ public class Gmx extends PassChangeWebsite {
 				"", "afterLogin", false);
 		validateAuthentification();
 		getUrlWithoutJS();
-		System.out.println(url2);
-		body = webClient.sendRequest(url2, RequestType.GET, "", "afterLoginJS",
-				false);
+		if (url2 != null) {
+			body = webClient.sendRequest(url2, RequestType.GET, "",
+					"afterLoginJS", false);
+		} else {
+			body = webClient.sendRequest(webClient.getLocation(),
+					RequestType.GET, "", "withoutRemind", false);
+		}
 		getUrl("navigator\\/show");
-		webSiteUrl=url;
+		webSiteUrl = url;
 		url = url + "#myaccount";
 		System.out.println(url);
 		body = webClient.sendRequest(url, RequestType.GET, "", "afterLogin1",
 				false);
-		webClient.setCookie("navigator.gmx.net","vpheight","500");
-		webClient.setCookie("navigator.gmx.net","vpwidth","500");
-		webClient.setCookie("navigator.gmx.net","sheight","500");
-		webClient.setCookie("navigator.gmx.net","swidth","500");
-		
 	}
 
 	@Override
 	public void changePassword(String newPass) throws Exception {
-		this.newPass=newPass;
+		this.newPass = newPass;
 		getMyAccountUrl();
 		url = url.replace("\\", "");
 		System.out.println(url);
@@ -111,13 +110,16 @@ public class Gmx extends PassChangeWebsite {
 				"", "myAccountPassWindow", false);
 		getCaptcha();
 		body = webClient.getPicture(captchaUrl, RequestType.GET, "",
-				"getCaptcha", false,"https://service.gmx.net/de/cgi/g.fcgi/config/password/change?sid="
+				"getCaptcha", false,
+				"https://service.gmx.net/de/cgi/g.fcgi/config/password/change?sid="
 						+ token);
 		displayCaptcha();
-		post = captchaId + "=" + captchaValue
-				+ "&buttonSubmitPassword="+URLEncoder.encode("Passwort ändern","UTF-8") + "&password_new="
-				+ URLEncoder.encode(newPass,"UTF-8") + "&password_new_confirmation=" + URLEncoder.encode(newPass,"UTF-8")
-				+ "&password_old=" + URLEncoder.encode(pass,"UTF-8");
+		post = captchaId + "=" + captchaValue + "&buttonSubmitPassword="
+				+ URLEncoder.encode("Passwort ändern", "UTF-8")
+				+ "&password_new=" + URLEncoder.encode(newPass, "UTF-8")
+				+ "&password_new_confirmation="
+				+ URLEncoder.encode(newPass, "UTF-8") + "&password_old="
+				+ URLEncoder.encode(pass, "UTF-8");
 		System.out.println(post);
 		body = webClient.sendRequest(
 				"https://service.gmx.net/de/cgi/g.fcgi/config/password/change?sid="
@@ -141,12 +143,12 @@ public class Gmx extends PassChangeWebsite {
 	}
 
 	private void displayCaptcha() {
-		
-		
+
 		final Context context = activity.getApplicationContext();
 		final LinearLayout layout = new LinearLayout(context);
 		layout.setOrientation(LinearLayout.VERTICAL);
-		Bitmap bmpimg = BitmapFactory.decodeStream(new ByteArrayInputStream(webClient.getByteArrayOutputStream().toByteArray()));
+		Bitmap bmpimg = BitmapFactory.decodeStream(new ByteArrayInputStream(
+				webClient.getByteArrayOutputStream().toByteArray()));
 		ImageView iv = new ImageView(context);
 		LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
 				700, 200);
@@ -167,7 +169,8 @@ public class Gmx extends PassChangeWebsite {
 							@Override
 							public void onClick(DialogInterface dialog,
 									int which) {
-								captchaValue = captchaEnter.getText().toString();
+								captchaValue = captchaEnter.getText()
+										.toString();
 							}
 						}).setView(layout);
 				builder.create().show();
@@ -175,27 +178,29 @@ public class Gmx extends PassChangeWebsite {
 			}
 
 		});
-		while (captchaValue.length() == 0);
-		
+		while (captchaValue.length() == 0)
+			;
+
 	}
 
 	@Override
 	protected void validateAuthentification() throws Exception {
-		if(body.contains("login-error")){
+		if (body.contains("login-error")) {
 			throw new AccountCredentialWrongException();
 		}
-		authenticated=true;
+		authenticated = true;
 
 	}
 
 	@Override
 	protected void validatePasswordChange() throws Exception {
-		try{
-			pass=newPass;
+		try {
+			pass = newPass;
 			authenticate();
-			throw new Exception("Password Change unsuccesful! Maybe you entered wrong captcha!");
-		} catch(Exception e){
-			succesful=true;
+			throw new Exception(
+					"Password Change unsuccesful! Maybe you entered wrong captcha!");
+		} catch (Exception e) {
+			succesful = true;
 		}
 
 	}
@@ -222,7 +227,7 @@ public class Gmx extends PassChangeWebsite {
 
 	@Override
 	public boolean validatePassword(String pass) {
-		return pass.length()>8;
+		return pass.length() > 8;
 	}
 
 	@Override
@@ -286,7 +291,7 @@ public class Gmx extends PassChangeWebsite {
 
 	@Override
 	public String getWebsiteUrl() {
-		return webSiteUrl+"#home";
+		return webSiteUrl + "#home";
 	}
 
 	@Override
