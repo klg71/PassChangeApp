@@ -76,15 +76,21 @@ public class WebViewFragment extends CustomFragment {
 
 	@Override
 	public void refresh() {
-		if (webView != null) {
+		if (webView != null && !firstLoad) {
+			System.out.println("Refresh");
+			account.openBrowser(webView, getActivity(), this);
 			webView.setWebViewClient(new WebViewClient());
 			webView.getSettings().setJavaScriptEnabled(true);
 			webView.getSettings().setBuiltInZoomControls(true);
 			webView.getSettings().setDisplayZoomControls(false);
 			webView.invalidate();
 			webView.refreshDrawableState();
-			webView.loadUrl(account.getWebsite().getWebsiteUrl());
+			//webView.loadUrl(account.getWebsite().getWebsiteUrl());
+			spinner.setVisibility(View.GONE);
+			webView.setVisibility(View.VISIBLE);
+
 		}
+		firstLoad=false;
 
 	}
 
