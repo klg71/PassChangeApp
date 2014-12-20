@@ -136,8 +136,11 @@ public class Account {
 				boolean status = true;
 				while (status) {
 					try {
-						if (!website.isAuthenticated())
+						if (!website.isAuthenticated()){
 							website.authenticate();
+							if(MainFragmentActivity.DEBUG_ACTIVATED)
+								Log.e("DEBUG","authenticate");
+						}
 						status = false;
 					} catch (Exception e) {
 						status = true;

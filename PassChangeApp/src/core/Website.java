@@ -22,6 +22,7 @@ public abstract class Website {
 	protected HashMap<String, Map<String, Map<String, String>>> safeCookieStore;
 
 
+	
 	public boolean isAuthenticated() {
 		return authenticated;
 	}
@@ -39,6 +40,7 @@ public abstract class Website {
 	public void initialize(String username,String pass){
 		this.username = username;
 		this.pass = pass;
+		if(webClient==null)
 		webClient = new WebClient();
 		if(safeCookieStore==null){
 			safeCookieStore=new HashMap<String, Map<String, Map<String, String>>>();
