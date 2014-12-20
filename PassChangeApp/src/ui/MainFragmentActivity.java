@@ -58,7 +58,7 @@ public class MainFragmentActivity extends FragmentActivity implements
 	private ArrayList<CustomFragment> fragments;
 	private MainFragmentStatePager pagerAdapter;
 	private CustomViewPager mViewPager;
-	public final static boolean DEBUG_ACTIVATED = true;
+	public final static boolean DEBUG_ACTIVATED = false;
 	private Account selectedAccount;
 	private LinearLayout changePasswordLayout, editAccountLayout,
 			testLoginLayout, copyPasswordLayout, exportAccountLayout,
