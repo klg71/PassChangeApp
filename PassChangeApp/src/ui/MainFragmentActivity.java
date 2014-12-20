@@ -71,6 +71,7 @@ public class MainFragmentActivity extends FragmentActivity implements
 	private AlertDialog alertAddAccount;
 	private AccountOverviewFragment accountOverviewFragment;
 	private SettingsWindowNew settingsWindowNew;
+	private int saveFragment;
 	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -122,6 +123,7 @@ public class MainFragmentActivity extends FragmentActivity implements
 			accountOverviewFragment=new AccountOverviewFragment(loginManager);
 			fragments.add(accountOverviewFragment);
 		}
+		saveFragment=0;
 	}
 
 	@Override
@@ -142,6 +144,7 @@ public class MainFragmentActivity extends FragmentActivity implements
 		//mViewPager=new CustomViewPager(this);
 		mViewPager.setAdapter(pagerAdapter);
 		mViewPager.setOnPageChangeListener(this);
+		mViewPager.setCurrentItem(saveFragment);
 
 	}
 
@@ -189,6 +192,7 @@ public class MainFragmentActivity extends FragmentActivity implements
 
 	@Override
 	protected void onPause() {
+		saveFragment=mViewPager.getCurrentItem();
 		active = false;
 		loginManager.OnAppPaused();
 		super.onStop();
